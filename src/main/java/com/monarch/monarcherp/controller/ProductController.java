@@ -1,55 +1,60 @@
 package com.monarch.monarcherp.controller;
 
-import com.monarch.monarcherp.model.Product;
+import com.monarch.monarcherp.repository.ProductRepository;
 import com.monarch.monarcherp.service.ProductService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+import com.monarch.monarcherp.model.Product;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    ProductController(ProductService productService){
-        this.productService=productService;
-    }
-
-    @PostMapping
-    public Product saveProduct(@RequestBody Product product){
-        return productService.saveProduct(product);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id){
-        return productService.getProduct(id);
+    public ProductController(ProductService productService, ProductRepository productRepository) {
+        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @GetMapping
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    public String viewProducts(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "products";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id){
-            productService.deleteProduct(id);
+    @GetMapping("/{id}")
+    public String viewProduct(@PathVariable Long id, Model model) {
+        model.addAttribute("products", java.util.Collections.singletonList(productService.getProduct(id)));
+        return "products";
     }
 
-    @GetMapping("/count")
-    public long getTotalProducts(){
-        return productService.getTotalProducts();
+    @PostMapping("/add")
+    public String addProduct(@ModelAttribute Product product) {
+        productService.saveProduct(product);
+        return "redirect:/products";
     }
 
-    @GetMapping("/exists/{id}")
-    public boolean productExists(@PathVariable Long id) {
-        return productService.productExists(id);
+    @PostMapping("/update")
+    public String updateProductName(@ModelAttribute Product product) {
+        Product existing = productService.getProduct(product.getProductId());
+        if (existing != null) {
+            product.setCreatedAt(existing.getCreatedAt());
+        }
+        productRepository.save(product);
+        return "redirect:/products/" + product.getProductId();
     }
 
-    @PatchMapping("/{id}/name")
-    public Product updateProductName(@PathVariable Long id, @RequestBody String newName) {
-        return productService.updateProductName(id, newName);
+    @PostMapping("/{id}/delete")
+    public String deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return "redirect:/products";
     }
-
 }
+

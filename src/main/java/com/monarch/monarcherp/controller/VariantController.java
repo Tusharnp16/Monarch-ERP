@@ -1,24 +1,24 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.service.ProductService;
+import com.monarch.monarcherp.service.VariantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/view/products")
-public class ProductViewController {
+@RequestMapping("/variant")
+class VariantController {
 
-    private final ProductService productService;
+    @Autowired
+    private VariantService variantService;
 
-    public ProductViewController(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @GetMapping
+    @GetMapping("/view")
     public String viewProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
-        return "products";
+        model.addAttribute("variants", variantService.getAllVariants());
+        return "variants";
     }
+
 }

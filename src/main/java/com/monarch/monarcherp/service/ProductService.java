@@ -20,10 +20,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ResponseEntity<Product> getProduct(Long id) {
-        return productRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Product getProduct(Long id) {
+        return productRepository.findByProductId(id);
     }
 
     public List<Product> getAllProducts() {
@@ -42,10 +40,10 @@ public class ProductService {
         return productRepository.existsById(id);
     }
 
-
     public Product updateProductName(Long id, String newName) {
         Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         product.setProductName(newName);
         return  productRepository.save(product);
     }
 }
+
