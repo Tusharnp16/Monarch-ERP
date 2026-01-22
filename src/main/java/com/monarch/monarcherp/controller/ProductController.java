@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    public ProductController(ProductService productService, ProductRepository productRepository) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productRepository = productRepository;
     }
 
     @GetMapping
     public String viewProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("activeCount",2);
         return "products";
     }
 
@@ -38,21 +37,22 @@ public class ProductController {
     @PostMapping("/add")
     public String addProduct(@ModelAttribute Product product) {
         productService.saveProduct(product);
+
         return "redirect:/products";
     }
 
     @PostMapping("/update")
-    public String updateProductName(@ModelAttribute Product product) {
+    public String updateProduct(@ModelAttribute Product product) {
         Product existing = productService.getProduct(product.getProductId());
         if (existing != null) {
             product.setCreatedAt(existing.getCreatedAt());
         }
-        productRepository.save(product);
+        productService.saveProduct(product);
         return "redirect:/products/" + product.getProductId();
     }
 
-    @PostMapping("/{id}/delete")
-    public String deleteProduct(@PathVariable Long id) {
+    @PostMapping("/delete")
+    public String deleteProduct(@RequestParam Long id) {
         productService.deleteProduct(id);
         return "redirect:/products";
     }

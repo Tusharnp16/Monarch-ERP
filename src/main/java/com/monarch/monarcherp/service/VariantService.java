@@ -20,10 +20,8 @@ public class VariantService {
         return variantRepository.save(variant);
     }
 
-    public ResponseEntity<Variant> getVariant(Long id) {
-        return variantRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Variant getVariant(Long id) {
+        return variantRepository.getVariantByVariantId(id);
     }
 
     public List<Variant> getAllVariants() {

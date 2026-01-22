@@ -3,6 +3,9 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,21 +40,16 @@ public class Variant {
     })
     private Money sellingPrice;
 
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @PrePersist
-    public void onCreate(){
-        this.createdAt=LocalDateTime.now();
-        this.modifiedAt=LocalDateTime.now();
-    }
 
-    @PreUpdate
-    public void onUpdate(){
-        this.modifiedAt=LocalDateTime.now();
-    }
 }

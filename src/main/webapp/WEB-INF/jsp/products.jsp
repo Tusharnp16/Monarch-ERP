@@ -89,10 +89,10 @@
 
         <ul class="nav nav-pills flex-column gap-1">
             <li class="nav-item">
-                <a href="#" class="nav-link active"><i class="fas fa-box me-2"></i> Products</a>
+                <a href="/products" class="nav-link active"><i class="fas fa-box me-2"></i> Products</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link"><i class="fas fa-tags me-2"></i> Variants</a>
+                <a href="/variants" class="nav-link"><i class="fas fa-tags me-2"></i> Variants</a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link"><i class="fas fa-chart-line me-2"></i> Inventory</a>
@@ -342,9 +342,10 @@
 <!-- Confirm Delete Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" method="post" action="/products/${product.productId}/delete">
+        <form class="modal-content" method="post" action="/products/delete">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmDeleteLabel">Delete product</h5>
+                <input type="hidden" name="id" id="deleteProductId">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-footer">
