@@ -2,6 +2,7 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +18,8 @@ public class StockMaster {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stockmasterid;
+    @Column(name="stock_master_id")
+    private Long stockMasterId;
 
     @Column(nullable = true)
     private int quantity;
@@ -69,6 +71,7 @@ public class StockMaster {
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
         this.modifiedDate = LocalDateTime.now();
+        this.batchNo=getBatchNo();
     }
 
     @PreUpdate

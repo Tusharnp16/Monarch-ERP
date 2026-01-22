@@ -40,7 +40,7 @@ public class VariantService {
         return variantRepository.existsById(id);
     }
 
-    public Variant updateVariantName(Long id, Variant updatedData) {
+    public Variant updateVariant(Long id, Variant updatedData) {
         variantRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         return  variantRepository.save(updatedData);
     }

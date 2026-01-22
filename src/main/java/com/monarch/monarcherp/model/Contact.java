@@ -15,7 +15,8 @@ public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long contactid;
+    @Column(name = "contact_id")
+    private Long contactId;
 
     @Column(nullable = false, length = 100)
     private String name;

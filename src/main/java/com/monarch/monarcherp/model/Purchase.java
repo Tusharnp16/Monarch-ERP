@@ -31,6 +31,7 @@ public class Purchase {
         @AttributeOverrides({
             @AttributeOverride(name= "price", column = @Column(name="total_amount"))
         })
+        @Column(nullable = true)
         private Money totalAmount;
 
         @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)

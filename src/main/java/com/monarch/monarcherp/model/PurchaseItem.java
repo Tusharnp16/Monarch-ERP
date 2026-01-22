@@ -3,6 +3,8 @@ package com.monarch.monarcherp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "purchase_item")
 @Getter
@@ -42,6 +44,7 @@ public class PurchaseItem {
     })
     private Money taxAmount;
     private Integer qty;
+    private LocalDate expireDate;
 
     @Embedded
     @AttributeOverrides({

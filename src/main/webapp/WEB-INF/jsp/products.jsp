@@ -95,7 +95,16 @@
                 <a href="/variants" class="nav-link"><i class="fas fa-tags me-2"></i> Variants</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link"><i class="fas fa-chart-line me-2"></i> Inventory</a>
+                <a href="/stockmaster" class="nav-link"><i class="fas fa-chart-line me-2"></i> Inventory</a>
+            </li>
+            <li class="nav-item">
+                <a href="/purchaseitem" class="nav-link"><i class="fas fa-buy-line me-2"></i> Purchase Item</a>
+            </li>
+            <li class="nav-item">
+                <a href="/purchase" class="nav-link"><i class="fas fa-tags me-2"></i> Purchase</a>
+            </li>
+            <li class="nav-item">
+                <a href="/contact" class="nav-link"><i class="fas fa-contact me-2"></i> Contact</a>
             </li>
         </ul>
 
