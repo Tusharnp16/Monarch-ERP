@@ -21,8 +21,16 @@ public class StockMaster {
     @Column(name="stock_master_id")
     private Long stockMasterId;
 
+    @ManyToOne
+    @JoinColumn(name = "inventory_id", nullable = false
+    )
+    private Inventory inventory;
+
     @Column(nullable = true)
     private int quantity;
+
+    @Column(name="available_quantity")
+    private int availableQuantity;
 
     @Embedded
     @AttributeOverrides({

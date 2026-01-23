@@ -115,8 +115,8 @@
                 <tr>
                   <td class="ps-3 text-muted-small">#${item.purchaseItemId}</td>
                   <td>
-                    <div class="fw-bold">${item.variant.variantName}</div>
-                    <div class="text-muted-small">Code: ${item.variant.variantCode}</div>
+                    <div class="fw-bold">${item.variant.product.productName}</div>
+                    <div class="text-muted-small">Code: ${item.variant.product.itemCode}</div>
                   </td>
                   <td><span class="badge badge-purchase">${item.qty}</span></td>
                   <td>${item.price.price}</td>
@@ -158,7 +158,7 @@
             <select class="form-select" name="variant.variantId" required>
               <option value="">Choose variant...</option>
               <c:forEach items="${variants}" var="v">
-                <option value="${v.variantId}">${v.variantName} (${v.variantCode})</option>
+                <option value="${v.variantId}">${v.variantName} (${v.product.itemCode})</option>
               </c:forEach>
             </select>
           </div>

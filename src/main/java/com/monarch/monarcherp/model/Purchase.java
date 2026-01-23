@@ -3,6 +3,8 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,10 +36,13 @@ public class Purchase {
         @Column(nullable = true)
         private Money totalAmount;
 
-        @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
+        @OneToMany(mappedBy = "purchase")
         private List<PurchaseItem> items = new ArrayList<>();
 
+        @CreationTimestamp
         private LocalDateTime createdDate;
+
+        @UpdateTimestamp
         private LocalDateTime modifiedDate;
 
 }

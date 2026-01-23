@@ -25,6 +25,9 @@ public class Variant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long variantId;
 
+    @Column(name="variant_name")
+    private String variantName;
+
     private String colour;
     private String size;
 
@@ -50,6 +53,4 @@ public class Variant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
-
 }

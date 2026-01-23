@@ -1,8 +1,13 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.model.StockMaster;
+import com.monarch.monarcherp.model.Variant;
+import com.monarch.monarcherp.repository.InventoryRepository;
 import com.monarch.monarcherp.repository.PurchaseItemRepository;
+import com.monarch.monarcherp.repository.StockMasterRepository;
+import com.monarch.monarcherp.repository.VariantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,27 +20,52 @@ public class PurchaseItemService {
     @Autowired
     private PurchaseItemRepository purchaseItemRepository;
 
+    @Autowired
+    private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private StockMasterRepository stockMasterRepository;
+    @Autowired
+    private StockMasterService stockMasterService;
+
+    @Autowired
+    private VariantRepository variantRepository;
+
     @Transactional
-    public void savePurchase(PurchaseItem request) {
+    public void savePurchaseItems(PurchaseItem request) {
+
+        Variant fullVariant = variantRepository.findById(request.getVariant().getVariantId())
+                .orElseThrow(() -> new RuntimeException("Variant not found"));
+
+        request.setVariant(fullVariant);
+
+        Inventory inventory = inventoryRepository.findByVariant(fullVariant)
+                .orElse(new Inventory());
+
+        int currentQty = (inventory.getQuantity() != 0) ? inventory.getQuantity() : 0;
+        inventory.setQuantity(currentQty + request.getQty());
+        inventory.setAvailableQuantity(inventory.getQuantity());
+        inventory.setAverageCost(request.getLandingCost());
+        inventory.setVariant(fullVariant);
+
+        inventory = inventoryRepository.save(inventory);
 
         StockMaster newStock = new StockMaster();
         newStock.setExpiryDate(request.getExpireDate());
-        newStock.setVariant(request.getVariant());
+        newStock.setVariant(fullVariant);
         newStock.setQuantity(request.getQty());
         newStock.setPurchasePrice(request.getPrice());
         newStock.setLandingCost(request.getLandingCost());
+        newStock.setInventory(inventory);
 
-//        PurchaseItem pItem = new PurchaseItem();
-//        pItem.setQty(request.getQty());
-//        pItem.setPrice(request.getPrice());
-//        pItem.setVariant(request.getVariant());
+        newStock = stockMasterRepository.save(newStock);
 
-//        pItem.setStockMaster(newStock);
+        newStock.setBatchNo(stockMasterService.generateBatch(newStock));
+        newStock = stockMasterRepository.save(newStock);
 
+        request.setStockMaster(newStock);
         purchaseItemRepository.save(request);
-    }
-
-    public PurchaseItem getPurchaseItem(Long id) {
+    }    public PurchaseItem getPurchaseItem(Long id) {
         return purchaseItemRepository.getPurchaseItemBypurchaseItemId(id);
     }
 

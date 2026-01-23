@@ -42,17 +42,8 @@
 <body>
 
 <div class="app-shell">
-  <nav class="sidebar">
-    <div class="brand d-flex align-items-center gap-2 mb-4">
-      <i class="fa-solid fa-crown text-warning"></i>
-      <span class="fw-bold fs-5">Monarch ERP</span>
-    </div>
-    <ul class="nav nav-pills flex-column">
-      <li class="nav-item"><a href="/products" class="nav-link"><i class="fas fa-box me-2"></i> Products</a></li>
-      <li class="nav-item"><a href="/stockmaster" class="nav-link"><i class="fas fa-warehouse me-2"></i> Inventory</a></li>
-      <li class="nav-item"><a href="/purchase" class="nav-link active"><i class="fas fa-file-invoice me-2"></i> Purchase Bills</a></li>
-    </ul>
-  </nav>
+
+  <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
   <main class="main">
     <div class="topbar d-flex justify-content-between align-items-center">
@@ -192,7 +183,7 @@
               <td>
                 <select class="form-select form-select-sm" name="items[0].variant.variantId" required>
                   <c:forEach items="${variants}" var="v">
-                    <option value="${v.variantId}">${v.product.productName}(${v.colour})(${v.size})</option>
+                    <option value="${v.variantId}">${v.variantName }(${v.colour}) (${v.size})</option>
                   </c:forEach>s
                 </select>
               </td>

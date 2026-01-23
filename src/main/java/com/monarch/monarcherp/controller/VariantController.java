@@ -49,7 +49,7 @@ class VariantController {
             variant.setCreatedAt(existing.getCreatedAt());
         }
         variantService.saveVariant(variant);
-        return "redirect:/variants/" + variant.getVariantId();
+        return "redirect:/variants";
     }
 
     @PostMapping("/delete")

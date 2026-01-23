@@ -24,7 +24,7 @@ public class StockMasterService {
 
     }
 
-    private String generateBatch(StockMaster stock){
+    String generateBatch(StockMaster stock){
         String prd=stock.getVariant().getProduct().getProductName().substring(0,2).toUpperCase();
         String stockMaster=stock.getVariant().getColour();
 
@@ -59,10 +59,9 @@ public class StockMasterService {
         return stockMasterRepository.existsById(id);
     }
 
-    public StockMaster updateStockMaster(Long id, StockMaster updatedData) {
+    public StockMaster updateStockMaster(Long id, Double sellingPrice) {
         stockMasterRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
-        return  stockMasterRepository.save(updatedData);
+        stockMasterRepository.updateSellingPriceByStockMasterId(id,sellingPrice);
+        return stockMasterRepository.findByStockMasterId(id);
     }
-
-
 }

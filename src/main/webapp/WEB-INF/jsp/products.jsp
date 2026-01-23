@@ -76,44 +76,7 @@
 <div class="app-shell">
 
     <!-- Sidebar -->
-    <nav class="sidebar" aria-label="Primary">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="brand d-flex align-items-center gap-2">
-                <i class="fa-solid fa-crown text-warning"></i>
-                <span>Monarch ERP</span>
-            </div>
-            <button class="btn btn-sm btn-outline-light d-lg-none" id="toggleSidebar" aria-label="Toggle navigation">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
-
-        <ul class="nav nav-pills flex-column gap-1">
-            <li class="nav-item">
-                <a href="/products" class="nav-link active"><i class="fas fa-box me-2"></i> Products</a>
-            </li>
-            <li class="nav-item">
-                <a href="/variants" class="nav-link"><i class="fas fa-tags me-2"></i> Variants</a>
-            </li>
-            <li class="nav-item">
-                <a href="/stockmaster" class="nav-link"><i class="fas fa-chart-line me-2"></i> Inventory</a>
-            </li>
-            <li class="nav-item">
-                <a href="/purchaseitem" class="nav-link"><i class="fas fa-buy-line me-2"></i> Purchase Item</a>
-            </li>
-            <li class="nav-item">
-                <a href="/purchase" class="nav-link"><i class="fas fa-tags me-2"></i> Purchase</a>
-            </li>
-            <li class="nav-item">
-                <a href="/contact" class="nav-link"><i class="fas fa-contact me-2"></i> Contact</a>
-            </li>
-        </ul>
-
-        <hr class="border-secondary my-4">
-
-        <div class="text-muted-small">
-            <i class="fa-regular fa-circle-question me-1"></i> Need help? Press <kbd>/</kbd> to search.
-        </div>
-    </nav>
+    <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
     <!-- Main -->
     <main class="main">

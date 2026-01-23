@@ -21,7 +21,7 @@ class StockMasterController {
 
     @GetMapping
     public String viewStockMaster(Model model) {
-        model.addAttribute("stockMasters", stockMasterService.getAllStockMasters());
+        model.addAttribute("stocks", stockMasterService.getAllStockMasters());
         model.addAttribute("parentProducts",productService.getAllProducts());
         return "stock-master";
     }
@@ -37,20 +37,21 @@ class StockMasterController {
 //        Product managedProduct = productService.getProduct(productId);
 //        stockMaster.setProduct(managedProduct);
         stockMasterService.saveStockMaster(stockMaster);
-        return "redirect:/stock-master";
+        return "redirect:/stockmaster";
     }
 
     @PostMapping("/update")
-    public String updateStockMasterName(@ModelAttribute StockMaster stockMaster) {
+    public String updateStockMasterName(@RequestParam Long stockMasterId, Double sellingPrice) {
       //  StockMaster existing = stockMasterService.getStockMaster(stockMaster.getStockMasterId());
-        stockMasterService.saveStockMaster(stockMaster);
-        return "redirect:/stock-master/" + stockMaster.getStockMasterId();
+        StockMaster master=stockMasterService.updateStockMaster(stockMasterId,sellingPrice);
+       // return "redirect:/stockmaster/" + master.getStockMasterId();
+        return "stock-master";
     }
 
     @PostMapping("/delete")
     public String deleteStockMaster(@RequestParam Long id) {
         stockMasterService.deleteStockMaster(id);
-        return "redirect:/stock-master";
+        return "redirect:/stockmaster";
     }
 
 }

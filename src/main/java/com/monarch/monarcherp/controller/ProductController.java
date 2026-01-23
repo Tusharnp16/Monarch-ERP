@@ -48,7 +48,7 @@ public class ProductController {
             product.setCreatedAt(existing.getCreatedAt());
         }
         productService.saveProduct(product);
-        return "redirect:/products/" + product.getProductId();
+        return "redirect:/products";
     }
 
     @PostMapping("/delete")

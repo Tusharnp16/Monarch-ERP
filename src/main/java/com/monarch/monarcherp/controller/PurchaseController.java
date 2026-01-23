@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.model.Purchase;
+import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.service.ContactService;
 import com.monarch.monarcherp.service.PurchaseService;
 import com.monarch.monarcherp.service.VariantService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/purchase")
@@ -42,14 +45,13 @@ class PurchaseController {
     @PostMapping("/add")
     public String addPurchase(@ModelAttribute Purchase purchase) {
         purchaseService.savePurchase(purchase);
-
-        return "redirect:/purchases";
+        return "redirect:/purchase";
     }
 
     @PostMapping("/update")
     public String updatePurchase(@ModelAttribute Purchase purchase) {
         purchaseService.savePurchase(purchase);
-        return "redirect:/purchase/" + purchase.getPurchaseId();
+        return "redirect:/purchase";
     }
 
     @PostMapping("/delete")

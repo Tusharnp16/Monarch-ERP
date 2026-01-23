@@ -55,21 +55,7 @@
 <body>
 
 <div class="app-shell">
-    <nav class="sidebar">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="brand d-flex align-items-center gap-2">
-                <i class="fa-solid fa-crown text-warning"></i>
-                <span>Monarch ERP</span>
-            </div>
-            <button class="btn btn-sm btn-outline-light d-lg-none" id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
-        </div>
-        <ul class="nav nav-pills flex-column gap-1">
-            <li class="nav-item"><a href="/products" class="nav-link"><i class="fas fa-box me-2"></i> Products</a></li>
-            <li class="nav-item"><a href="/variants" class="nav-link active"><i class="fas fa-tags me-2"></i> Variants</a></li>
-            <li class="nav-item"><a href="/inventory" class="nav-link"><i class="fas fa-chart-line me-2"></i> Inventory</a></li>
-        </ul>
-    </nav>
-
+    <%@ include file="/WEB-INF/fragments/sidebar.html" %>
     <main class="main">
         <div class="topbar">
             <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -116,10 +102,11 @@
                                 <th>Variant Id</th>
                                 <th class="ps-3">SKU / Code</th>
                                 <th>Parent Product</th>
+                                <th>Variant Name</th>
                                 <th>Attributes</th>
                                 <th>MRP</th>
                                 <th>Sellling Price</th>
-                                <th class="text-end pe-3">Actions</th>
+                                <th class="text-end">Actions</th>
                             </tr>
                             </thead>
                             <tbody id="variantTableBody">
@@ -129,7 +116,8 @@
                                     <td class="ps-3">
                                         <span class="badge badge-soft text-primary"><c:out value="${variant.product.itemCode}"/></span>
                                     </td>
-                                    <td class="truncate"><strong><c:out value="${variant.product.productName}"/></strong></td>
+                                    <td class="truncate"><strong><c:out value="${variant.product.productName}"/></td>
+                                     <td class="truncate"><strong><c:out value="${variant.variantName}"/></td>
                                     <td>
                                         <span class="badge bg-light text-dark border"><c:out value="${variant.colour}"/></span>
                                         <span class="badge bg-light text-dark border"><c:out value="${variant.size}"/></span>
@@ -168,6 +156,7 @@
         </div>
     </main>
 </div>
+
 
 <div class="modal fade" id="addVariantModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -309,9 +298,7 @@
     editVariantModal?.addEventListener('show.bs.modal', event => {
         const btn = event.relatedTarget;
 
-        // Extract info from data-* attributes
         document.getElementById('editVariantId').value = btn.getAttribute('data-id');
-        // Note: You need to add data-productid to your edit button in the table
         document.getElementById('prdid').value = btn.getAttribute('data-productid');
         document.getElementById('editVariantColour').value = btn.getAttribute('data-colour');
         document.getElementById('editVariantSize').value = btn.getAttribute('data-size');

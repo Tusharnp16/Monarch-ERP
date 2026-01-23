@@ -23,7 +23,7 @@ public class PurchaseItem {
     private Variant variant;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "stock_master_id")
+    @JoinColumn(name = "stock_master_id", nullable = false)
     private StockMaster stockMaster;
 
     @Embedded

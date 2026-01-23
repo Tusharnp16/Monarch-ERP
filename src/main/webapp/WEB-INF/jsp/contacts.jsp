@@ -52,17 +52,8 @@
 <body>
 
 <div class="app-shell">
-  <nav class="sidebar">
-    <div class="brand d-flex align-items-center gap-2 mb-4">
-      <i class="fa-solid fa-crown text-warning"></i>
-      <span class="fw-bold fs-5">Monarch ERP</span>
-    </div>
-    <ul class="nav nav-pills flex-column">
-      <li class="nav-item"><a href="/products" class="nav-link"><i class="fas fa-box me-2"></i> Products</a></li>
-      <li class="nav-item"><a href="/purchase" class="nav-link"><i class="fas fa-file-invoice me-2"></i> Purchases</a></li>
-      <li class="nav-item"><a href="/contact" class="nav-link active"><i class="fas fa-address-book me-2"></i> Contacts</a></li>
-    </ul>
-  </nav>
+
+    <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
   <main class="main">
     <div class="topbar d-flex justify-content-between align-items-center">
@@ -155,19 +146,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+
         <div class="mb-3">
           <label class="form-label fw-semibold">Full Name</label>
-          <input type="text" class="form-control" name="name" placeholder="e.g. John Doe / Apex Corp" required maxlength="100">
+          <input type="text" class="form-control" name="name" placeholder="e.g. John Doe" required maxlength="100">
+          <div class="invalid-feedback">Please enter a name (max 100 characters).</div>
         </div>
+
         <div class="mb-3">
           <label class="form-label fw-semibold">Mobile Number</label>
-          <input type="text" class="form-control" name="mobileno" placeholder="10 digit mobile number" required pattern="\d{10}" title="Please enter 10 digits">
+          <input type="number" class="form-control" name="mobileno" placeholder="10 digit mobile number">
+          <div class="invalid-feedback">Please enter exactly 10 digits.</div>
         </div>
+
         <div class="mb-3">
           <label class="form-label fw-semibold">GST State Code (First 2 digits)</label>
-          <input type="number" class="form-control" name="gstIn" placeholder="e.g. 24" required min="1" max="99">
+          <input type="number" class="form-control" name="gstIn" placeholder="e.g. 24"
+                 required min="1" max="99">
+          <div class="invalid-feedback">Enter a valid 2-digit state code (01-99).</div>
           <div class="form-text">Example: 24 for Gujarat, 27 for Maharashtra.</div>
         </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary w-100">Save Contact</button>
@@ -230,6 +229,25 @@
       window.location.href = '/contact/delete/' + id;
     }
   }
+
+    (() => {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+    if (!form.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+    form.classList.add('was-validated')
+  }, false)
+  })
+  })()
 </script>
 
 </body>

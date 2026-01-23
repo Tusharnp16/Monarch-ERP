@@ -35,7 +35,7 @@ public class PurchaseItemController {
     public String addPurchaseItem(@ModelAttribute PurchaseItem purchaseItem) {
 //        Product managedProduct = productService.getProduct(productId);
 //        purchaseItem.setProduct(managedProduct);
-          purchaseItemService.savePurchase(purchaseItem);
+          purchaseItemService.savePurchaseItems(purchaseItem);
         return "redirect:/purchase-item";
     }
 
@@ -48,8 +48,8 @@ public class PurchaseItemController {
 //        if (existing != null) {
 //            purchaseItem.setCreatedAt(existing.getCreatedAt());
 //        }
-        purchaseItemService.savePurchase(existing);
-    return "redirect:/purchase-item/" + purchaseItem.getPurchaseItemId();
+        purchaseItemService.savePurchaseItems(existing);
+    return "redirect:/purchase-item";
     }
 
     @PostMapping("/delete")

@@ -1,7 +1,10 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Purchase;
+import com.monarch.monarcherp.model.PurchaseItem;
+import com.monarch.monarcherp.repository.PurchaseItemRepository;
 import com.monarch.monarcherp.repository.PurchaseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,14 +13,25 @@ import java.util.List;
 public class PurchaseService {
 
 
+    private final PurchaseItemService purchaseItemService;
     private PurchaseRepository purchaseRepository;
 
-    PurchaseService(PurchaseRepository purchaseRepository) {
+    PurchaseService(PurchaseRepository purchaseRepository, PurchaseItemRepository purchaseItemRepository, PurchaseItemService purchaseItemService) {
         this.purchaseRepository = purchaseRepository;
+        this.purchaseItemService = purchaseItemService;
     }
 
+    @Transactional
     public Purchase savePurchase(Purchase purchase) {
-        return purchaseRepository.save(purchase);
+        Purchase savedPurchase= purchaseRepository.save(purchase);
+
+        if(purchase.getItems() !=null){
+            for(PurchaseItem item: purchase.getItems()){
+                item.setPurchase(savedPurchase);
+                purchaseItemService.savePurchaseItems(item);
+            }
+        }
+        return savedPurchase;
     }
 
     public Purchase getPurchase(Long id) {

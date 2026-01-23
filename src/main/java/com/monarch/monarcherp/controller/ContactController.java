@@ -42,7 +42,7 @@ class ContactController {
 //            contact.setCreatedAt(existing.getCreatedAt());
 //        }
         contactService.saveContact(contact);
-        return "redirect:/contact/" + contact.getContactId();
+        return "redirect:/contact";
     }
 
     @GetMapping("/delete/{id}")
