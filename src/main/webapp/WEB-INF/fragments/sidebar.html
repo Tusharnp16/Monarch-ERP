@@ -13,6 +13,32 @@
             --sidebar-bg: #212529;
         }
 
+.sidebar-logo {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+    vertical-align: middle;
+
+    /* --- Rounded Corner Logic --- */
+    border-radius: 6px;         /* Adjust this number for more or less curve */
+    border: 1px solid rgb(18, 18, 18); /* Optional: adds a subtle border so it pops */
+    background-color: #fff;     /* Optional: if your logo has a transparent background but you want a white rounded box behind it */
+    padding: 2px;               /* Optional: gives the logo a little "breathing room" inside the box */
+}
+
+.brand-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap; /* Prevents "ERP" from dropping to a second line */
+}
+
+/* Ensure the brand container doesn't grow too large */
+.brand {
+    overflow: hidden;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -97,7 +123,8 @@
 <nav class="sidebar">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="brand d-flex align-items-center gap-2">
-            <i class="fa-solid fa-crown text-warning"></i>
+            <img src="logo.png" alt="Monarch Logo" class="sidebar-logo">
+            <i class="fa-solid text-warning"></i>
             <span>Monarch ERP</span>
         </div>
         <button class="btn btn-sm btn-outline-light d-lg-none" id="toggleSidebar">
