@@ -111,7 +111,10 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <form class="modal-content" method="post" action="/purchase/add">
             <div class="modal-header bg-light">
-                <h5 class="modal-title">New Purchase Invoice (IGST 18%)</h5>
+                <h5 class="modal-title">
+                    New Purchase Invoice
+                    <span id="taxTypeBadge" class="badge bg-secondary ms-2" >Select Supplier</span>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -122,10 +125,10 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Supplier</label>
-                        <select class="form-select" name="supplier.contactId" required>
+                        <select class="form-select" name="supplier.contactId" id="supplierSelect" required>
                             <option value="">Choose Supplier...</option>
                             <c:forEach items="${suppliers}" var="s">
-                                <option value="${s.contactId}">${s.name}</option>
+                                <option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} ${s.gstIn == 24 ? "(CGST + SGST)" : "(IGST)"} </option>
                             </c:forEach>
                         </select>
                     </div>
@@ -141,6 +144,7 @@
                 <hr>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0 text-uppercase small fw-bold text-secondary">Itemized Breakdown</h6>
+
                     <button type="button" class="btn btn-sm btn-outline-success" id="addRowBtn">
                         <i class="fas fa-plus me-1"></i> Add Item
                     </button>
@@ -168,6 +172,7 @@
                                         </c:forEach>
                                     </select>
                                 </td>
+                                <input type="hidden" name="gstIn" id="hiddenGstIn">
                                 <td><input type="number" class="form-control form-control-sm qty-input" name="items[0].qty" value="1" min="1" required></td>
                                 <td><input type="number" class="form-control form-control-sm price-input" name="items[0].price" placeholder="0.00" required></td>
 
@@ -187,7 +192,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary px-4 shadow-sm">Process Purchase</button>
+                <button type="submit" class="btn btn-primary px-4 shadow-sm"  data-bs-target="#createPurchaseModal">Process Purchase</button>
             </div>
         </form>
     </div>
@@ -198,28 +203,35 @@
     const IGST_RATE = 0.18; // Fixed 18% for now
     let rowIdx = 1;
 
-    // --- Dynamic Row Logic ---
     document.getElementById('addRowBtn').addEventListener('click', function() {
         const container = document.getElementById('purchaseItemsContainer');
         const firstRow = document.querySelector('.item-row');
         const newRow = firstRow.cloneNode(true);
 
+        // Update index for the new row
         newRow.querySelectorAll('input, select').forEach(input => {
-            const name = input.getAttribute('name');
-            if (name) {
-                // Update items[0] -> items[1], etc.
-                input.setAttribute('name', name.replace(/\[\d+\]/, `[${rowIdx}]`));
+            const oldName = input.getAttribute('name');
+            if (oldName) {
+                // Correctly replace items[0] with items[1], items[2], etc.
+                const newName = oldName.replace(/items\[\d*\]/, `items[${rowIdx}]`);
+                input.setAttribute('name', newName);
             }
-            // Clear values, default qty to 1
-            if(input.classList.contains('qty-input')) {
+
+            // Reset values for the new row
+            if (input.classList.contains('qty-input')) {
                 input.value = '1';
-            } else if (!input.classList.contains('form-select')) {
+            } else if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+            } else {
                 input.value = '';
             }
         });
 
         container.appendChild(newRow);
         rowIdx++;
+
+        // Recalculate just in case
+        calculateFinalTotals();
     });
 
     document.querySelectorAll('.price-input').forEach(input => {
@@ -240,6 +252,27 @@
         }
     });
 
+    document.getElementById('supplierSelect').addEventListener('change', function() {
+        // Get the selected option
+        const selectedOption = this.options[this.selectedIndex];
+        const gstIn = selectedOption.getAttribute('data-gst') || "";
+        const badge = document.getElementById('taxTypeBadge');
+
+        document.getElementById('hiddenGstIn').value = gstIn;
+
+        // Logic: Check if GSTIN starts with '24' (Gujarat)
+        if (gstIn == 24) {
+            badge.innerText = "IntraState (CGST + SGST)";
+            badge.className = "badge bg-success ms-2";
+        } else if (gstIn !== "") {
+            badge.innerText = "InterState (IGST)";
+            badge.className = "badge bg-primary ms-2";
+        } else {
+            badge.innerText = "Select Supplier";
+            badge.className = "badge bg-secondary ms-2";
+        }
+    });
+
     // --- Calculation Logic ---
     document.addEventListener('input', function(e) {
         if(e.target.classList.contains('qty-input') || e.target.classList.contains('price-input')) {
@@ -254,16 +287,12 @@
             const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
             const basePrice = parseFloat(row.querySelector('.price-input').value) || 0;
 
-            // 1. Calculate Tax Per Unit (IGST 18%)
             const taxPerUnit = basePrice * IGST_RATE;
 
-            // 2. Landing Cost Per Unit (Base + Tax)
             const landingCost = basePrice + taxPerUnit;
 
-            // 3. Net Total for this row (Landing Cost * Qty)
             const netAmount = landingCost * qty;
 
-            // Update row fields for the user and Spring Binding
             row.querySelector('.tax-amount-input').value = taxPerUnit.toFixed(2);
             row.querySelector('.landing-input').value = landingCost.toFixed(2);
             row.querySelector('.net-input').value = netAmount.toFixed(2);
@@ -273,7 +302,13 @@
 
         // Update the main Invoice Total field
         document.getElementById('totalBillAmount').value = billTotal.toFixed(2);
+
+        document.querySelector('#createPurchaseModal form')
+            .addEventListener('submit', calculateFinalTotals);
+
     }
+
+
 </script>
 
 </body>

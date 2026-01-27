@@ -1,10 +1,7 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.*;
-import com.monarch.monarcherp.repository.InventoryRepository;
-import com.monarch.monarcherp.repository.PurchaseItemRepository;
-import com.monarch.monarcherp.repository.StockMasterRepository;
-import com.monarch.monarcherp.repository.VariantRepository;
+import com.monarch.monarcherp.repository.*;
 import com.monarch.monarcherp.service.tax.TaxStrategy;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +29,13 @@ public class PurchaseItemService {
 
     @Autowired
     private VariantRepository variantRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     @Transactional
-    public void savePurchaseItems(PurchaseItem request,boolean isInterState) {
+    public void savePurchaseItems(PurchaseItem request,int gstIn) {
+
+        Boolean isInterState= gstIn==24 ? false : true;
 
         System.out.println("DEBUG: Received Price: " + request.getPrice().getPrice());
         System.out.println("DEBUG: Received Qty: " + request.getQty());
@@ -48,6 +49,13 @@ public class PurchaseItemService {
 
         BigDecimal totalNet = unitLanding.multiply(new BigDecimal(request.getQty()));
         request.setNetAmount(new Money(totalNet));
+
+        Purchase purchase= purchaseRepository.findPurchaseByPurchaseId(request.getPurchase().getPurchaseId());
+
+        purchase.setTotalAmount(new Money(totalNet));
+
+        System.out.println("final Debug : " + purchase.getTotalAmount());
+        purchaseRepository.save(purchase);
 
         Variant fullVariant = variantRepository.findById(request.getVariant().getVariantId())
                 .orElseThrow(() -> new RuntimeException("Variant not found"));

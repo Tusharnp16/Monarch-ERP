@@ -4,13 +4,16 @@ import com.monarch.monarcherp.model.Purchase;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.service.ContactService;
 import com.monarch.monarcherp.service.PurchaseService;
+import com.monarch.monarcherp.service.ReportService;
 import com.monarch.monarcherp.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/purchase")
@@ -20,6 +23,9 @@ class PurchaseController {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private ReportService reportService;
 
     @Autowired
     private VariantService variantService;
@@ -42,15 +48,20 @@ class PurchaseController {
         return "purchases";
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setAutoGrowCollectionLimit(1000);
+    }
+
     @PostMapping("/add")
-    public String addPurchase(@ModelAttribute Purchase purchase) {
-        purchaseService.savePurchase(purchase);
+    public String addPurchase(@ModelAttribute Purchase purchase,@RequestParam("gstIn") int gstIn) {
+        purchaseService.savePurchase(purchase,gstIn);
         return "redirect:/purchase";
     }
 
     @PostMapping("/update")
-    public String updatePurchase(@ModelAttribute Purchase purchase) {
-        purchaseService.savePurchase(purchase);
+    public String updatePurchase(@ModelAttribute Purchase purchase,@RequestParam("gstIn") int gstIn) {
+        purchaseService.savePurchase(purchase,gstIn);
         return "redirect:/purchase";
     }
 
@@ -59,5 +70,13 @@ class PurchaseController {
         purchaseService.deletePurchase(id);
         return "redirect:/purchase";
     }
+
+    @GetMapping("/report")
+    public String getExpiringItemsReport(Model model) {
+        Map<String, List<PurchaseItem>> groupedItems = reportService.getPurchaseItemByExpire();
+        model.addAttribute("groupedItems", groupedItems);
+        return "purchase-expiry-report";
+    }
+
 
 }

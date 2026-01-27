@@ -22,13 +22,23 @@ public class PurchaseService {
     }
 
     @Transactional
-    public Purchase savePurchase(Purchase purchase) {
+    public Purchase savePurchase(Purchase purchase,int gstIn) {
+
+        System.out.println("DEBUG : " + purchase.getTotalAmount());
+        System.out.println("DEBUG : " + purchase.getBillNo());
+        System.out.println("DEBUG : " + gstIn);
+
+        purchase.setTotalAmount(purchase.getItems().get(0).getNetAmount());
+
+        System.out.println("DEBUG : " + purchase.getItems().get(0).getNetAmount());
+
+
         Purchase savedPurchase= purchaseRepository.save(purchase);
 
         if(purchase.getItems() !=null){
             for(PurchaseItem item: purchase.getItems()){
                 item.setPurchase(savedPurchase);
-                purchaseItemService.savePurchaseItems(item,true);
+                purchaseItemService.savePurchaseItems(item,gstIn);
             }
         }
         return savedPurchase;

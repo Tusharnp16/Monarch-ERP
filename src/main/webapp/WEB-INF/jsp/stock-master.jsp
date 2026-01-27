@@ -169,8 +169,8 @@
     document.getElementById('stockSearch').addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase();
         document.querySelectorAll('#stockTableBody tr').forEach(row => {
-            const batch = row.dataset.batch.toLowerCase();
-            row.style.display = batch.includes(term) ? '' : 'none';
+            const content = row.textContent.toLowerCase();
+            row.style.display = content.includes(term) ? '' : 'none';
         });
     });
 

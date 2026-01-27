@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/purchaseitem")
 public class PurchaseItemController {
@@ -32,15 +35,15 @@ public class PurchaseItemController {
     }
 
     @PostMapping("/add")
-    public String addPurchaseItem(@ModelAttribute PurchaseItem purchaseItem) {
+    public String addPurchaseItem(@ModelAttribute PurchaseItem purchaseItem,@RequestParam("gstIn") int gstIn) {
 //        Product managedProduct = productService.getProduct(productId);
 //        purchaseItem.setProduct(managedProduct);
-          purchaseItemService.savePurchaseItems(purchaseItem,true);
+          purchaseItemService.savePurchaseItems(purchaseItem,gstIn);
         return "redirect:/purchase-item";
     }
 
     @PostMapping("/update")
-    public String updatePurchaseItemName(@ModelAttribute PurchaseItem purchaseItem, Long purchaseId) {
+    public String updatePurchaseItemName(@ModelAttribute PurchaseItem purchaseItem, Long purchaseId,@RequestParam("gstIn") int gstIn) {
           PurchaseItem existing = purchaseItemService.getPurchaseItem(purchaseItem.getPurchaseItemId());
 //        Product product=productService.getProduct(productId);
 //        purchaseItem.setProduct(product);
@@ -48,7 +51,7 @@ public class PurchaseItemController {
 //        if (existing != null) {
 //            purchaseItem.setCreatedAt(existing.getCreatedAt());
 //        }
-        purchaseItemService.savePurchaseItems(existing,true);
+        purchaseItemService.savePurchaseItems(existing,gstIn);
     return "redirect:/purchase-item";
     }
 
@@ -57,4 +60,6 @@ public class PurchaseItemController {
         purchaseItemService.deletePurchaseItem(id);
         return "redirect:/purchase-item";
     }
+
+
 }
