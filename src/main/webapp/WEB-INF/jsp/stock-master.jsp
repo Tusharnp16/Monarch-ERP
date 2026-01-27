@@ -17,6 +17,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
+
         :root { --sidebar-width: 260px; --brand-color: #0d6efd; --bg-soft: #f8f9fa; --card-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); }
         html, body { height: 100%; }
         body { background-color: var(--bg-soft); }
@@ -83,8 +84,8 @@
                                 <th class="ps-3">Batch No</th>
                                 <th>Quantity</th>
                                 <th>Purchase</th>
-                                <th>MRP</th>
                                 <th>Landing Cost</th>
+                                <th>MRP</th>
                                 <th>Selling Price</th>
                                 <th>Expiry</th>
                                 <th class="text-end pe-3">Actions</th>
@@ -104,11 +105,11 @@
                                     <td>
                                         ${s.purchasePrice.price}
                                     </td>
-                                     <td>
-                                        ${s.mrp.price}
+                                      <td>
+                                        ${s.landingCost.price}
                                     </td>
                                      <td>
-                                        ${s.landingCost.price}
+                                        ${s.mrp.price}
                                     </td>
                                      <td>
                                         ${s.sellingPrice.price}
@@ -116,7 +117,7 @@
                                     <td><c:out value="${s.expiryDate}"/></td>
                                     <td class="text-end pe-3">
                                         <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#editStockModal"
-                                                data-id="${s.stockMasterId}" data-qty="${s.quantity}" data-batch="${s.batchNo}">
+                                                data-id="${s.stockMasterId}" data-price="${s.sellingPrice.price}" data-mrp="${s.mrp.price}" data-batch="${s.batchNo}">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </td>
@@ -141,13 +142,17 @@
                 <input type="hidden" name="stockMasterId" id="edit-stockId">
 
                 <div class="row g-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Batch No</label>
                         <input type="text" class="form-control bg-light" id="edit-batchNo" name="batchNo" readonly>
                     </div>
                     <div class="col-md-4">
+                        <label class="form-label fw-bold">MRP</label>
+                        <input type="number" class="form-control" id="edit-mrp" name="mrp" required>
+                    </div>
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Selling Price</label>
-                        <input type="number" step="0.01" class="form-control" id="edit-sellingPrice" name="sellingPrice.price" required>
+                        <input type="number" class="form-control" id="edit-sellingPrice" name="sellingPrice" required>
                     </div>
                 </div>
             </div>
@@ -178,13 +183,15 @@
 
             // Extract info from data-attributes
             const stockId = button.getAttribute('data-id');
-            const quantity = button.getAttribute('data-qty');
+            const sellingPrice = button.getAttribute('data-price');
+            const mrp = button.getAttribute('data-mrp');
             const batch = button.getAttribute('data-batch');
 
             // Update the modal's content
             editStockModal.querySelector('#edit-stockId').value = stockId;
-            editStockModal.querySelector('#edit-quantity').value = quantity;
+            editStockModal.querySelector('#edit-sellingPrice').value = sellingPrice;
             editStockModal.querySelector('#edit-batchNo').value = batch;
+            editStockModal.querySelector('#edit-mrp').value = mrp;
         });
     }
 </script>

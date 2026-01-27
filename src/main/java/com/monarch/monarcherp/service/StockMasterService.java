@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.model.Money;
 import com.monarch.monarcherp.model.StockMaster;
 import com.monarch.monarcherp.model.StockMaster;
 import com.monarch.monarcherp.repository.StockMasterRepository;
@@ -59,9 +60,9 @@ public class StockMasterService {
         return stockMasterRepository.existsById(id);
     }
 
-    public StockMaster updateStockMaster(Long id, Double sellingPrice) {
+    public StockMaster updateStockMaster(Long id, Double sellingPrice,Double mrp) {
         stockMasterRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
-        stockMasterRepository.updateSellingPriceByStockMasterId(id,sellingPrice);
+        stockMasterRepository.updateSellingPriceByStockMasterId(id,new Money(sellingPrice),new Money(mrp));
         return stockMasterRepository.findByStockMasterId(id);
     }
 }

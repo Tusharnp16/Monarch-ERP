@@ -35,7 +35,7 @@ public class PurchaseItemController {
     public String addPurchaseItem(@ModelAttribute PurchaseItem purchaseItem) {
 //        Product managedProduct = productService.getProduct(productId);
 //        purchaseItem.setProduct(managedProduct);
-          purchaseItemService.savePurchaseItems(purchaseItem);
+          purchaseItemService.savePurchaseItems(purchaseItem,true);
         return "redirect:/purchase-item";
     }
 
@@ -48,7 +48,7 @@ public class PurchaseItemController {
 //        if (existing != null) {
 //            purchaseItem.setCreatedAt(existing.getCreatedAt());
 //        }
-        purchaseItemService.savePurchaseItems(existing);
+        purchaseItemService.savePurchaseItems(existing,true);
     return "redirect:/purchase-item";
     }
 

@@ -41,11 +41,11 @@ class StockMasterController {
     }
 
     @PostMapping("/update")
-    public String updateStockMasterName(@RequestParam Long stockMasterId, Double sellingPrice) {
+    public String updateStockMasterName(@RequestParam Long stockMasterId, Double sellingPrice,Double mrp) {
       //  StockMaster existing = stockMasterService.getStockMaster(stockMaster.getStockMasterId());
-        StockMaster master=stockMasterService.updateStockMaster(stockMasterId,sellingPrice);
+        stockMasterService.updateStockMaster(stockMasterId,sellingPrice,mrp);
        // return "redirect:/stockmaster/" + master.getStockMasterId();
-        return "stock-master";
+        return "redirect:/stockmaster";
     }
 
     @PostMapping("/delete")

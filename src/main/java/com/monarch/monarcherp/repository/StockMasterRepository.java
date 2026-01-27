@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.repository;
 
+import com.monarch.monarcherp.model.Money;
 import com.monarch.monarcherp.model.StockMaster;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +13,8 @@ public interface StockMasterRepository extends JpaRepository<StockMaster,Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE StockMaster s set s.sellingPrice=:sellingPrice WHERE s.stockMasterId=:id")
-    void updateSellingPriceByStockMasterId(@Param("id") Long id,@Param("sellingPrice") Double sellingPrice);
+    @Query("UPDATE StockMaster s set s.sellingPrice=:sellingPrice, s.mrp =:mrp WHERE s.stockMasterId=:id")
+    void updateSellingPriceByStockMasterId(@Param("id") Long id,@Param("sellingPrice") Money sellingPrice,Money mrp);
 
     StockMaster findByStockMasterId(Long stockMasterId);
 }

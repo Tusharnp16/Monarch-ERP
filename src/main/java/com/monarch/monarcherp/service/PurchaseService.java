@@ -28,7 +28,7 @@ public class PurchaseService {
         if(purchase.getItems() !=null){
             for(PurchaseItem item: purchase.getItems()){
                 item.setPurchase(savedPurchase);
-                purchaseItemService.savePurchaseItems(item);
+                purchaseItemService.savePurchaseItems(item,true);
             }
         }
         return savedPurchase;
