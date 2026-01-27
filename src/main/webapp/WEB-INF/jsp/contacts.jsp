@@ -155,7 +155,7 @@
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Mobile Number</label>
-          <input type="number" class="form-control" name="mobileno" placeholder="10 digit mobile number">
+          <input type="number" class="form-control" name="mobileno" placeholder="10 digit mobile number" required>
           <div class="invalid-feedback">Please enter exactly 10 digits.</div>
         </div>
 

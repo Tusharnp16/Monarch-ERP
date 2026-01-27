@@ -148,11 +148,11 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">MRP</label>
-                        <input type="number" class="form-control" id="edit-mrp" name="mrp" required>
+                        <input type="number" step="0.01" min="0" class="form-control price-input" id="edit-mrp" name="mrp" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Selling Price</label>
-                        <input type="number" class="form-control" id="edit-sellingPrice" name="sellingPrice" required>
+                        <input type="number" step="0.01"  min="0" class="form-control price-input" id="edit-sellingPrice" name="sellingPrice" required>
                     </div>
                 </div>
             </div>
@@ -173,6 +173,27 @@
             row.style.display = batch.includes(term) ? '' : 'none';
         });
     });
+
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
+    document.querySelectorAll('.price-input').forEach(input => {
+        input.addEventListener('keydown', e => {
+            if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+        });
+    });
+
 
 
     const editStockModal = document.getElementById('editStockModal');

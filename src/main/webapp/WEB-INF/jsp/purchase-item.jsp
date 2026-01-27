@@ -207,6 +207,13 @@
     });
   });
 
+  document.querySelectorAll('.price-input').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+    });
+  });
+
+
   function confirmDelete(id) {
     if(confirm('Are you sure you want to delete this purchase entry?')) {
       window.location.href = '/purchaseitem/delete/' + id;

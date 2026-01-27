@@ -222,6 +222,13 @@
         rowIdx++;
     });
 
+    document.querySelectorAll('.price-input').forEach(input => {
+        input.addEventListener('keydown', e => {
+            if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+        });
+    });
+
+
     // --- Remove Row Logic ---
     document.addEventListener('click', function(e) {
         if(e.target.closest('.remove-row')) {
