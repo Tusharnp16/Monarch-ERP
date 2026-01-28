@@ -22,7 +22,7 @@
     /* --- Rounded Corner Logic --- */
     border-radius: 6px;         /* Adjust this number for more or less curve */
     border: 1px solid rgb(18, 18, 18); /* Optional: adds a subtle border so it pops */
-    background-color: #fff;     /* Optional: if your logo has a transparent background but you want a white rounded box behind it */
+    background-color: #5e5252;     /* Optional: if your logo has a transparent background but you want a white rounded box behind it */
     padding: 2px;               /* Optional: gives the logo a little "breathing room" inside the box */
 }
 
@@ -122,7 +122,7 @@
 <body>
 <nav class="sidebar">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="brand d-flex align-items-center gap-2">
+        <div class="brand d-flex align-items-centern gap-1">
             <img src="logo.png" alt="Monarch Logo" class="sidebar-logo">
             <i class="fa-solid text-warning"></i>
             <span>Monarch ERP</span>
@@ -156,12 +156,6 @@
         <li class="nav-item">
             <a href="/purchase" class="nav-link ${pageContext.request.requestURI.endsWith('/purchase') ? 'active' : ''}">
                 <i class="fas fa-shopping-cart me-2"></i> Purchase
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="/purchaseitem" class="nav-link ${pageContext.request.requestURI.contains('purchaseitem') ? 'active' : ''}">
-                <i class="fas fa-shopping-cart me-2"></i> Purchase Items
             </a>
         </li>
 
