@@ -19,9 +19,49 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        :root { --sidebar-width: 260px; --warning-orange: #f39c12; --danger-red: #e74c3c; }
-        body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+        :root {
+            --sidebar-width: 260px;
+            --brand-color: #0d6efd;
+            --bg-soft: #f8f9fa;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+
+        html, body { height: 100%; }
+        body { background-color: var(--bg-soft); }
+
+        /* Layout */
         .app-shell { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
+        .sidebar {
+            background: #212529; color: #fff; position: sticky; top: 0; height: 100vh; padding: 1rem;
+            border-right: 1px solid rgba(255,255,255,0.08);
+        }
+        .sidebar .brand { font-weight: 700; letter-spacing: 0.3px; }
+        .sidebar .nav-link { color: #adb5bd; border-radius: .375rem; }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .main {
+            padding: 0; display: flex; flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Adds consistent spacing between logo and text */
+            height: 40px;
+            overflow: visible; /* Prevents clipping */
+        }
+
+        .sidebar-logo {
+            flex-shrink: 0; /* Ensures the logo doesn't get squashed */
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 1030; background: #fff; border-bottom: 1px solid #e9ecef;
+        }
+        .topbar .container-fluid { padding: .75rem 1rem; }
 
         /* Expiry Specific Styles */
         .supplier-header {
@@ -37,7 +77,6 @@
         }
         .item-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .expiry-badge { font-size: 0.75rem; padding: 0.4em 0.8em; border-radius: 50px; }
-        .days-left { font-size: 1.1rem; font-weight: 800; color: var(--danger-red); }
         .money-text { font-family: monospace; font-weight: bold; color: #2c3e50; }
     </style>
 </head>

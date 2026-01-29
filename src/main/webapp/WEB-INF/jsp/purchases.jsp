@@ -176,6 +176,7 @@
                                 <th style="width: 30%;">Variant</th>
                                 <th style="width: 10%;">Qty</th>
                                 <th style="width: 15%;">Price (Ex)</th>
+                                <th style="width: 15%;">Tax</th>
                                 <th style="width: 15%;">Landing (Inc)</th>
                                 <th style="width: 15%;">Net Total</th>
                                 <th>Expiry</th>
@@ -193,7 +194,7 @@
                                 </td>
                                 <td><input type="number" class="form-control form-control-sm qty-input" name="items[0].qty" value="1" min="1" required></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm price-input" name="items[0].price" placeholder="0.00" required></td>
-                                <input type="hidden" name="items[0].taxAmount.price" class="tax-amount-input">
+                                <td><input type="number" name="items[0].taxAmount.price" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm landing-input input-readonly" name="items[0].landingCost.price" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm net-input input-readonly text-primary" name="items[0].netAmount.price" readonly></td>
                                 <jsp:useBean id="now" class="java.util.Date" />
@@ -231,6 +232,8 @@
         }
     }
 
+
+
     // --- 2. Calculation & Modal Logic ---
     const IGST_RATE = 0.18;
     let rowIdx = 1;
@@ -240,17 +243,29 @@
         const firstRow = document.querySelector('.item-row');
         const newRow = firstRow.cloneNode(true);
 
+        // Update names using rowIdx
         newRow.querySelectorAll('input, select').forEach(input => {
-            const oldName = input.getAttribute('name');
-            if (oldName) {
-                input.setAttribute('name', oldName.replace(/\[\d+\]/, `[${rowIdx}]`));
+            const name = input.getAttribute('name');
+            if (name) {
+                // Specifically targets 'items[' followed by digits and a closing ']'
+                const updatedName = name.replace(/items\[\d+\]/, `items[${rowIdx}]`);
+                input.setAttribute('name', updatedName);
             }
-            if (!input.classList.contains('qty-input')) input.value = '';
-            else input.value = '1';
+
+            // Clear values but keep quantity at 1
+            if (input.classList.contains('qty-input')) {
+                input.value = '1';
+            } else if (!input.hasAttribute('readonly')) {
+                input.value = '';
+            } else {
+                input.value = '0.00'; // Reset totals for the new row
+            }
         });
+
         container.appendChild(newRow);
-        rowIdx++;
+        rowIdx++; // Increment for the next add
     });
+
 
     document.getElementById('supplierSelect').addEventListener('change', function () {
         const gstIn = this.options[this.selectedIndex].getAttribute('data-gst') || "";

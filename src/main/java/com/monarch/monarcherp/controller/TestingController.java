@@ -10,7 +10,7 @@ class TestingController {
 
     @GetMapping("/")
     public String getDefaultPage(){
-        return "defaultpage";
+        return "403";
     }
 
 }
