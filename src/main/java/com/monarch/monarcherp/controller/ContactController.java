@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Controller
 @RequestMapping("/contact")
 class ContactController {
@@ -45,8 +47,8 @@ class ContactController {
         return "redirect:/contact";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteContact(@PathVariable Long id) {
+    @PostMapping("/delete")
+    public String deleteContact(@RequestParam("id") Long id) {
         contactService.deleteContact(id);
         return "redirect:/contact";
     }

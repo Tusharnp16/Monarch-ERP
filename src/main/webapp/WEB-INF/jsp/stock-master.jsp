@@ -179,6 +179,19 @@
         const forms = document.querySelectorAll('.needs-validation')
         Array.from(forms).forEach(form => {
             form.addEventListener('submit', event => {
+                const mrpInput = form.querySelector('input[name="mrp"]');
+                const sellingInput = form.querySelector('input[name="sellingPrice"]');
+
+                const mrpVal = parseFloat(mrpInput.value) || 0;
+                const sellingVal = parseFloat(sellingInput.value) || 0;
+
+                // 2. Custom Validation Check
+                if (sellingVal > mrpVal) {
+                    sellingInput.setCustomValidity("Selling price is lower than MRP");
+                } else {
+                    sellingInput.setCustomValidity("");
+                }
+
                 if (!form.checkValidity()) {
                     event.preventDefault()
                     event.stopPropagation()

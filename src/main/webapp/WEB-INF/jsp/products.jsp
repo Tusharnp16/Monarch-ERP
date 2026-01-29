@@ -168,7 +168,7 @@
                                             <td><span class="badge badge-soft"><c:out value="${product.itemCode}"/></span></td>
                                             <td>
                                                 <span class="text-muted-small">
-                                                    <c:out value="${product.createdAt}"/>
+                                                    <c:out value="${product.createdAt.toLocalDate()}"/>
                                                 </span>
                                             </td>
                                             <td class="text-end pe-3">
@@ -316,15 +316,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content" method="post" action="/products/delete">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">Delete product</h5>
+                <h5 class="modal-title" id="confirmDeleteLabel">Del ete product</h5>
                 <input type="hidden" name="id" id="deleteProductId">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">
-                    <i class="fa-solid fa-trash me-1"></i> Delete
-                </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-1"></i> Delete
+                    </button>
             </div>
         </form>
     </div>

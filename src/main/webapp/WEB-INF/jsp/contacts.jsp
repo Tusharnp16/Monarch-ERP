@@ -115,7 +115,7 @@
                                                 Code: ${String.format("%02d", c.gstIn)}
                                             </span>
                   </td>
-                  <td class="text-muted small">${c.createdDate}</td>
+                  <td class="text-muted small">${c.createdDate.toLocalDate()}</td>
                   <td class="text-end pe-3">
                     <button class="btn btn-sm btn-outline-info"
                             data-bs-toggle="modal" data-bs-target="#editContactModal"
@@ -123,9 +123,12 @@
                             data-mobile="${c.mobileno}" data-gst="${c.gstIn}">
                       <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteContact(${c.contactId})">
-                      <i class="fas fa-trash"></i>
-                    </button>
+                   <button class="btn btn-sm btn-outline-danger ms-1"
+        data-bs-toggle="modal"
+        data-bs-target="#confirmDeleteModal"
+        data-id="${c.contactId}">
+    <i class="fas fa-trash"></i>
+</button>
                   </td>
                 </tr>
               </c:forEach>
@@ -155,7 +158,7 @@
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Mobile Number</label>
-          <input type="number" class="form-control" name="mobileno" placeholder="10 digit mobile number" required>
+          <input type="tel" class="form-control" name="mobileno" placeholder="Mobile Number" required pattern="\d{10}">
           <div class="invalid-feedback">Please enter exactly 10 digits.</div>
         </div>
 
@@ -174,6 +177,27 @@
     </form>
   </div>
 </div>
+
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" method="post" action="/contact/delete">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteLabel">Delete contact</h5>
+        <input type="hidden" name="id" id="deleteContact">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">
+          <i class="fa-solid fa-trash me-1"></i> Delete
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 <div class="modal fade" id="editContactModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
@@ -224,11 +248,16 @@
     document.getElementById('editGst').value = btn.getAttribute('data-gst');
   });
 
-  function deleteContact(id) {
-    if(confirm('Are you sure you want to remove this contact?')) {
-      window.location.href = '/contact/delete/' + id;
-    }
-  }
+  // Populate Delete Modal with ID
+  const deleteModalEl = document.getElementById('confirmDeleteModal');
+  deleteModalEl.addEventListener('show.bs.modal', function (event) {
+    // Button that triggered the modal
+    const button = event.relatedTarget;
+    // Extract info from data-id attribute
+    const contactId = button.getAttribute('data-id');
+    // Update the hidden input inside the delete form
+    document.getElementById('deleteContact').value = contactId;
+  });
 
     (() => {
     'use strict'

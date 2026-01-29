@@ -79,7 +79,7 @@
                                             <div class="fw-bold text-dark">${p.supplier.name}</div>
                                             <div class="text-muted small">${p.supplier.mobileno}</div>
                                         </td>
-                                        <td><span class="text-muted">${p.createdDate}</span></td>
+                                        <td><span class="text-muted">${p.createdDate.toLocalDate()}</span></td>
                                         <td><span class="badge rounded-pill bg-light text-dark border">${p.items.size()} Items</span></td>
                                         <td class="fw-bold text-primary">₹ ${p.totalAmount.price}</td>
                                         <td class="text-end pe-3">
@@ -148,7 +148,7 @@
                         <select class="form-select" name="supplier.contactId" id="supplierSelect" required>
                             <option value="">Choose Supplier...</option>
                             <c:forEach items="${suppliers}" var="s">
-                                <option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Local" : "Inter-state"})</option>
+                                <option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Inter-State" : "Outer-state"})</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -196,7 +196,9 @@
                                 <input type="hidden" name="items[0].taxAmount.price" class="tax-amount-input">
                                 <td><input type="number" step="0.01" class="form-control form-control-sm landing-input input-readonly" name="items[0].landingCost.price" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm net-input input-readonly text-primary" name="items[0].netAmount.price" readonly></td>
-                                <td><input type="date" class="form-control form-control-sm" name="items[0].expireDate"></td>
+                                <jsp:useBean id="now" class="java.util.Date" />
+                                <fmt:formatDate var="todayStr" value="${now}" pattern="yyyy-MM-dd" />
+                                <td><input type="date" min="${todayStr}" class="form-control form-control-sm" name="items[0].expireDate"></td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-sm text-danger remove-row"><i class="fas fa-times"></i></button>
                                 </td>

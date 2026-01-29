@@ -171,9 +171,9 @@
             <div class="input-group">
                 <label for="role">Access Level</label>
                 <select id="role">
-                    <option value="1">Standard User</option>
-                    <option value="2">Moderator</option>
-                    <option value="3">System Administrator</option>
+                    <option value="USER">Standard User</option>
+                    <option value="MODERATOR">Moderator</option>
+                    <option value="ADMIN">System Administrator</option>
                 </select>
             </div>
         </div>
@@ -196,7 +196,7 @@
             userName: document.getElementById('username').value,
             email: document.getElementById('email').value,
             password: document.getElementById('password').value,
-            role: parseInt(document.getElementById('role').value)
+            role: document.getElementById('role').value
         };
 
         try {

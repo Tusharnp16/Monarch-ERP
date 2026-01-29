@@ -80,6 +80,8 @@ public class PurchaseItemService {
         newStock.setPurchasePrice(request.getPrice());
         newStock.setLandingCost(request.getLandingCost());
         newStock.setInventory(inventory);
+        newStock.setMrp(fullVariant.getMrp());
+        newStock.setSellingPrice(fullVariant.getSellingPrice());
 
         newStock = stockMasterRepository.save(newStock);
 

@@ -170,11 +170,27 @@
                 <i class="fas fa-file-alt me-2"></i> Report
             </a>
         </li>
+        <li class="nav-item">
+        <a href="#" onclick="logout()" class="nav-link">
+            <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
+    </li>
     </ul>
     <hr class="border-secondary my-4">
     <div class="text-muted-small text-center">
         v1.0 Monarch ERP
     </div>
 </nav>
+
+<script>
+    function logout() {
+        fetch('/logout', {
+            method: 'POST'
+        }).then(() => {
+            window.location.href = '/login';
+        });
+    }
+</script>
+
 </body>
 </html>

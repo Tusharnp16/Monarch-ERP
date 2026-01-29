@@ -36,7 +36,7 @@ public class Purchase {
         @Column(nullable = true)
         private Money totalAmount;
 
-        @OneToMany(mappedBy = "purchase")
+        @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE, orphanRemoval = true , fetch = FetchType.LAZY)
         private List<PurchaseItem> items = new ArrayList<>();
 
         @CreationTimestamp

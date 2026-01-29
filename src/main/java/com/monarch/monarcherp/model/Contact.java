@@ -33,6 +33,9 @@ public class Contact {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private java.util.List<Purchase> purchases;
+
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();

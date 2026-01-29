@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 @Service
-public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -56,15 +56,4 @@ public class UserService implements org.springframework.security.core.userdetail
         return null;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUserName())
-                .password(user.getPassword())
-                .authorities("ROLE_" + user.getRole())
-                .build();
-    }
 }

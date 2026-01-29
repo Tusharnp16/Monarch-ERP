@@ -30,15 +30,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
+         http
                 .csrf(csrf -> csrf.disable())
+                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/loginn","/health","/register").permitAll()
+                        .requestMatchers("/login","/health","/register","/logout").permitAll()
                         .requestMatchers("/resources/**", "/static/**", "/webjars/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("3")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/products/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
-                .formLogin(form -> form.disable())
-                .build();
+                .formLogin(form -> form.disable());
+
+            http.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
+
+         return http.build();
     }
 }
