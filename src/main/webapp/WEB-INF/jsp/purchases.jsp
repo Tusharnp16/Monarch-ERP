@@ -12,19 +12,73 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --sidebar-width: 260px; --bg-soft: #f8f9fa; }
-        body { background-color: var(--bg-soft); font-family: 'Inter', sans-serif; }
-        .app-shell { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
-        .sidebar { background: #212529; color: #fff; padding: 1rem; position: sticky; top: 0; height: 100vh; }
-        .topbar { background: #fff; border-bottom: 1px solid #e9ecef; padding: .75rem 1rem; position: sticky; top: 0; z-index: 1000; }
+        :root {
+            --sidebar-width: 260px;
+            --bg-soft: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--bg-soft);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #212529;
+            color: #fff;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            padding: .75rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
         /* Table Detail Styles */
-        .bill-link { cursor: pointer; color: #0d6efd; font-weight: 700; text-decoration: none; display: flex; align-items: center; }
-        .detail-row { background-color: #fcfcfc; display: none; }
-        .inner-table-wrapper { background: white; border-radius: 8px; border: 1px solid #dee2e6; margin: 10px 0; }
+        .bill-link {
+            cursor: pointer;
+            color: #0d6efd;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
 
-        .bill-badge { background: #fff4e6; color: #d9480f; border: 1px solid #ffd8a8; font-weight: 600; }
-        .input-readonly { background-color: #e9ecef !important; font-weight: 600; }
+        .detail-row {
+            background-color: #fcfcfc;
+            display: none;
+        }
+
+        .inner-table-wrapper {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+
+        .bill-badge {
+            background: #fff4e6;
+            color: #d9480f;
+            border: 1px solid #ffd8a8;
+            font-weight: 600;
+        }
+
+        .input-readonly {
+            background-color: #e9ecef !important;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -57,69 +111,86 @@
                     <div class="table-responsive">
                         <table class="table align-middle mb-0">
                             <thead class="table-light text-uppercase small" style="letter-spacing: 0.5px;">
-                                <tr>
-                                    <th class="ps-3">Bill No</th>
-                                    <th>Supplier</th>
-                                    <th>Date</th>
-                                    <th>Items</th>
-                                    <th>Total Amount</th>
-                                    <th class="text-end pe-3">Actions</th>
-                                </tr>
+                            <tr>
+                                <th class="ps-3">Bill No</th>
+                                <th>Supplier</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total Amount</th>
+                                <th class="text-end pe-3">Actions</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <c:forEach items="${purchases}" var="p">
-                                    <tr class="main-row">
-                                        <td class="ps-3">
-                                            <a class="bill-link" onclick="toggleDetails('details-${p.purchaseId}', this)">
-                                                <i class="fa-solid fa-caret-right me-2 text-muted"></i>
-                                                <span class="badge bill-badge px-2 py-1">${p.billNo}</span>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-dark">${p.supplier.name}</div>
-                                            <div class="text-muted small">${p.supplier.mobileno}</div>
-                                        </td>
-                                        <td><span class="text-muted">${p.createdDate.toLocalDate()}</span></td>
-                                        <td><span class="badge rounded-pill bg-light text-dark border">${p.items.size()} Items</span></td>
-                                        <td class="fw-bold text-primary">₹ ${p.totalAmount.price}</td>
-                                        <td class="text-end pe-3">
-                                            <button class="btn btn-sm btn-light border"><i class="fas fa-print"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr id="details-${p.purchaseId}" class="detail-row">
-                                        <td colspan="6" class="px-4 py-3 bg-light">
-                                            <div class="inner-table-wrapper p-3">
-                                                <h6 class="small fw-bold text-uppercase text-secondary mb-3">Itemized Breakdown</h6>
-                                                <table class="table table-sm table-hover mb-0">
-                                                    <thead class="table-light">
-                                                        <tr class="small text-muted">
-                                                            <th>Product/Variant</th>
-                                                            <th class="text-center">Qty</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Tax Amount</th>
-                                                            <th>Landing Cost</th>
-                                                            <th>Net Amount</th>
-                                                            <th class="text-end">Expire Date</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <c:forEach items="${p.items}" var="item">
-                                                            <tr>
-                                                                <td>${item.variant.product.productName} <span class="text-muted small">(${item.variant.variantName})</span></td>
-                                                                <td class="text-center">${item.qty}</td>
-                                                                <td>₹ ${item.price.price}</td>
-                                                                 <td>₹ ${item.taxAmount.price}</td>
-                                                                <td>₹ ${item.landingCost.price}</td>
-                                                                <td class="fw-bold text-dark">₹ ${item.netAmount.price}</td>
-                                                                 <td class="text-end">₹ ${item.expireDate}</td>
-                                                            </tr>
-                                                        </c:forEach>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+                            <c:forEach items="${purchases}" var="p">
+                                <tr class="main-row">
+                                    <td class="ps-3">
+                                        <a class="bill-link" onclick="toggleDetails('details-${p.purchaseId}', this)">
+                                            <i class="fa-solid fa-caret-right me-2 text-muted"></i>
+                                            <span class="badge bill-badge px-2 py-1">${p.billNo}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">${p.supplier.name}</div>
+                                        <div class="text-muted small">${p.supplier.mobileno}</div>
+                                    </td>
+                                    <td><span class="text-muted">${p.createdDate.toLocalDate()}</span></td>
+                                    <td><span class="badge rounded-pill bg-light text-dark border">${p.items.size()} Items</span>
+                                    </td>
+                                    <td class="fw-bold text-primary">₹ ${p.totalAmount.price}</td>
+                                    <td class="text-end pe-3">
+                                        <button class="btn btn-sm btn-light border"><i class="fas fa-print"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="details-${p.purchaseId}" class="detail-row">
+                                    <td colspan="6" class="px-4 py-3 bg-light">
+                                        <div class="inner-table-wrapper p-3">
+                                            <h6 class="small fw-bold text-uppercase text-secondary mb-3">Itemized
+                                                Breakdown</h6>
+                                            <table class="table table-sm table-hover mb-0">
+                                                <thead class="table-light">
+                                                <tr class="small text-muted">
+                                                    <th>Product/Variant</th>
+                                                    <th class="text-center">Qty</th>
+                                                    <th>Unit Price</th>
+                                                    <th>Tax Amount</th>
+                                                    <th>Landing Cost</th>
+                                                    <th>Net Amount</th>
+                                                    <th class="text-end">Expire Date</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach items="${p.items}" var="item">
+                                                    <tr>
+                                                        <td>
+                                                            <c:choose>
+                                                                <%-- Check if the variant and its parent product exist --%>
+                                                                <c:when test="${not empty item.variant and not empty item.variant.product}">
+                                                                    [${item.variant.product.itemCode}] ${item.variant.product.productName}
+                                                                    <span class="text-muted small"> - ${item.variant.variantName} (${item.variant.colour}) (${item.variant.size}) </span>
+                                                                </c:when>
+                                                                <%-- Fallback for deleted products/variants --%>
+                                                                <c:otherwise>
+                                                                    <span class="text-danger small">
+                                                                        <i class="fas fa-exclamation-triangle me-1"></i> Removed
+                                                                    </span>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </td>
+                                                        <td class="text-center">${item.qty}</td>
+                                                        <td>₹ ${item.price.price}</td>
+                                                        <td>₹ ${item.taxAmount.price}</td>
+                                                        <td>₹ ${item.landingCost.price}</td>
+                                                        <td class="fw-bold text-dark">₹ ${item.netAmount.price}</td>
+                                                        <td class="text-end">₹ ${item.expireDate}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                             </tbody>
                         </table>
                     </div>
@@ -133,7 +204,8 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <form class="modal-content" method="post" action="/purchase/add">
             <div class="modal-header bg-light">
-                <h5 class="modal-title">New Purchase Invoice <span id="taxTypeBadge" class="badge bg-secondary ms-2">Select Supplier</span></h5>
+                <h5 class="modal-title">New Purchase Invoice <span id="taxTypeBadge" class="badge bg-secondary ms-2">Select Supplier</span>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -148,7 +220,9 @@
                         <select class="form-select" name="supplier.contactId" id="supplierSelect" required>
                             <option value="">Choose Supplier...</option>
                             <c:forEach items="${suppliers}" var="s">
-                                <option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Inter-State" : "Outer-state"})</option>
+                                <option value="${s.contactId}" data-gst="${s.gstIn}">${s.name}
+                                    (${s.gstIn == 24 ? "Inter-State" : "Outer-state"})
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
@@ -156,7 +230,8 @@
                         <label class="form-label fw-semibold">Grand Total Amount</label>
                         <div class="input-group">
                             <span class="input-group-text bg-success text-white">₹</span>
-                            <input type="number" step="0.01" class="form-control fw-bold input-readonly" name="totalAmount.price" id="totalBillAmount" readonly>
+                            <input type="number" step="0.01" class="form-control fw-bold input-readonly"
+                                   name="totalAmount.price" id="totalBillAmount" readonly>
                         </div>
                     </div>
                 </div>
@@ -172,38 +247,49 @@
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle">
                         <thead class="table-light small">
-                            <tr>
-                                <th style="width: 30%;">Variant</th>
-                                <th style="width: 10%;">Qty</th>
-                                <th style="width: 15%;">Price (Ex)</th>
-                                <th style="width: 15%;">Tax</th>
-                                <th style="width: 15%;">Landing (Inc)</th>
-                                <th style="width: 15%;">Net Total</th>
-                                <th>Expiry</th>
-                                <th style="width: 5%;"></th>
-                            </tr>
+                        <tr>
+                            <th style="width: 30%;">Variant</th>
+                            <th style="width: 10%;">Qty</th>
+                            <th style="width: 15%;">Price (Ex)</th>
+                            <th style="width: 15%;">Tax</th>
+                            <th style="width: 15%;">Landing (Inc)</th>
+                            <th style="width: 15%;">Net Total</th>
+                            <th>Expiry</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
                         </thead>
                         <tbody id="purchaseItemsContainer">
-                            <tr class="item-row">
-                                <td>
-                                    <select class="form-select form-select-sm" name="items[0].variant.variantId" required>
-                                        <c:forEach items="${variants}" var="v">
-                                            <option value="${v.variantId}">${v.product.productName} (${v.variantName})</option>
-                                        </c:forEach>
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm qty-input" name="items[0].qty" value="1" min="1" required></td>
-                                <td><input type="number" step="0.01" class="form-control form-control-sm price-input" name="items[0].price" placeholder="0.00" required></td>
-                                <td><input type="number" name="items[0].taxAmount.price" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
-                                <td><input type="number" step="0.01" class="form-control form-control-sm landing-input input-readonly" name="items[0].landingCost.price" readonly></td>
-                                <td><input type="number" step="0.01" class="form-control form-control-sm net-input input-readonly text-primary" name="items[0].netAmount.price" readonly></td>
-                                <jsp:useBean id="now" class="java.util.Date" />
-                                <fmt:formatDate var="todayStr" value="${now}" pattern="yyyy-MM-dd" />
-                                <td><input type="date" min="${todayStr}" class="form-control form-control-sm" name="items[0].expireDate"></td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm text-danger remove-row"><i class="fas fa-times"></i></button>
-                                </td>
-                            </tr>
+                        <tr class="item-row">
+                            <td>
+                                <select class="form-select form-select-sm" name="items[0].variant.variantId" required>
+                                    <c:forEach items="${variants}" var="v">
+                                        <option value="${v.variantId}">${v.product.productName} (${v.variantName})
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </td>
+                            <td><input type="number" class="form-control form-control-sm qty-input" name="items[0].qty"
+                                       value="1" min="1" required></td>
+                            <td><input type="number" step="0.01" class="form-control form-control-sm price-input"
+                                       name="items[0].price" placeholder="0.00" required></td>
+                            <td><input type="number" name="items[0].taxAmount.price"
+                                       class="form-control form-control-sm tax-amount-input input-readonly" readonly>
+                            </td>
+                            <td><input type="number" step="0.01"
+                                       class="form-control form-control-sm landing-input input-readonly"
+                                       name="items[0].landingCost.price" readonly></td>
+                            <td><input type="number" step="0.01"
+                                       class="form-control form-control-sm net-input input-readonly text-primary"
+                                       name="items[0].netAmount.price" readonly></td>
+                            <jsp:useBean id="now" class="java.util.Date"/>
+                            <fmt:formatDate var="todayStr" value="${now}" pattern="yyyy-MM-dd"/>
+                            <td><input type="date" min="${todayStr}" class="form-control form-control-sm"
+                                       name="items[0].expireDate"></td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm text-danger remove-row"><i
+                                        class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -231,7 +317,6 @@
             icon.classList.replace('fa-caret-right', 'fa-caret-down');
         }
     }
-
 
 
     // --- 2. Calculation & Modal Logic ---
@@ -303,10 +388,10 @@
         document.getElementById('totalBillAmount').value = billTotal.toFixed(2);
     }
 
-    document.addEventListener('click', function(e) {
-        if(e.target.closest('.remove-row')) {
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-row')) {
             const rows = document.querySelectorAll('.item-row');
-            if(rows.length > 1) {
+            if (rows.length > 1) {
                 e.target.closest('.item-row').remove();
                 calculateFinalTotals();
             }

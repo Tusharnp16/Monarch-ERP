@@ -71,7 +71,7 @@ public class StockMaster {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "variant_id")
     private Variant variant;
 

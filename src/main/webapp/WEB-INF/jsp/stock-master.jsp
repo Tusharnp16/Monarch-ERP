@@ -18,25 +18,117 @@
 
     <style>
 
-        :root { --sidebar-width: 260px; --brand-color: #0d6efd; --bg-soft: #f8f9fa; --card-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); }
-        html, body { height: 100%; }
-        body { background-color: var(--bg-soft); }
-        .app-shell { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
-        .sidebar { background: #212529; color: #fff; position: sticky; top: 0; height: 100vh; padding: 1rem; border-right: 1px solid rgba(255,255,255,0.08); }
-        .sidebar .brand { font-weight: 700; letter-spacing: 0.3px; }
-        .sidebar .nav-link { color: #adb5bd; border-radius: .375rem; }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
-        .main { padding: 0; display: flex; flex-direction: column; }
-        .topbar { position: sticky; top: 0; z-index: 1030; background: #fff; border-bottom: 1px solid #e9ecef; }
-        .topbar .container-fluid { padding: .75rem 1rem; }
-        .card { border: none; box-shadow: var(--card-shadow); }
-        .table thead { background-color: #f1f3f5; }
-        .table th { font-weight: 600; }
-        .table td { vertical-align: middle; }
-        .badge-soft { background: #e9ecef; color: #495057; }
-        .text-muted-small { color: #6c757d; font-size: .875rem; }
-        .clickable { cursor: pointer; }
-        @media (max-width: 992px) { .app-shell { grid-template-columns: 1fr; } .sidebar { position: fixed; left: -100%; width: var(--sidebar-width); transition: left .25s ease; } .sidebar.open { left: 0; } }
+        :root {
+            --sidebar-width: 260px;
+            --brand-color: #0d6efd;
+            --bg-soft: #f8f9fa;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--bg-soft);
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #212529;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 1rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar .brand {
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar .nav-link {
+            color: #adb5bd;
+            border-radius: .375rem;
+        }
+
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .main {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .topbar .container-fluid {
+            padding: .75rem 1rem;
+        }
+
+        .card {
+            border: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table thead {
+            background-color: #f1f3f5;
+        }
+
+        .table th {
+            font-weight: 600;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .badge-soft {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .text-muted-small {
+            color: #6c757d;
+            font-size: .875rem;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        @media (max-width: 992px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                width: var(--sidebar-width);
+                transition: left .25s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -67,7 +159,8 @@
                     <div class="card p-3">
                         <div class="d-flex align-items-center gap-2">
                             <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                            <input type="search" class="form-control" id="stockSearch" placeholder="Search by Batch No or Variant...">
+                            <input type="search" class="form-control" id="stockSearch"
+                                   placeholder="Search by Batch No or Variant...">
                         </div>
                     </div>
                 </div>
@@ -97,27 +190,40 @@
                                     <td class="ps-3">
                                         <strong><c:out value="${s.stockMasterId}"/></strong>
                                     </td>
-                                    <td><c:out value="${s.variant.variantName}"/></td>
-                                    <td><c:out value="${s.batchNo}" /></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${not empty s.variant}">
+                                                <span class="text-dark fw-bold">${s.variant.variantName}</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-danger small">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i> Removed
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td><c:out value="${s.batchNo}"/></td>
                                     <td>
                                         <span class="badge ${s.quantity < 10 ? 'bg-danger' : 'badge-soft'}">${s.quantity}</span>
                                     </td>
                                     <td>
-                                        ${s.purchasePrice.price}
+                                            ${s.purchasePrice.price}
                                     </td>
-                                      <td>
-                                        ${s.landingCost.price}
+                                    <td>
+                                            ${s.landingCost.price}
                                     </td>
-                                     <td>
-                                        ${s.mrp.price}
+                                    <td>
+                                            ${s.mrp.price}
                                     </td>
-                                     <td>
-                                        ${s.sellingPrice.price}
+                                    <td>
+                                            ${s.sellingPrice.price}
                                     </td>
                                     <td><c:out value="${s.expiryDate}"/></td>
                                     <td class="text-end pe-3">
-                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#editStockModal"
-                                                data-id="${s.stockMasterId}" data-price="${s.sellingPrice.price}" data-mrp="${s.mrp.price}" data-batch="${s.batchNo}">
+                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
+                                                data-bs-target="#editStockModal"
+                                                data-id="${s.stockMasterId}" data-price="${s.sellingPrice.price}"
+                                                data-mrp="${s.mrp.price}" data-batch="${s.batchNo}">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </td>
@@ -136,7 +242,8 @@
         <form class="modal-content needs-validation" novalidate method="post" action="/stockmaster/update">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Stock Record</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" name="stockMasterId" id="edit-stockId">
@@ -148,11 +255,13 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">MRP</label>
-                        <input type="number" step="0.01" min="0" class="form-control price-input" id="edit-mrp" name="mrp" required>
+                        <input type="number" step="0.01" min="0" class="form-control price-input" id="edit-mrp"
+                               name="mrp" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Selling Price</label>
-                        <input type="number" step="0.01"  min="0" class="form-control price-input" id="edit-sellingPrice" name="sellingPrice" required>
+                        <input type="number" step="0.01" min="0" class="form-control price-input" id="edit-sellingPrice"
+                               name="sellingPrice" required>
                     </div>
                 </div>
             </div>
@@ -166,7 +275,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Simple client-side search for Batch No
-    document.getElementById('stockSearch').addEventListener('input', function(e) {
+    document.getElementById('stockSearch').addEventListener('input', function (e) {
         const term = e.target.value.toLowerCase();
         document.querySelectorAll('#stockTableBody tr').forEach(row => {
             const content = row.textContent.toLowerCase();
@@ -206,7 +315,6 @@
             if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
         });
     });
-
 
 
     const editStockModal = document.getElementById('editStockModal');

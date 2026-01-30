@@ -21,14 +21,14 @@ class SalesInvoiceController {
     @GetMapping
     public String viewSalesInvoices(Model model) {
         model.addAttribute("salesInvoices", salesInvoiceService.getAllSalesInvoices());
-        model.addAttribute("Associate SalesInvoice",salesInvoiceService.getAllSalesInvoices());
-        return "salesInvoices";
+        model.addAttribute("Associate",salesInvoiceService.getAllSalesInvoices());
+        return "sales";
     }
 
     @GetMapping("/{id}")
     public String viewSalesInvoice(@PathVariable Long id, Model model) {
         model.addAttribute("salesInvoices", java.util.Collections.singletonList(salesInvoiceService.getSalesInvoice(id)));
-        return "salesInvoices";
+        return "sales";
     }
 
     @PostMapping("/add")

@@ -2,6 +2,9 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "variants")
+@SoftDelete(columnName = "deleted_prod")
 public class Product {
 
     @Id

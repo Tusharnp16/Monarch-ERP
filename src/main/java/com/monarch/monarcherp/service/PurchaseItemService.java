@@ -3,7 +3,9 @@ package com.monarch.monarcherp.service;
 import com.monarch.monarcherp.model.*;
 import com.monarch.monarcherp.repository.*;
 import com.monarch.monarcherp.service.tax.TaxStrategy;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ public class PurchaseItemService {
     private VariantRepository variantRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional
     public void savePurchaseItems(PurchaseItem request,int gstIn) {
@@ -97,6 +102,7 @@ public class PurchaseItemService {
     }
 
     public List<PurchaseItem> getAllPurchaseItems() {
+        Session session = entityManager.unwrap(Session.class);
         return purchaseItemRepository.findAll();
     }
 

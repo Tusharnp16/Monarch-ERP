@@ -105,7 +105,7 @@
                             <thead>
                             <tr>
                                 <th>Inventory Id</th>
-                                <th class="ps-3">Variant / SKU</th>
+                                <th class="">Variant / SKU</th>
                                 <th>On Hand</th>
                                 <th>Reserved</th>
                                 <th>Available</th>
@@ -119,10 +119,22 @@
                                     <c:forEach items="${inventoryList}" var="item">
                                         <tr data-name="${item.variant.variantName}" data-sku="${item.variant.product.itemCode}">
                                         <td><c:out value="${item.inventoryId}"/></td>
-                                            <td class="ps-3"><strong><c:out value="${item.variant.variantName}"/></strong>
-                                                <div class="text-muted-small">
+                                        <td>
+                                         <c:choose>
+                                            <c:when test="${not empty item.variant}">
+                                                <span class="text-dark fw-bold">${item.variant.variantName}</span>
+                                                 <div class="text-muted-small">
                                                 <span class="badge badge-soft text-primary"><c:out value="${item.variant.product.itemCode}"/></span></div>
-                                            </td>
+
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-danger small">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i> Removed
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        </td>
+
                                             <td><c:out value="${item.availableQuantity}"/></td>
                                             <td><c:out value="20"/></td>
                                             <td><span class="fw-bold"><c:out value="${item.quantity}"/></span></td>

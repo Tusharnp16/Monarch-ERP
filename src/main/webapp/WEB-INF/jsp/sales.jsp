@@ -23,7 +23,7 @@
 <body class="bg-soft">
 
 <div class="container py-5">
-    <form action="/sales/save" method="post" id="salesForm">
+    <form action="/salesinvoice/add" method="post" id="salesForm">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h4"><i class="fa-solid fa-file-invoice-dollar me-2"></i>New Sales Invoice</h2>
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check me-1"></i> Finalize Sale</button>
