@@ -172,8 +172,14 @@
         </li>
 
         <li class="nav-item">
-            <a href="/customer" class="nav-link ${pageContext.request.requestURI.contains('report') ? 'active' : ''}">
+            <a href="/customer" class="nav-link ${pageContext.request.requestURI.contains('customer') ? 'active' : ''}">
                 <i class="fas fa-file-alt me-2"></i> Customer
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/salesinvoice" class="nav-link ${pageContext.request.requestURI.contains('sales') ? 'active' : ''}">
+                <i class="fas fa-file-alt me-2"></i> Sales
             </a>
         </li>
 

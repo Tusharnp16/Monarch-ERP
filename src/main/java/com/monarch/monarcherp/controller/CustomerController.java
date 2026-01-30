@@ -65,12 +65,11 @@ class CustomerController {
         return "redirect:/customer";
     }
 
-
-    @GetMapping("/api/customers/search")
+    @GetMapping("/api/search")
     @ResponseBody
     public ResponseEntity<Customer> findByMobile(@RequestParam String mobile) {
         return customerRepository.findByMobile(mobile)
-                .map(ResponseEntity::ok)
+                .map(customer -> ResponseEntity.ok(customer))
                 .orElse(ResponseEntity.noContent().build());
     }
 

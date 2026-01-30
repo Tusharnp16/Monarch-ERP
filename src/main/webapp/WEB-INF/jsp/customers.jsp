@@ -138,7 +138,6 @@
         </div>
     </c:if>
 
-    <%-- Rest of your card content... --%>
 </div>
             <div class="card mb-4">
                 <div class="card-body">
