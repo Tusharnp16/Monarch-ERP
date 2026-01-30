@@ -1,0 +1,35 @@
+package com.monarch.monarcherp.model;
+
+import jakarta.persistence.*;
+import jakarta.servlet.jsp.tagext.VariableInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "sales_items")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class SalesItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "invoice_id")
+    private SalesInvoice salesInvoice;
+
+    @ManyToOne
+    @JoinColumn(name = "variant_id")
+    private Variant variant;
+
+    private Integer quantity;
+    private Double unitPrice;
+
+    private Double discountAmount;
+    private Double lineTotal;
+}
