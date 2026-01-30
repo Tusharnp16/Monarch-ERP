@@ -32,7 +32,6 @@ public class PurchaseService {
 
         System.out.println("DEBUG : " + purchase.getItems().get(0).getNetAmount());
 
-
         Purchase savedPurchase= purchaseRepository.save(purchase);
 
         if(purchase.getItems() !=null){

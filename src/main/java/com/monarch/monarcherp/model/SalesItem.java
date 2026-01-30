@@ -30,6 +30,6 @@ public class SalesItem {
     private Integer quantity;
     private Double unitPrice;
 
-    private Double discountAmount;
+    private Double discountAmount=0.0;
     private Double lineTotal;
 }

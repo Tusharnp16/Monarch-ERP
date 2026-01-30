@@ -11,6 +11,8 @@
         .invoice-card { border-top: 4px solid #0d6efd; }
         .item-row { border-bottom: 1px solid #eee; padding: 10px 0; }
         .bg-soft { background-color: #f8f9fa; }
+        .stock-label { font-size: 0.75rem; display: block; margin-top: 4px; min-height: 1rem; }
+        .low-stock { color: #dc3545; font-weight: bold; }
     </style>
 </head>
 
@@ -19,8 +21,7 @@
     <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
     <div class="container py-5">
-        <form action="/salesinvoice/add" method="post">
-
+        <form action="/salesinvoice/add" method="post" id="salesForm">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h4"><i class="fa-solid fa-file-invoice-dollar me-2"></i>New Sales Invoice</h2>
                 <button type="submit" class="btn btn-primary">
@@ -29,13 +30,10 @@
             </div>
 
             <div class="row g-4">
-
-                <!-- CUSTOMER -->
                 <div class="col-md-4">
                     <div class="card h-100 invoice-card">
                         <div class="card-header bg-white fw-bold">Customer Details</div>
                         <div class="card-body">
-
                             <div class="mb-3">
                                 <label class="form-label">Mobile Number</label>
                                 <div class="input-group">
@@ -45,23 +43,19 @@
                                     </button>
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label">Customer Name</label>
-                                <input type="text" class="form-control" name="customer.name" id="custName">
+                                <input type="text" class="form-control" name="customer.name" id="custName" required>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="customer.email" id="custEmail">
                             </div>
-
                             <div id="customerStatus" class="small"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ITEMS -->
                 <div class="col-md-8">
                     <div class="card invoice-card">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -72,34 +66,41 @@
                         </div>
 
                         <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Invoice Number</label>
+                                <input type="text" id="invoiceNumber" class="form-control" readonly>
+                            </div>
                             <table class="table align-middle" id="itemsTable">
                                 <thead>
-                                <tr class="text-muted small">
-                                    <th style="width:40%">Variant</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
+                                    <tr class="text-muted small">
+                                        <th style="width:40%">Variant</th>
+                                        <th>Qty</th>
+                                        <th>MRP</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-
-                                <!-- FIRST ROW -->
-                                <tr class="item-row">
-                                    <td>
-                                        <select class="form-select" name="items[0].inventory.variant.variantId">
-                                            <option value="">Select Variant</option>
-                                            <c:forEach items="${inventory}" var="i">
-                                                <option value="${i.variant.variantId}">${i.variant.variantName}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </td>
-                                    <td><input type="number" class="form-control qty" name="items[0].quantity" value="1" min="1" oninput="calculate()"></td>
-                                    <td><input type="number" class="form-control price" name="items[0].unitPrice" step="0.01" oninput="calculate()"></td>
-                                    <td><span class="row-total fw-bold">0.00</span></td>
-                                    <td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>
-                                </tr>
-
+                                    <tr class="item-row">
+                                        <td>
+                                            <select class="form-select variant-select" name="items[0].variant.variantId" onchange="updateRowDetails(this)" required>
+                                                <option value="">Select Variant</option>
+                                                <c:forEach items="${inventory}" var="i">
+                                                    <c:if test="${not empty i.variant.variantName}">
+                                                        <option value="${i.variant.variantId}">${i.variant.variantName}</option>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control qty" name="items[0].quantity" value="1" min="1" oninput="validateStock(this)" required>
+                                            <small class="stock-label text-muted"></small>
+                                        </td>
+                                        <td><input type="number" class="form-control price" name="items[0].unitPrice" step="0.01" oninput="calculate()" required></td>
+                                        <td><span class="row-total fw-bold">0.00</span></td>
+                                        <td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -107,27 +108,26 @@
                         <div class="card-footer bg-light p-4">
                             <div class="row">
                                 <div class="col-md-7">
-                                    <label class="form-label">Internal Notes</label>
-                                    <textarea class="form-control" rows="3"></textarea>
+                                    <label class="form-label text-muted small fw-bold">Internal Notes</label>
+                                    <textarea class="form-control" name="notes" rows="3" placeholder="Reference..."></textarea>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span>Subtotal</span>
-                                        <span id="subtotal">0.00</span>
+                                        <span class="text-muted">Subtotal</span>
+                                        <span id="subtotal" class="fw-bold">0.00</span>
                                     </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Discount</span>
-                                        <input type="number" name="discountAmount" id="discount" class="form-control form-control-sm w-25" value="0" oninput="calculate()">
+                                    <div class="d-flex justify-content-between mb-2 align-items-center">
+                                        <span class="text-muted">Discount</span>
+                                        <input type="number" name="discountAmount" id="discount" class="form-control form-control-sm w-50" value="0" min="0" oninput="calculate()">
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between">
                                         <span class="h5">Grand Total</span>
-                                        <span class="h5 text-primary" id="grandTotal">0.00</span>
+                                        <span class="h5 text-primary fw-bold" id="grandTotal">0.00</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -135,73 +135,64 @@
     </div>
 </div>
 
-<!-- PASS VARIANTS TO JS -->
 <script>
-    const variants = [
+    // Data passed from Spring Controller
+    const inventoryData = [
         <c:forEach items="${inventory}" var="i" varStatus="s">
-            { id: "${i.variant.variantId}", name: "${i.variant.variantName}" }${!s.last ? ',' : ''}
+            <c:if test="${not empty i.variant.variantName}">
+                {
+                    id: "${i.variant.variantId}",
+                    name: "${i.variant.variantName}",
+                    price: ${i.variant.sellingPrice != null ? i.variant.sellingPrice.price : 0},
+                    mrp : ${i.variant.mrp!=null ? i.variant.mrp.price : 0},
+                    stock: ${i.quantity != null ? i.quantity : 0}
+                }<c:if test="${!s.last}">,</c:if>
+            </c:if>
         </c:forEach>
     ];
-</script>
-
-<script>
 
     function fetchCustomer() {
         const mobile = document.getElementById('custMobile').value.trim();
         const statusDiv = document.getElementById('customerStatus');
-
-        if (mobile.length < 10) {
-            statusDiv.innerHTML = '<span class="text-danger">Enter a valid mobile number</span>';
-            return;
-        }
+        if (mobile.length < 10) return;
 
         fetch('/customer/api/search?mobile=' + mobile)
-            .then(response => {
-                if (response.status === 204) return null;
-                if (!response.ok) throw new Error("Server error");
-                return response.json();
-            })
+            .then(response => response.status === 204 ? null : response.json())
             .then(data => {
                 if (data) {
                     document.getElementById('custName').value = data.name || '';
                     document.getElementById('custEmail').value = data.email || '';
-                    statusDiv.innerHTML =
-                        '<span class="text-success"><i class="fa-solid fa-check-circle"></i> Existing customer loaded</span>';
+                    statusDiv.innerHTML = '<span class="text-success small">Existing Customer Loaded</span>';
                 } else {
-                    document.getElementById('custName').value = '';
-                    document.getElementById('custEmail').value = '';
-                    statusDiv.innerHTML =
-                        '<span class="text-primary"><i class="fa-solid fa-info-circle"></i> New customer — enter details</span>';
+                    statusDiv.innerHTML = '<span class="text-primary small">New Customer - Enter Details</span>';
                 }
-            })
-            .catch(() => {
-                statusDiv.innerHTML = '<span class="text-danger">Customer lookup failed</span>';
             });
     }
 
     let rowCount = 1;
-
     function addRow() {
         const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
         const newRow = table.insertRow();
         newRow.className = "item-row";
 
         let options = '<option value="">Select Variant</option>';
-        variants.forEach(v => {
-            options += `<option value="${i.variant.id}">${i.variant.name}</option>`;
+        inventoryData.forEach(v => {
+            options += '<option value="' + v.id + '">' + v.name + '</option>';
         });
 
-        newRow.innerHTML = `
-            <td>
-                <select class="form-select" name="items[${rowCount}].inventory.variant.variantId">
-                    ${options}
-                </select>
-            </td>
-            <td><input type="number" class="form-control qty" name="items[${rowCount}].quantity" value="1" min="1" oninput="calculate()"></td>
-            <td><input type="number" class="form-control price" name="items[${rowCount}].unitPrice" step="0.01" oninput="calculate()"></td>
-            <td><span class="row-total fw-bold">0.00</span></td>
-            <td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>
-        `;
+        newRow.innerHTML =
+            '<td>' +
+                '<select class="form-select variant-select" name="items[' + rowCount + '].variant.variantId" onchange="updateRowDetails(this)" required>' +
+                    options +
+                '</select>' +
+            '</td>' +
+            '<td>' +
+                '<input type="number" class="form-control qty" name="items[' + rowCount + '].quantity" value="1" min="1" oninput="validateStock(this)" required>' +
+                '<small class="stock-label text-muted"></small>' +
+            '</td>' +
+            '<td><input type="number" class="form-control price" name="items[' + rowCount + '].unitPrice" step="0.01" oninput="calculate()" readonly></td>' +
+              '<td><span class="row-total fw-bold">0.00</span></td>' +
+            '<td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>';
         rowCount++;
     }
 
@@ -210,21 +201,59 @@
         calculate();
     }
 
+    function updateRowDetails(select) {
+        const row = select.closest('tr');
+        const variantId = select.value;
+        const priceInput = row.querySelector('.price');
+        const qtyInput = row.querySelector('.qty');
+        const stockLabel = row.querySelector('.stock-label');
+
+        const data = inventoryData.find(v => v.id == variantId);
+
+        if (data) {
+            priceInput.value = data.price;
+            qtyInput.max = data.stock;
+            stockLabel.innerText = "In Stock: " + data.stock;
+            if (data.stock < 5) stockLabel.classList.add('low-stock');
+            else stockLabel.classList.remove('low-stock');
+        } else {
+            priceInput.value = 0;
+            qtyInput.max = "";
+            stockLabel.innerText = "";
+        }
+        calculate();
+    }
+
+    fetch('/salesinvoice/next-number')
+        .then(res => res.text())
+        .then(no => document.getElementById('invoiceNumber').value = no);
+
+    function validateStock(input) {
+        const max = parseInt(input.max);
+        if (max && parseInt(input.value) > max) {
+            alert("Insufficient Stock! Available: " + max);
+            input.value = max;
+        }
+        calculate();
+    }
+
     function calculate() {
         let subtotal = 0;
         document.querySelectorAll('.item-row').forEach(row => {
-            const qty = row.querySelector('.qty').value || 0;
-            const price = row.querySelector('.price').value || 0;
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const price = parseFloat(row.querySelector('.price').value) || 0;
             const total = qty * price;
             row.querySelector('.row-total').innerText = total.toFixed(2);
             subtotal += total;
         });
 
-        const discount = document.getElementById('discount').value || 0;
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
         document.getElementById('subtotal').innerText = subtotal.toFixed(2);
         document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
     }
-</script>
 
+    // Run calculation once on load
+    window.onload = calculate;
+</script>
 </body>
 </html>

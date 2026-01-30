@@ -32,7 +32,7 @@ public class SalesInvoice {
     private Customer customer;
 
     private Double totalAmount;
-    private Double taxAmount;
+    private Double taxAmount=0.0;
 
     private Double discountAmount;
     private Double grandTotal;

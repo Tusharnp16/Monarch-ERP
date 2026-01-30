@@ -2,10 +2,9 @@ package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.SalesInvoice;
-import com.monarch.monarcherp.service.CustomerService;
-import com.monarch.monarcherp.service.InventoryService;
-import com.monarch.monarcherp.service.SalesInvoiceService;
-import com.monarch.monarcherp.service.VariantService;
+import com.monarch.monarcherp.repository.SalesInvoiceRepository;
+import com.monarch.monarcherp.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +17,18 @@ import java.util.stream.Collectors;
 class SalesInvoiceController {
 
     private final SalesInvoiceService salesInvoiceService;
+    private final SalesItemService salesItemService;
     private final CustomerService customerService;
     private final InventoryService inventoryService;
 
-    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService) {
+    @Autowired
+    private SalesInvoiceRepository salesInvoiceRepository;
+
+    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService,SalesItemService salesItemService) {
         this.salesInvoiceService = salesInvoiceService;
         this.customerService = customerService;
         this.inventoryService = inventoryService;
+        this.salesItemService=salesItemService;
     }
 
     @GetMapping
@@ -44,6 +48,18 @@ class SalesInvoiceController {
         model.addAttribute("salesInvoices", java.util.Collections.singletonList(salesInvoiceService.getSalesInvoice(id)));
         return "sales";
     }
+
+    @GetMapping("/salesinvoice/view")
+    public String viewInvoice(Model model) {
+
+
+        model.addAttribute("invoice", salesInvoiceService.getAllSalesInvoices());
+        model.addAttribute("items", salesItemService.getAllSalesItems());
+        model.addAttribute("customer", customerService.getAllCustomers());
+
+        return "salesview";
+    }
+
 
     @PostMapping("/add")
     public String addSalesInvoice(@ModelAttribute SalesInvoice salesInvoice) {
@@ -66,5 +82,16 @@ class SalesInvoiceController {
         salesInvoiceService.deleteSalesInvoice(id);
         return "redirect:/salesinvoice";
     }
+
+    @GetMapping("/next-number")
+    @ResponseBody
+    public String getNextInvoiceNumber() {
+        String financialYear = salesInvoiceService.getFinancialYear();
+        String prefix = "INV/" + financialYear + "/";
+
+        long count = salesInvoiceRepository.countByFinancialYearPrefix(prefix) + 1;
+        return prefix + String.format("%04d", count);
+    }
+
 
 }
