@@ -185,49 +185,42 @@
         Already using Monarch? <a href="/login">Sign In</a>
     </div>
 </div>
-
 <script>
-    document.getElementById('regForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const msgEl = document.getElementById('msg');
-        msgEl.style.display = 'none';
+document.getElementById('regForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const msgEl = document.getElementById('msg');
+    msgEl.style.display = 'none';
 
-        const data = {
-            userName: document.getElementById('username').value,
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value,
-            role: document.getElementById('role').value
-        };
-
-        try {
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                localStorage.setItem('token', result.token);
-
-                msgEl.innerText = "Account created! Redirecting...";
-                msgEl.className = "msg-success";
-                msgEl.style.display = 'block';
-
-                setTimeout(() => {
-                    window.location.href = "/products";
-                }, 1500);
-            } else {
-                msgEl.innerText = "Registration failed. Username or email might be taken.";
-                msgEl.className = "msg-error";
-                msgEl.style.display = 'block';
-            }
-        } catch (err) {
-            msgEl.innerText = "Server connection lost. Please try later.";
-            msgEl.className = "msg-error";
-            msgEl.style.display = 'block';
-        }
+    const data = {
+        userName: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        role: document.getElementById('role').value
     };
+
+    try {
+        const response = await fetch('/auth/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error();
+
+        msgEl.innerText = "Account created successfully! Please login.";
+        msgEl.className = "msg-success";
+        msgEl.style.display = 'block';
+
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 1500);
+
+    } catch (err) {
+        msgEl.innerText = "Registration failed. Username or email might be taken.";
+        msgEl.className = "msg-error";
+        msgEl.style.display = 'block';
+    }
+};
 </script>
 
 </body>

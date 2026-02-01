@@ -2,7 +2,9 @@ package com.monarch.monarcherp.config;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -12,35 +14,54 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    private final String SECRET = "my-super-secret-key-my-super-secret-key-123456";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+    @Value("${jwt.access.expiration}")
+    private long accessExpirationMs;
+
+    @Value("${jwt.refresh.expiration}")
+    private long refreshExpirationMs;
+
+    private Key key() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    private int jwtExpirationMs = 86400000;
-
-    public String generateToken(String userName, String role) {
+    public String generateAccessToken(String username, String role) {
         return Jwts.builder()
-                .setSubject(userName)
+                .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(),SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser().setSigningKey(getSigningKey()).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(key()).build()
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean isValid(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser().setSigningKey(getSigningKey()).parseClaimsJws(token).getBody().getExpiration();
-        return expiration.before(new Date());
+    public Date getExpiration(String token) {
+        return Jwts.parserBuilder().setSigningKey(key()).build()
+                .parseClaimsJws(token).getBody().getExpiration();
     }
 }

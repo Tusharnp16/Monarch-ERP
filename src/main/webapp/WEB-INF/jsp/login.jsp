@@ -88,35 +88,39 @@
     Didn't have account!! <a href="/register"> Register Here</a>
   </div>
 </div>
-
 <script>
-  document.getElementById('loginForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const errorEl = document.getElementById('error');
-    errorEl.style.display = 'none';
+document.getElementById('loginForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('error');
+  errorEl.style.display = 'none';
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
 
-    try {
-      const response = await fetch('/login', {   // must match backend endpoint
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+  try {
+    const response = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
 
-      if (response.ok) {
-        window.location.href = "/products";
-      } else {
-        errorEl.innerText = "Invalid username or password.";
-        errorEl.style.display = 'block';
-      }
+    if (!response.ok) throw new Error();
 
-    } catch (err) {
-      errorEl.innerText = "Server error. Please try again.";
-      errorEl.style.display = 'block';
-    }
-  };
+    const data = await response.json();
+
+
+    localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+
+  document.cookie = "accessToken=" + data.accessToken + "; path=/; Max-Age=" + (60 * 60) + "; SameSite=Strict";
+
+    window.location.href = "/products";
+
+  } catch (err) {
+    errorEl.innerText = "Invalid username or password.";
+    errorEl.style.display = 'block';
+  }
+};
 </script>
 
 </body>

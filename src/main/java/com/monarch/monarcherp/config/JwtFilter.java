@@ -1,16 +1,16 @@
 package com.monarch.monarcherp.config;
 
+import com.monarch.monarcherp.repository.BlacklistRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
-import com.monarch.monarcherp.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,48 +20,56 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    @Autowired JwtUtils jwtUtils;
+    @Autowired CustomUserDetailsService userDetailsService;
+    @Autowired BlacklistRepository blacklistRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        String path = request.getServletPath();
-        if (path.equals("/login") || path.equals("/register") || path.equals("/health")) {
-            // Skip JWT validation for public endpoints
-            filterChain.doFilter(request, response);
-            return;
-        }
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = null;
         String username = null;
 
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if (cookie.getName().equals("accessToken")) {
+        // 1. Try to get token from Header
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            token = header.substring(7);
+        }
+        // 2. Try to get token from Cookie (if header is missing)
+        else if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
                     token = cookie.getValue();
+                    break;
                 }
             }
         }
 
         if (token != null) {
-            username = jwtUtils.extractUsername(token);
+            if (blacklistRepository.existsByToken(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (jwtUtils.isValid(token)) {
+                username = jwtUtils.extractUsername(token);
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (jwtUtils.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
 
-            filterChain.doFilter(request, response);
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
+        filterChain.doFilter(request, response);
     }
+}

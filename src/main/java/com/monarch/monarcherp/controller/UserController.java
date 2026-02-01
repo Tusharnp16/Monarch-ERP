@@ -29,89 +29,10 @@ import java.net.Authenticator;
 @Controller
 public class UserController {
 
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private UserService userService;
-
     @GetMapping("/admin")
     public String dashboard(){
         return "default";
     }
 
 
-    @GetMapping("/login")
-    public String getLoginPage(){
-        return "login";
-    }
-
-    @GetMapping("/register")
-    public String getRegisterPage(){
-        return "register";
-    }
-
-   @PostMapping("/register")
-   @ResponseBody
-    public ResponseEntity<?> registerUser(@RequestBody User user){
-        userService.saveUser(user);
-
-        String token= jwtUtils.generateToken(user.getUserName(), user.getRole());
-
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(), request.getPassword()
-                )
-        );
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
-                .map(grantedAuthority -> grantedAuthority.getAuthority()) // e.g. ROLE_ADMIN
-                .orElse("ROLE_USER");
-
-        String token = jwtUtils.generateToken(userDetails.getUsername(), role);
-
-        ResponseCookie cookie = ResponseCookie.from("accessToken", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .sameSite("Lax")
-                .build();
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
-    }
-
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-
-        ResponseCookie deleteCookie = ResponseCookie.from("accessToken", "")
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Lax")
-                .build();
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
-                .body("Logged out successfully");
-    }
 }
