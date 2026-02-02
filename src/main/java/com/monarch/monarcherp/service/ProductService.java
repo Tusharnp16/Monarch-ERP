@@ -4,6 +4,7 @@ import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,16 @@ public class ProductService {
         return productRepository.findByProductId(id);
     }
 
-    public Page<Product> getAllProducts() {
-        Pageable pageable= PageRequest.of(0,20);
+    public Page<Product> getAllProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
         return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> searchProducts(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
+        return productRepository
+                .findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
+                        search, search, pageable);
     }
 
     public void deleteProduct(Long id) {

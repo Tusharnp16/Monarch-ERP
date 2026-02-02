@@ -31,7 +31,7 @@ class StockMasterController {
     @GetMapping
     public String viewStockMaster(Model model) {
         model.addAttribute("stocks", stockMasterService.getAllStockMasters());
-        model.addAttribute("parentProducts",productService.getAllProducts());
+//        model.addAttribute("parentProducts",productService.getAllAllProducts());
         return "stock-master";
     }
 

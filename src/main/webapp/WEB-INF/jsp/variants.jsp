@@ -67,7 +67,7 @@
                         <div class="col-md-4">
                             <select class="form-select" id="productFilter">
                                 <option value="">All Parent Products</option>
-                                <c:forEach items="${parentProducts}" var="parent">
+                                <c:forEach items="${parentProducts.content}" var="parent">
                                     <option value="${parent.productName}">${parent.productName}</option>
                                 </c:forEach>
                             </select>
@@ -141,7 +141,7 @@
                     <label class="form-label">Parent Product</label>
                     <select class="form-select" name="productId" required>
                         <option value="" selected disabled>Select Product</option>
-                        <c:forEach items="${parentProducts}" var="p">
+                        <c:forEach items="${parentProducts.content}" var="p">
                             <option value="${p.productId}">${p.productName}</option>
                         </c:forEach>
                     </select>

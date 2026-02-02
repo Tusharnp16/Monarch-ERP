@@ -31,7 +31,7 @@ public class ProductControllerAPI {
 
     @GetMapping
     public Page<Product> getAllProducts(){
-        return productService.getAllProducts();
+        return productService.getAllProducts(0,20);
     }
 
     @DeleteMapping("/{id}")
