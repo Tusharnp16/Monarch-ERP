@@ -66,7 +66,4 @@ class SalesItemController {
         model.addAttribute("sales", salesInvoices);
         return "recentsalesitems";
     }
-
-
-
 }

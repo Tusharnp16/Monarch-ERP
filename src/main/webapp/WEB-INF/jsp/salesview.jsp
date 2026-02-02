@@ -63,6 +63,9 @@
 
 <div class="app-shell">
     <%@ include file="/WEB-INF/fragments/sidebar.html" %>
+    <script>
+        console.log("page loaded")
+    </script>
 
     <main class="main">
         <div class="topbar d-flex justify-content-between align-items-center bg-white border-bottom p-3">
@@ -118,7 +121,7 @@
                                     <td><span class="text-muted">${s.invoiceDate}</span></td>
                                     <td><span class="badge rounded-pill bg-light text-dark border">${s.items.size()} Qty</span></td>
                                     <td class="text-danger">- ₹ ${s.discountAmount}</td>
-                                    <td class="fw-bold text-success">₹ ${s.grandTotal}</td>
+                                    <td class="fw-bold text-success">₹ ${s.invoice.grandTmfnkdjfotal}</td>
                                     <td class="text-end pe-3">
                                         <button class="btn btn-sm btn-light border" title="Print Invoice">
                                             <i class="fas fa-print"></i>

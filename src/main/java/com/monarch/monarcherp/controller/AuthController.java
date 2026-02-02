@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 
@@ -109,14 +110,23 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
+    @ResponseBody
+    public ResponseEntity<?> logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         String header = request.getHeader("Authorization");
-        String token = header.substring(7);
 
-        blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
 
-        return ResponseEntity.ok("Logged out successfully");
+            // IMPORTANT: Also delete the Refresh Token from DB so they can't refresh
+            String username = jwtUtils.extractUsername(token);
+            tokenService.deleteTokensByUsername(username);
+
+            return ResponseEntity.ok("Logged out successfully");
+        }
+
+        return ResponseEntity.status(400).body("Logged out failed");
     }
 }
 

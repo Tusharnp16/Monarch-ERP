@@ -108,7 +108,7 @@
                             <div>
                                 <div class="text-muted-small">Total products</div>
                                 <div class="h3 mb-0 text-primary">
-                                    <c:out value="${products.size()}"/>
+                                    <c:out value="${products.getTotalElements()}"/>
                                 </div>
                             </div>
                             <i class="fa-solid fa-box-open fa-2x text-primary"></i>
@@ -158,7 +158,7 @@
                             <tbody id="productTableBody">
                             <c:choose>
                                 <c:when test="${not empty products}">
-                                    <c:forEach items="${products}" var="product">
+                                    <c:forEach items="${products.content}" var="product">
                                         <tr data-name="${product.productName}" data-code="${product.itemCode}">
                                             <td class="ps-3"><c:out value="${product.productId}"/></td>
                                             <td class="truncate">

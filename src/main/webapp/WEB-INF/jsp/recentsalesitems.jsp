@@ -72,7 +72,7 @@
                                                 ${inv.invoiceDate}
                                             </div>
                                             <div class="fw-bold text-success">
-                                                ₹ ${inv.totalAmount}
+                                                ₹ ${inv.grandTotal}
                                             </div>
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item d-flex justify-content-between">
                                                     <span>Subtotal</span>
-                                                    <span>₹ ${inv.totalAmount + inv.discountAmount}</span>
+                                                    <span>₹ ${inv.totalAmount}</span>
                                                 </li>
                                                 <li class="list-group-item d-flex justify-content-between text-danger">
                                                     <span>Discount</span>
@@ -123,7 +123,7 @@
                                                 </li>
                                                 <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
                                                     <span>Grand Total</span>
-                                                    <span class="text-success">₹ ${inv.totalAmount}</span>
+                                                    <span class="text-success">₹ ${inv.grandTotal}</span>
                                                 </li>
                                             </ul>
                                         </div>

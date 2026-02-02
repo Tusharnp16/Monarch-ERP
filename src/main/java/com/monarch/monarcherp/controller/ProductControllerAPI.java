@@ -3,6 +3,7 @@ package com.monarch.monarcherp.controller;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class ProductControllerAPI {
     }
 
     @GetMapping
-    public List<Product> getAllProducts(){
+    public Page<Product> getAllProducts(){
         return productService.getAllProducts();
     }
 

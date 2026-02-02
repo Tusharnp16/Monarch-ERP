@@ -48,9 +48,13 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
+        if (blacklistRepository.existsByToken(token)) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
+
         if (token != null) {
             if (blacklistRepository.existsByToken(token)) {
-                filterChain.doFilter(request, response);
+//                filterChain.doFilter(request, response);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token is blacklisted");
                 return;
             }
 

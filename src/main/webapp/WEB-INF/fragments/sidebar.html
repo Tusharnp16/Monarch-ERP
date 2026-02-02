@@ -184,13 +184,13 @@
         </li>
 
         <li class="nav-item">
-            <a href="/salesitem/recentitems" class="nav-link ${pageContext.request.requestURI.contains('recent') ? 'active' : ''}">
+            <a href="/salesitem/recentitems" class="nav-link ${pageContext.request.requestURI.contains('recentitems') ? 'active' : ''}">
                 <i class="fas fa-file-alt me-2"></i> Recent Sales
             </a>
         </li>
 
         <li class="nav-item">
-        <a href="#" onclick="logout()" class="nav-link">
+        <a href="/auth/logout" onclick="logout()" class="nav-link">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </li>
@@ -203,12 +203,18 @@
 
 <script>
     function logout() {
+        const token = localStorage.getItem("accessToken");
         fetch('/logout', {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
         }).then(() => {
-            window.location.href = '/login';
+            localStorage.removeItem("accessToken");
+            window.location.href = '/auth/login';
         });
     }
+
 </script>
 
 </body>

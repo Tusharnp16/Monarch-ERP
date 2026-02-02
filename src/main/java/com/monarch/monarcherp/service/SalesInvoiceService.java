@@ -46,6 +46,7 @@ public class SalesInvoiceService {
             salesInvoice.getCustomer().setId(null);
         }
 
+
         double subtotal=0;
 
         String financialYear = getFinancialYear();
@@ -69,6 +70,8 @@ public class SalesInvoiceService {
             item.setLineTotal(lineTotal);
             subtotal += lineTotal;
 
+            // inventory -
+
             Inventory inventory = inventoryRepository.findByVariant_VariantId(variantId)
                     .orElseThrow(() -> new RuntimeException("Inventory not found"));
 
@@ -81,6 +84,8 @@ public class SalesInvoiceService {
             );
 
             inventoryRepository.save(inventory);
+
+
 
         }
         salesInvoice.setTotalAmount(subtotal);
