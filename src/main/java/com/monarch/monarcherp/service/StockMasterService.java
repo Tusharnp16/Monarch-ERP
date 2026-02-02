@@ -49,7 +49,7 @@ public class StockMasterService {
     }
 
     public List<StockMaster> getAllStockMasters() {
-        return stockMasterRepository.findAll();
+        return stockMasterRepository.findAllByOrderByStockMasterIdDesc();
     }
 
     public void deleteStockMaster(Long id) {

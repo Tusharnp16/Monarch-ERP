@@ -267,7 +267,6 @@
                                         </option>
                                     </c:forEach>
                                 </select>
-
                             </td>
                             <td><input type="number" class="form-control form-control-sm qty-input" name="items[0].qty"
                                        value="1" min="1" required></td>
@@ -305,110 +304,99 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    // --- 1. Toggle Inline Details Logic ---
+    function toggleDetails(rowId, element) {
+        const row = document.getElementById(rowId);
+        const icon = element.querySelector('i');
 
-        const IGST_RATE = 0.18;
-        const JS_TODAY_DATE = "${todayStr}";
-
-        const variantData = [
-            <c:forEach items="${variants}" var="v" varStatus="s">
-            {
-                id: "${v.variantId}",
-                name: "<c:out value='${v.product.productName}'/> (<c:out value='${v.variantName}'/>)"
-            }<c:if test="${!s.last}">,</c:if>
-            </c:forEach>
-        ];
-
-        console.log("Loaded Variants:", variantData);
-
-        // ================= ADD ROW =================
-        document.getElementById('addRowBtn').addEventListener('click', addPurchaseRow);
-
-        function addPurchaseRow() {
-            const tableBody = document.getElementById('purchaseItemsContainer');
-
-            let options = '<option value="">Choose Variant...</option>';
-            variantData.forEach(v => {
-                options += `<option value="${v.id}">${v.name}</option>`;
-            });
-
-            const newRow = document.createElement('tr');
-            newRow.classList.add('item-row');
-
-            newRow.innerHTML = `
-            <td><select class="form-select form-select-sm variant-select" required>${options}</select></td>
-            <td><input type="number" class="form-control form-control-sm qty-input" value="1" min="1" required></td>
-            <td><input type="number" step="0.01" class="form-control form-control-sm price-input" required></td>
-            <td><input type="number" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
-            <td><input type="number" class="form-control form-control-sm landing-input input-readonly" readonly></td>
-            <td><input type="number" class="form-control form-control-sm net-input input-readonly text-primary" readonly></td>
-            <td><input type="date" min="${JS_TODAY_DATE}" class="form-control form-control-sm expire-input"></td>
-            <td class="text-center"><button type="button" class="btn btn-sm text-danger remove-row"><i class="fas fa-times"></i></button></td>
-        `;
-
-            tableBody.appendChild(newRow);
-            reindexRows();
+        if (row.style.display === "table-row") {
+            row.style.display = "none";
+            icon.classList.replace('fa-caret-down', 'fa-caret-right');
+        } else {
+            row.style.display = "table-row";
+            icon.classList.replace('fa-caret-right', 'fa-caret-down');
         }
+    }
 
-        // ================= REMOVE ROW =================
-        document.addEventListener('click', function (e) {
-            if (e.target.closest('.remove-row')) {
-                const rows = document.querySelectorAll('.item-row');
-                if (rows.length > 1) {
-                    e.target.closest('.item-row').remove();
-                    reindexRows();  // 🔥 IMPORTANT
-                    calculateFinalTotals();
-                } else {
-                    alert("At least one item is required.");
-                }
+
+    // --- 2. Calculation & Modal Logic ---
+    const IGST_RATE = 0.18;
+    let rowIdx = 1;
+
+    document.getElementById('addRowBtn').addEventListener('click', function () {
+        const container = document.getElementById('purchaseItemsContainer');
+        const firstRow = document.querySelector('.item-row');
+        const newRow = firstRow.cloneNode(true);
+
+        // Update names using rowIdx
+        newRow.querySelectorAll('input, select').forEach(input => {
+            const name = input.getAttribute('name');
+            if (name) {
+                // Specifically targets 'items[' followed by digits and a closing ']'
+                const updatedName = name.replace(/items\[\d+\]/, `items[${rowIdx}]`);
+                input.setAttribute('name', updatedName);
+            }
+
+            // Clear values but keep quantity at 1
+            if (input.classList.contains('qty-input')) {
+                input.value = '1';
+            } else if (!input.hasAttribute('readonly')) {
+                input.value = '';
+            } else {
+                input.value = '0.00'; // Reset totals for the new row
             }
         });
 
-        // ================= REINDEX FOR SPRING BINDING =================
-        function reindexRows() {
-            document.querySelectorAll('.item-row').forEach((row, index) => {
-                row.querySelector('.variant-select').setAttribute('name', `items[${index}].variant.variantId`);
-                row.querySelector('.qty-input').setAttribute('name', `items[${index}].qty`);
-                row.querySelector('.price-input').setAttribute('name', `items[${index}].price`);
-                row.querySelector('.tax-amount-input').setAttribute('name', `items[${index}].taxAmount.price`);
-                row.querySelector('.landing-input').setAttribute('name', `items[${index}].landingCost.price`);
-                row.querySelector('.net-input').setAttribute('name', `items[${index}].netAmount.price`);
-                row.querySelector('.expire-input').setAttribute('name', `items[${index}].expireDate`);
-            });
-        }
+        container.appendChild(newRow);
+        rowIdx++; // Increment for the next add
+    });
 
-        // ================= CALCULATIONS =================
-        document.addEventListener('input', function (e) {
-            if (e.target.classList.contains('qty-input') || e.target.classList.contains('price-input')) {
+
+    document.getElementById('supplierSelect').addEventListener('change', function () {
+        const gstIn = this.options[this.selectedIndex].getAttribute('data-gst') || "";
+        const badge = document.getElementById('taxTypeBadge');
+        document.getElementById('hiddenGstIn').value = gstIn;
+        if (gstIn == 24) {
+            badge.innerText = "IntraState (CGST + SGST)";
+            badge.className = "badge bg-success ms-2";
+        } else if (gstIn !== "") {
+            badge.innerText = "InterState (IGST)";
+            badge.className = "badge bg-primary ms-2";
+        }
+    });
+
+    document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('qty-input') || e.target.classList.contains('price-input')) {
+            calculateFinalTotals();
+        }
+    });
+
+    function calculateFinalTotals() {
+        let billTotal = 0;
+        document.querySelectorAll('.item-row').forEach(row => {
+            const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+            const basePrice = parseFloat(row.querySelector('.price-input').value) || 0;
+            const taxPerUnit = basePrice * IGST_RATE;
+            const landingCost = basePrice + taxPerUnit;
+            const netAmount = landingCost * qty;
+
+            row.querySelector('.tax-amount-input').value = taxPerUnit.toFixed(2);
+            row.querySelector('.landing-input').value = landingCost.toFixed(2);
+            row.querySelector('.net-input').value = netAmount.toFixed(2);
+            billTotal += netAmount;
+        });
+        document.getElementById('totalBillAmount').value = billTotal.toFixed(2);
+    }
+
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-row')) {
+            const rows = document.querySelectorAll('.item-row');
+            if (rows.length > 1) {
+                e.target.closest('.item-row').remove();
                 calculateFinalTotals();
             }
-        });
-
-        function calculateFinalTotals() {
-            let billTotal = 0;
-
-            document.querySelectorAll('.item-row').forEach(row => {
-                const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
-                const basePrice = parseFloat(row.querySelector('.price-input').value) || 0;
-
-                const taxPerUnit = basePrice * IGST_RATE;
-                const landingCost = basePrice + taxPerUnit;
-                const netAmount = landingCost * qty;
-
-                row.querySelector('.tax-amount-input').value = taxPerUnit.toFixed(2);
-                row.querySelector('.landing-input').value = landingCost.toFixed(2);
-                row.querySelector('.net-input').value = netAmount.toFixed(2);
-
-                billTotal += netAmount;
-            });
-
-            document.getElementById('totalBillAmount').value = billTotal.toFixed(2);
         }
-
-        // Run once on load for first row
-        reindexRows();
     });
 </script>
-
 </body>
 </html>

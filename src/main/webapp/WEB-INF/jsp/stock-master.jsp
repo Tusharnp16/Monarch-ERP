@@ -173,6 +173,7 @@
                             <thead>
                             <tr>
                                 <th>SID</th>
+                                <th>Product</th>
                                 <th>Variant</th>
                                 <th class="ps-3">Batch No</th>
                                 <th>Quantity</th>
@@ -190,6 +191,7 @@
                                     <td class="ps-3">
                                         <strong><c:out value="${s.stockMasterId}"/></strong>
                                     </td>
+                                    <td><c:out value="${s.variant.product.productName}"/></td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty s.variant}">

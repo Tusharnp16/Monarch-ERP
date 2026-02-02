@@ -24,4 +24,6 @@ public interface StockMasterRepository extends JpaRepository<StockMaster,Long> {
 
     List<StockMaster> findByBatchNoContainingIgnoreCase(String term);
 
+    List<StockMaster> findAllByOrderByStockMasterIdDesc();
+
 }
