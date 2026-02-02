@@ -37,7 +37,7 @@ class StockMasterController {
 
     @GetMapping("/{id}")
     public String viewStockMaster(@PathVariable Long id, Model model) {
-        model.addAttribute("stockMasters", java.util.Collections.singletonList(stockMasterService.getStockMaster(id)));
+        model.addAttribute("stocks", java.util.Collections.singletonList(stockMasterService.getStockMaster(id)));
         return "stock-master";
     }
 
@@ -63,5 +63,9 @@ class StockMasterController {
         return "redirect:/stockmaster";
     }
 
-
+    @GetMapping("/search")
+    public String searchStock(@RequestParam("term") String term,Model model){
+        model.addAttribute("stocks",stockMasterService.searchByBatchNo(term));
+        return "stock-table-fragment";
+    }
 }

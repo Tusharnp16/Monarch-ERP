@@ -76,6 +76,7 @@
                                         <th style="width:40%">Variant</th>
                                         <th>Qty</th>
                                         <th>MRP</th>
+                                        <th>Selling Price</th>
                                         <th>Price</th>
                                         <th>Total</th>
                                         <th></th>
@@ -136,7 +137,7 @@
 </div>
 
 <script>
-    // Data passed from Spring Controller
+
     const inventoryData = [
         <c:forEach items="${inventory}" var="i" varStatus="s">
             <c:if test="${not empty i.variant.variantName}">
@@ -145,7 +146,8 @@
                     name: "${i.variant.variantName}",
                     price: ${i.variant.sellingPrice != null ? i.variant.sellingPrice.price : 0},
                     mrp : ${i.variant.mrp!=null ? i.variant.mrp.price : 0},
-                    stock: ${i.quantity != null ? i.quantity : 0}
+                    sellingPrice : ${i.variant.sellingPrice !=null ? i.variant.sellingPrice.price : 0},
+                    stock: ${i.availableQuantity != null ? i.availableQuantity : 0}
                 }<c:if test="${!s.last}">,</c:if>
             </c:if>
         </c:forEach>

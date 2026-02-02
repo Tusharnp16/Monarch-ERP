@@ -106,8 +106,7 @@
                             <tr>
                                 <th>Inventory Id</th>
                                 <th class="">Variant / SKU</th>
-                                <th>On Hand</th>
-                                <th>Reserved</th>
+                                <th>In Stock</th>
                                 <th>Available</th>
                                 <th>Status</th>
                                 <th class="text-end pe-3">Actions</th>
@@ -136,10 +135,9 @@
                                         </td>
 
                                             <td><c:out value="${item.availableQuantity}"/></td>
-                                            <td><c:out value="20"/></td>
                                             <td><span class="fw-bold"><c:out value="${item.quantity}"/></span></td>
                                             <td>
-                                                <c:set var="avail" value="${30}" />
+                                                <c:set var="avail" value="${item.availableQuantity}" />
                                                 <c:choose>
                                                     <c:when test="${avail <= 0}">
                                                         <span class="status-pill status-out"></span> Out of Stock

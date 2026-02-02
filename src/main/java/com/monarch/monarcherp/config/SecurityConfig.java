@@ -33,9 +33,6 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/products/**").permitAll()
-                        .requestMatchers("/variants/**").hasRole("ADMIN")
-                        .requestMatchers("/inventory/**").hasRole("USER")
                         .anyRequest().authenticated()
                 );
 

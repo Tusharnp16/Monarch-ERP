@@ -52,14 +52,12 @@ class SalesInvoiceController {
     @GetMapping("/salesinvoice/view")
     public String viewInvoice(Model model) {
 
-
         model.addAttribute("invoice", salesInvoiceService.getAllSalesInvoices());
         model.addAttribute("items", salesItemService.getAllSalesItems());
         model.addAttribute("customer", customerService.getAllCustomers());
 
         return "salesview";
     }
-
 
     @PostMapping("/add")
     public String addSalesInvoice(@ModelAttribute SalesInvoice salesInvoice) {
@@ -92,6 +90,9 @@ class SalesInvoiceController {
         long count = salesInvoiceRepository.countByFinancialYearPrefix(prefix) + 1;
         return prefix + String.format("%04d", count);
     }
+
+
+
 
 
 }

@@ -8,7 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stock_master")
+@Table(name = "stock_master", indexes = {
+        @Index(name="idx_stock_batch", columnList ="batch_no" ),
+        @Index(name="idx_stock_variant", columnList ="variant_id")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

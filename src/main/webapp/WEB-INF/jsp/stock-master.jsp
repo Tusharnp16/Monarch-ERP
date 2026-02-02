@@ -274,7 +274,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Simple client-side search for Batch No
+
+
     document.getElementById('stockSearch').addEventListener('input', function (e) {
         const term = e.target.value.toLowerCase();
         document.querySelectorAll('#stockTableBody tr').forEach(row => {
@@ -282,6 +283,19 @@
             row.style.display = content.includes(term) ? '' : 'none';
         });
     });
+
+
+    document.getElementById('stockSearch').addEventListener('input', function () {
+        const term = this.value;
+
+        fetch(`/stockmaster/search?term=` + encodeURIComponent(term))
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('stockTableBody').innerHTML = html;
+            })
+            .catch(err => console.error('Search error:', err));
+    });
+
 
     (function () {
         'use strict'

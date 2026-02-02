@@ -35,6 +35,10 @@ public class StockMasterService {
         return prd + "-" + stockMaster + "-" + expire;
     }
 
+    public List<StockMaster> searchByBatchNo(String batchNo){
+        return stockMasterRepository.findByBatchNoContainingIgnoreCase(batchNo);
+    }
+
 
     public StockMaster saveStockMaster(StockMaster stockMaster) {
         return stockMasterRepository.save(stockMaster);
