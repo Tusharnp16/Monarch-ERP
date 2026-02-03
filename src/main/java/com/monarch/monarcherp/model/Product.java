@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -36,7 +37,8 @@ public class Product {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Variant> variants = new ArrayList<>();
 
     @PrePersist
