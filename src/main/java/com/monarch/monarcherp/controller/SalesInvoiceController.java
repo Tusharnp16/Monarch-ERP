@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.controller;
 
+import com.monarch.monarcherp.config.DiscountConfig;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.repository.SalesInvoiceRepository;
@@ -20,15 +21,17 @@ class SalesInvoiceController {
     private final SalesItemService salesItemService;
     private final CustomerService customerService;
     private final InventoryService inventoryService;
+    private final DiscountConfig discountConfig;
 
     @Autowired
     private SalesInvoiceRepository salesInvoiceRepository;
 
-    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService,SalesItemService salesItemService) {
+    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService, SalesItemService salesItemService, DiscountConfig discountConfig) {
         this.salesInvoiceService = salesInvoiceService;
         this.customerService = customerService;
         this.inventoryService = inventoryService;
         this.salesItemService=salesItemService;
+        this.discountConfig = discountConfig;
     }
 
     @GetMapping
@@ -40,6 +43,17 @@ class SalesInvoiceController {
                         .filter(i->i.getVariant()!=null)
                         .collect(Collectors.toList());
         model.addAttribute("inventory", activeInventory);
+
+        model.addAttribute("maxDiscountLimit", discountConfig.getMaxDiscountValue());
+
+        try {
+            List<Object[]> topSeller = salesItemService.getWeeklySales();
+            System.out.println("Data found: " + topSeller.size());
+            model.addAttribute("topSellers", topSeller);
+        } catch (Exception e) {
+            System.out.println("Error fetching top sellers: " + e.getMessage());
+            e.printStackTrace();
+        }
         return "sales";
     }
 

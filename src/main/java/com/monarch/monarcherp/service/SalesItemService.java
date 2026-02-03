@@ -1,9 +1,11 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.SalesItem;
 import com.monarch.monarcherp.repository.SalesItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,6 +35,11 @@ public class SalesItemService {
 
     public long getTotalSalesItems() {
         return salesItemRepository.count();
+    }
+
+    public List<Object[]> getWeeklySales(){
+        LocalDate date=LocalDate.now().minusDays(7);
+        return salesItemRepository.findTopSellingProducts(date);
     }
 
     public boolean salesItemExists(Long id) {

@@ -263,7 +263,7 @@
                             <td>
                                 <select class="form-select form-select-sm" name="items[0].variant.variantId" required>
                                     <c:forEach items="${variants}" var="v">
-                                        <option value="${v.variantId}">${v.product.productName} (${v.variantName})
+                                        <option value="${v.variantId}">${v.product.productName} [${v.variantName}] (${v.colour} / ${v.size})
                                         </option>
                                     </c:forEach>
                                 </select>

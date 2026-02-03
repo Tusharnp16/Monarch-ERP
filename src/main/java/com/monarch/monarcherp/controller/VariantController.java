@@ -21,7 +21,7 @@ class VariantController {
     @GetMapping
     public String viewVariant(Model model) {
         model.addAttribute("variants", variantService.getAllVariants());
-        model.addAttribute("parentProducts",productService.getAllProducts(0,20));
+        model.addAttribute("parentProducts",productService.getAllProducts(2500,20));
         return "variants";
     }
 

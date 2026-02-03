@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,13 +8,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        .invoice-card { border-top: 4px solid #0d6efd; }
-        .item-row { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .bg-soft { background-color: #f8f9fa; }
-        .stock-label { font-size: 0.75rem; display: block; margin-top: 4px; min-height: 1rem; }
-        .low-stock { color: #dc3545; font-weight: bold; }
+        .invoice-card {
+            border-top: 4px solid #0d6efd;
+        }
 
-         body { background-color: #f4f6f9; }
+        .item-row {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .bg-soft {
+            background-color: #f8f9fa;
+        }
+
+        .stock-label {
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 4px;
+            min-height: 1rem;
+        }
+
+        .low-stock {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        body {
+            background-color: #f4f6f9;
+        }
 
         .is-invalid {
             border-color: #dc3545 !important;
@@ -30,7 +51,7 @@
         .invoice-card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .invoice-card .card-header {
@@ -38,9 +59,13 @@
             font-size: 15px;
         }
 
-        .item-row { border-bottom: 1px solid #f1f1f1; }
+        .item-row {
+            border-bottom: 1px solid #f1f1f1;
+        }
 
-        .bg-soft { background-color: #f8f9fa; }
+        .bg-soft {
+            background-color: #f8f9fa;
+        }
 
         .stock-label {
             font-size: 0.75rem;
@@ -48,7 +73,10 @@
             display: block;
         }
 
-        .low-stock { color: #dc3545; font-weight: 600; }
+        .low-stock {
+            color: #dc3545;
+            font-weight: 600;
+        }
 
         #grandTotal {
             font-size: 1.4rem;
@@ -86,7 +114,8 @@
                             <div class="mb-3">
                                 <label class="form-label">Mobile Number</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" maxlength="10" name="customer.mobile" id="custMobile" required>
+                                    <input type="text" class="form-control" maxlength="10" name="customer.mobile"
+                                           id="custMobile" required>
                                     <button class="btn btn-outline-primary" type="button" onclick="fetchCustomer()">
                                         <i class="fa-solid fa-search"></i>
                                     </button>
@@ -121,38 +150,45 @@
                             </div>
                             <table class="table align-middle" id="itemsTable">
                                 <thead>
-                                    <tr class="text-muted small">
-                                        <th style="width:40%">Variant</th>
-                                        <th>Qty</th>
-                                        <th>MRP</th>
-                                        <th>Selling Cost</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-                                        <th></th>
-                                    </tr>
+                                <tr class="text-muted small">
+                                    <th style="width:40%">Variant</th>
+                                    <th>Qty</th>
+                                    <th>MRP</th>
+                                    <th>Selling Cost</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="item-row">
-                                        <td>
-                                            <select class="form-select variant-select" name="items[0].variant.variantId" onchange="updateRowDetails(this)" required>
-                                                <option value="">Select Variant</option>
-                                                <c:forEach items="${inventory}" var="i">
-                                                    <c:if test="${not empty i.variant.variantName}">
-                                                        <option value="${i.variant.variantId}">${i.variant.variantName}</option>
-                                                    </c:if>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" class="form-control qty" name="items[0].quantity" value="1" min="1" oninput="validateStock(this)" required>
-                                            <small class="stock-label text-muted"></small>
-                                        </td>
-                                        <td><input type="number" class="form-control mrp" name="items[0].sellingPrice"  step="0.01" required></td>
+                                <tr class="item-row">
+                                    <td>
+                                        <select class="form-select variant-select" name="items[0].variant.variantId"
+                                                onchange="updateRowDetails(this)" required>
+                                            <option value="">Select Variant</option>
+                                            <c:forEach items="${inventory}" var="i">
+                                                <c:if test="${not empty i.variant.variantName}">
+                                                    <option value="${i.variant.variantId}">${i.variant.variantName} ( ${i.variant.colour} / ${i.variant.size} )</option>
+                                                </c:if>
+                                            </c:forEach>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control qty" name="items[0].quantity" value="1"
+                                               min="1" oninput="validateStock(this)" required>
+                                        <small class="stock-label text-muted"></small>
+                                    </td>
+                                    <td><input type="number" class="form-control mrp" name="items[0].sellingPrice"
+                                               step="0.01" readonly required></td>
 
-                                        <td><input type="number" class="form-control price" name="items[0].unitPrice" step="0.01" oninput="calculate()" required></td>
-                                        <td><span class="row-total fw-bold">0.00</span></td>
-                                        <td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>
-                                    </tr>
+                                    <td><input type="number" class="form-control price" name="items[0].unitPrice"
+                                               step="0.01" oninput="calculate()" readonly required></td>
+                                    <td><span class="row-total fw-bold">0.00</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-link text-danger"
+                                                onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -161,7 +197,8 @@
                             <div class="row">
                                 <div class="col-md-7">
                                     <label class="form-label text-muted small fw-bold">Internal Notes</label>
-                                    <textarea class="form-control" name="notes" rows="3" placeholder="Reference..."></textarea>
+                                    <textarea class="form-control" name="notes" rows="3"
+                                              placeholder="Reference..."></textarea>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="d-flex justify-content-between mb-2">
@@ -170,7 +207,9 @@
                                     </div>
                                     <div class="d-flex justify-content-between mb-2 align-items-center">
                                         <span class="text-muted">Discount</span>
-                                        <input type="number" name="discountAmount" id="discount" class="form-control form-control-sm w-50" value="0" min="0" oninput="calculate()">
+                                        <input type="number" name="discountAmount" id="discount"
+                                               class="form-control form-control-sm w-50" value="0" min="0"
+                                               oninput="calculate()">
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between">
@@ -184,6 +223,35 @@
                 </div>
             </div>
         </form>
+        <div class="card mt-4 invoice-card">
+            <div class="card-header bg-white fw-bold">
+                <i class="fa-solid fa-fire text-danger me-2"></i>Top Selling (7 Days)
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Variant</th>
+                    <th>Specs</th>
+                    <th>Sold</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${topSellers}" var="item">
+                    <tr>
+                        <td>${item[0]}</td>
+                        <td>${item[1]}</td>
+                        <td>
+                            <span class="badge bg-secondary">${item[2]}</span> <span
+                                class="badge bg-info">${item[3]}</span></td>
+                        <td class="fw-bold text-primary">${item[4]}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -198,7 +266,7 @@
             mobileTimer = setTimeout(fetchCustomer, 400); // slight delay to avoid rapid API calls
         }
 
-        if(mobile.length==0){
+        if (mobile.length == 0) {
             document.getElementById('custName').value = '';
             document.getElementById('custEmail').value = '';
             document.getElementById('statusDiv').value = '';
@@ -209,15 +277,17 @@
 
     const inventoryData = [
         <c:forEach items="${inventory}" var="i" varStatus="s">
-            <c:if test="${not empty i.variant.variantName}">
-                {
-                    id: "${i.variant.variantId}",
-                    name: "${i.variant.variantName}",
-                    price: ${i.variant.sellingPrice != null ? i.variant.sellingPrice.price : 0},
-                    mrp : ${i.variant.mrp!=null ? i.variant.mrp.price : 0},
-                    stock: ${i.availableQuantity != null ? i.availableQuantity : 0}
-                }<c:if test="${!s.last}">,</c:if>
-            </c:if>
+        <c:if test="${not empty i.variant.variantName}">
+        {
+            id: "${i.variant.variantId}",
+            name: "${i.variant.variantName}",
+            color: "${i.variant.colour}",
+            size: "${i.variant.size}",
+            price: ${i.variant.sellingPrice != null ? i.variant.sellingPrice.price : 0},
+            mrp: ${i.variant.mrp!=null ? i.variant.mrp.price : 0},
+            stock: ${i.availableQuantity != null ? i.availableQuantity : 0}
+        }<c:if test="${!s.last}">, </c:if>
+        </c:if>
         </c:forEach>
     ];
 
@@ -242,6 +312,7 @@
     }
 
     let rowCount = 1;
+
     function addRow() {
         const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
         const newRow = table.insertRow();
@@ -249,23 +320,23 @@
 
         let options = '<option value="">Select Variant</option>';
         inventoryData.forEach(v => {
-            options += '<option value="' + v.id + '">' + v.name + '</option>';
+            options += '<option value="' + v.id + '">' + v.name + ' (' + v.color + ' / ' + v.size + ')</option>';
         });
 
         newRow.innerHTML =
             '<td>' +
-                '<select class="form-select variant-select" name="items[' + rowCount + '].variant.variantId" onchange="updateRowDetails(this)" required>' +
-                    options +
-                '</select>' +
+            '<select class="form-select variant-select" name="items[' + rowCount + '].variant.variantId" onchange="updateRowDetails(this)" required>' +
+            options +
+            '</select>' +
             '</td>' +
             '<td>' +
-                '<input type="number" class="form-control qty" name="items[' + rowCount + '].quantity" value="1" min="1" oninput="validateStock(this)" required>' +
-                '<small class="stock-label text-muted"></small>' +
+            '<input type="number" class="form-control qty" name="items[' + rowCount + '].quantity" value="1" min="1" oninput="validateStock(this)" required>' +
+            '<small class="stock-label text-muted"></small>' +
             '</td>' +
             '<td><input type="number" class="form-control mrp" name="items[' + rowCount + '].mrp" step="0.01" readonly></td>' +
 
             '<td><input type="number" class="form-control price" name="items[' + rowCount + '].unitPrice" step="0.01" oninput="calculate()" readonly></td>' +
-              '<td><span class="row-total fw-bold">0.00</span></td>' +
+            '<td><span class="row-total fw-bold">0.00</span></td>' +
             '<td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>';
         rowCount++;
     }
@@ -312,7 +383,6 @@
             e.preventDefault();
             return;
         }
-
 
 
         if (name.length < 2) {
@@ -385,12 +455,15 @@
         let discountInput = document.getElementById('discount');
         let discount = parseFloat(discountInput.value) || 0;
 
-        const maxDiscount = subtotal * 0.5;
+        const limitPercentage = ${maxDiscountLimit != null ? maxDiscountLimit : 0.15};
+        const maxAllowedDiscount = subtotal * limitPercentage;
 
+        if (discount > maxAllowedDiscount) {
 
-        if (discount > maxDiscount) {
-            discount = maxDiscount;
-            discountInput.value = maxDiscount.toFixed(2);
+            alert("Maximum allowed discount is " + (limitPercentage * 100) + "% (₹" + maxAllowedDiscount.toFixed(2) + ")");
+
+            discount = maxAllowedDiscount;
+            discountInput.value = maxAllowedDiscount.toFixed(2);
             discountInput.classList.add("is-invalid");
         } else {
             discountInput.classList.remove("is-invalid");
@@ -398,18 +471,47 @@
 
         document.getElementById('subtotal').innerText = subtotal.toFixed(2);
         document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
-
-        // const subtotal = parseFloat(document.getElementById("subtotal").innerText) || 0;
-        // const discount = parseFloat(document.getElementById("discount").value) || 0;
-
-        if (discount > subtotal * 0.5) {
-            alert("Discount cannot exceed 50% of subtotal");
-            document.getElementById("discount").classList.add("is-invalid");
-            e.preventDefault();
-            return;
-        }
-
     }
+    // function calculate() {
+    //     let subtotal = 0;
+    //
+    //     document.querySelectorAll('.item-row').forEach(row => {
+    //         const qty = parseFloat(row.querySelector('.qty').value) || 0;
+    //         const price = parseFloat(row.querySelector('.price').value) || 0;
+    //         const total = qty * price;
+    //         row.querySelector('.row-total').innerText = total.toFixed(2);
+    //         subtotal += total;
+    //     });
+    //
+    //     let discountInput = document.getElementById('discount');
+    //     let discount = parseFloat(discountInput.value) || 0;
+    //
+    //     const maxDiscount = subtotal * 0.5;
+    //
+    //
+    //     if (discount > maxDiscount) {
+    //         discount = maxDiscount;
+    //         discountInput.value = maxDiscount.toFixed(2);
+    //         discountInput.classList.add("is-invalid");
+    //     } else {
+    //         discountInput.classList.remove("is-invalid");
+    //     }
+    //
+    //     document.getElementById('subtotal').innerText = subtotal.toFixed(2);
+    //     document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
+    //
+    //     // const subtotal = parseFloat(document.getElementById("subtotal").innerText) || 0;
+    //     // const discount = parseFloat(document.getElementById("discount").value) || 0;
+    //
+    //     if (discount > subtotal * 0.5) {
+    //         alert("Discount cannot exceed 50% of subtotal");
+    //         document.getElementById("discount").classList.add("is-invalid");
+    //         e.preventDefault();
+    //         return;
+    //     }
+    //
+    // }
+
     // Run calculation once on load
     window.onload = calculate;
 </script>
