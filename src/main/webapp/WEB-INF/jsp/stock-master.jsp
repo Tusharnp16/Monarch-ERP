@@ -191,7 +191,7 @@
                                     <td class="ps-3">
                                         <strong><c:out value="${s.stockMasterId}"/></strong>
                                     </td>
-                                    <td><c:out value="${s.variant.product.productName}"/></td>
+                                    <td><c:out value="${s.variant.product.productName}"/></td>c
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty s.variant}">

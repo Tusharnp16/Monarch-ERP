@@ -3,6 +3,7 @@ package com.monarch.monarcherp.controller;
 import com.monarch.monarcherp.repository.ProductRepository;
 import com.monarch.monarcherp.service.ProductService;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.monarch.monarcherp.model.Product;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/products")
@@ -52,19 +55,25 @@ public class ProductController {
     public String viewProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             Model model
     ) {
         Page<Product> productPage;
+//
+//        if (search != null && !search.trim().isEmpty()) {
+//            productPage = productService.searchProducts(search.trim(), page, 20,startDate,endDate);
+//        } else {
+//            productPage = productService.getAllProducts(page, 20);
+//            search = ""; // prevent null in JSP
+//        }
 
-        if (search != null && !search.trim().isEmpty()) {
-            productPage = productService.searchProducts(search.trim(), page, 20);
-        } else {
-            productPage = productService.getAllProducts(page, 20);
-            search = ""; // prevent null in JSP
-        }
+        productPage = productService.searchProducts(search, page, 20, startDate, endDate);
 
         model.addAttribute("products", productPage);
-        model.addAttribute("search", search);   // ⭐ IMPORTANT
+        model.addAttribute("search", search);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("activeCount", 2);
 
         return "products";

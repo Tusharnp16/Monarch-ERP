@@ -2,6 +2,7 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -31,17 +34,27 @@ public class ProductService {
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
 //        return productRepository.findAll(pageable);
-        return productRepository.nativeProductSearch(null,pageable);
+        return productRepository.nativeProductSearch(null,null,null,pageable);
 
     }
 
-    public Page<Product> searchProducts(String search, int page, int size) {
+    public Page<Product> searchProducts(String search, int page, int size, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
+
+
 //        return productRepository
 //                .findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
 //                        search, search, pageable);
 
-        return productRepository.nativeProductSearch(search,pageable);
+        System.out.println("DEBUG: Service Layer STARTDATE: "+startDate);
+        System.out.println("DEBUG: Service Layer ENDDATE: "+endDate);
+
+        Page<Product> pgprd= productRepository.nativeProductSearch(search,startDate,endDate,pageable);
+        System.out.println("Service Layer: "+pgprd.getTotalElements());
+
+        return pgprd;
+
+
     }
 
     public void deleteProduct(Long id) {

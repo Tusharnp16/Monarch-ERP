@@ -68,6 +68,15 @@
                         <form action="/products" method="get" class="d-flex gap-2">
                             <i class="fa-solid fa-magnifying-glass text-muted align-self-center"></i>
                             <input type="text" name="search" class="form-control" placeholder="Search by name or code..." value="${search}">
+                              <div class="col-md-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" name="startDate" class="form-control" value="${startDate}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" name="endDate" class="form-control" value="${endDate}">
+                                </div>
                             <button type="submit" class="btn btn-primary">Search</button>
                             <a href="/products" class="btn btn-outline-secondary">Clear</a>
                         </form>
@@ -91,11 +100,12 @@
                             <tbody>
                                 <c:choose>
                                     <c:when test="${not empty products.content}">
-                                        <c:forEach items="${products.content}" var="product">
+                                        <c:forEach items="${products.content}" var="product" varStatus="status">
                                             <tr>
-                                            <td class="ps-3 fw-bold text-muted">
-    <c:out value="${products.totalElements - (products.number * products.size) - status.index}" />
-</td>   <td class="truncate">
+                                                <td class="ps-3 fw-bold text-muted">
+                                                     ${(products.number * products.size) + status.index + 1}
+                                                 </td>
+                                                  <td class="truncate">
                                                     <strong>${product.productName}</strong>
                                                 </td>
                                                 <td><span class="badge badge-soft">${product.itemCode}</span></td>
@@ -147,13 +157,13 @@
                                         <%-- Show only a range of pages if there are many --%>
                                         <c:if test="${i >= products.number - 2 && i <= products.number + 2}">
                                             <li class="page-item ${products.number == i ? 'active' : ''}">
-                                                <a class="page-link" href="/products?page=${i}&search=${search}">${i + 1}</a>
+                                                <a class="page-link" href="/products?page=${i}&search=${search}&startDate=${startDate}&endDate=${endDate}">${i + 1}</a>
                                             </li>
                                         </c:if>
                                     </c:forEach>
 
                                     <li class="page-item ${products.last ? 'disabled' : ''}">
-                                        <a class="page-link" href="/products?page=${products.number + 1}&search=${search}">Next</a>
+                                        <a class="page-link" href="/products?page=${products.number + 1}&search=${search}&startDate=${startDate}&endDate=${endDate}">Next</a>
                                     </li>
                                 </ul>
                             </nav>
