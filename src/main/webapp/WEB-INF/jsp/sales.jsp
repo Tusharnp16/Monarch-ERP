@@ -235,6 +235,7 @@
                     <th>Variant</th>
                     <th>Specs</th>
                     <th>Sold</th>
+                    <th>Total Amount</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -246,6 +247,7 @@
                             <span class="badge bg-secondary">${item[2]}</span> <span
                                 class="badge bg-info">${item[3]}</span></td>
                         <td class="fw-bold text-primary">${item[4]}</td>
+                        <td class="fw-bold text-primary">${item[5]}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
 
-    @Query("SELECT v.product.productName, v.variantName,v.size,v.colour, SUM(si.quantity) as totalSales " +
+    @Query("SELECT v.product.productName, v.variantName,v.size,v.colour, SUM(si.quantity) as totalSales, SUM(s.grandTotal) as lineTotal " +
             "FROM SalesItem si " +
             "JOIN si.variant v " +
             "JOIN si.salesInvoice s " +
