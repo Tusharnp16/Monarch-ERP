@@ -29,15 +29,19 @@ public class ProductService {
     }
 
     public Page<Product> getAllProducts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
-        return productRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
+//        return productRepository.findAll(pageable);
+        return productRepository.nativeProductSearch(null,pageable);
+
     }
 
     public Page<Product> searchProducts(String search, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
-        return productRepository
-                .findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
-                        search, search, pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
+//        return productRepository
+//                .findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
+//                        search, search, pageable);
+
+        return productRepository.nativeProductSearch(search,pageable);
     }
 
     public void deleteProduct(Long id) {

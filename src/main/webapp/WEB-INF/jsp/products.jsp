@@ -93,8 +93,9 @@
                                     <c:when test="${not empty products.content}">
                                         <c:forEach items="${products.content}" var="product">
                                             <tr>
-                                                <td class="ps-3">${product.productId}</td>
-                                                <td class="truncate">
+                                            <td class="ps-3 fw-bold text-muted">
+    <c:out value="${products.totalElements - (products.number * products.size) - status.index}" />
+</td>   <td class="truncate">
                                                     <strong>${product.productName}</strong>
                                                 </td>
                                                 <td><span class="badge badge-soft">${product.itemCode}</span></td>
