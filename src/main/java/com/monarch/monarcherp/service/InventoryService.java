@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventoryService {
@@ -18,4 +19,15 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
+
+    public Inventory updateInventory(Long id,int quantity){
+
+        Inventory inventory=inventoryRepository.findById(id).orElseThrow(()->new RuntimeException("Resource Not Found"));
+
+        inventory.setVariant(inventory.getVariant());
+
+        inventory.setQuantity(quantity);
+
+        return inventoryRepository.save(inventory);
+    }
 }

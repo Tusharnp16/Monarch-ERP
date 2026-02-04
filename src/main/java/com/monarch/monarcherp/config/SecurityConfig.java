@@ -33,6 +33,7 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/api/**",
                                 "/swagger-ui/**",
+                                "/inventory/**",
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

@@ -2,6 +2,7 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ public class ProductService {
     ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
 
     public Product saveProduct(Product product) {
         return productRepository.save(product);
@@ -69,10 +71,11 @@ public class ProductService {
         return productRepository.existsById(id);
     }
 
+    @Transactional
     public Product updateProductName(Long id, String newName) {
         Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         product.setProductName(newName);
-        return  productRepository.save(product);
+        return productRepository.save(product);
     }
 }
 

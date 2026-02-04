@@ -24,6 +24,9 @@ public class Inventory {
 
     private int quantity;
 
+    @Version
+    private Integer version;
+
     @Column(name="available_quantity")
     private int availableQuantity;
 

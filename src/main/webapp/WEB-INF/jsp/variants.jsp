@@ -241,8 +241,6 @@
             } else {
                 sellingInput.setCustomValidity("");
             }
-
-
                 if (!form.checkValidity()) {
                     event.preventDefault()
                     event.stopPropagation()

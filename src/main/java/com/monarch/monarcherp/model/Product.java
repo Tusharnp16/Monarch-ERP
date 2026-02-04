@@ -34,6 +34,9 @@ public class Product {
     @Column(unique = true, nullable = false)
     private String itemCode;
 
+    @Version
+    private Integer version;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

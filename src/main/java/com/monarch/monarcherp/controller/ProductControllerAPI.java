@@ -58,6 +58,7 @@ public class ProductControllerAPI {
             summary = "Update product name",
             description = "Updates the display name of an existing product. The ID must exist in the database."
     )
+
     @PatchMapping("/{id}/name")
     public ResponseEntity<ApiResponse<Product>> updateProductName(@PathVariable Long id, @RequestParam String newName) {
         Product updated = productService.updateProductName(id, newName);

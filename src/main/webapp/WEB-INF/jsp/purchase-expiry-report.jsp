@@ -79,6 +79,7 @@
         .expiry-badge { font-size: 0.75rem; padding: 0.4em 0.8em; border-radius: 50px; }
         .money-text { font-family: monospace; font-weight: bold; color: #2c3e50; }
     </style>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -93,7 +94,7 @@
             </div>
             <div class="btn-group">
                 <button onclick="window.print()" class="btn btn-outline-dark"><i class="fa-solid fa-print me-2"></i>Print PDF</button>
-                <button class="btn btn-primary"><i class="fa-solid fa-file-export me-2"></i>Export Excel</button>
+                <button id="exportExcel" class="btn btn-primary"><i class="fa-solid fa-file-export me-2"></i>Export Excel</button>
             </div>
         </div>
 
@@ -154,6 +155,45 @@
         </c:if>
     </main>
 </div>
+<script>
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        const data = [];
+
+        // Add Header Row for Excel
+        data.push(["Supplier", "Item Name", "Batch No", "Expiry Date", "Quantity", "Loss Value", "Invoice"]);
+
+        // Find all supplier sections
+        const supplierHeaders = document.querySelectorAll('.supplier-header');
+
+        supplierHeaders.forEach(header => {
+            const supplierName = header.querySelector('h4').innerText.trim();
+
+            // Find the immediate next sibling row which contains the item cards
+            const cardRow = header.nextElementSibling;
+            const cards = cardRow.querySelectorAll('.item-card');
+
+            cards.forEach(card => {
+                const itemName = card.querySelector('h6').innerText.trim();
+                const batchNo = card.querySelector('.text-muted').innerText.replace('Batch:', '').trim();
+                const expiry = card.querySelector('.expiry-badge').innerText.replace('Exp:', '').trim();
+                const qty = card.querySelector('.col-6 .fw-bold').innerText.trim();
+                const lossValue = card.querySelector('.money-text').innerText.trim();
+                const invoice = card.querySelector('.text-muted:last-of-type').innerText.replace('Inv:', '').trim();
+
+                // Push a row of data for this item
+                data.push([supplierName, itemName, batchNo, expiry, qty, lossValue, invoice]);
+            });
+        });
+
+        // Create Worksheet from the array
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Expiry Report");
+
+        // Download the file
+        XLSX.writeFile(wb, "Stock_Expiry_Report.xlsx");
+    });
+</script>
 
 </body>
 </html>

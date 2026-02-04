@@ -85,8 +85,6 @@ public class SalesInvoiceService {
 
             inventoryRepository.save(inventory);
 
-
-
         }
         salesInvoice.setTotalAmount(subtotal);
 
