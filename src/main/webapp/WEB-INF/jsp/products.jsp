@@ -152,9 +152,10 @@
                                     <li class="page-item ${products.first ? 'disabled' : ''}">
                                         <a class="page-link" href="/products?page=${products.number - 1}&search=${search}">Previous</a>
                                     </li>
+                                    <c:set var="startPage" value="${products.number - 2 < 0 ? 0 : products.number - 2}" />
+                                    <c:set var="endPage" value="${products.number + 2 >= products.totalPages ? products.totalPages - 1 : products.number + 2}" />
 
-                                    <c:forEach begin="0" end="${products.totalPages - 1}" var="i">
-                                        <%-- Show only a range of pages if there are many --%>
+                                    <c:forEach begin="${startPage}" end="${endPage}" var="i">
                                         <c:if test="${i >= products.number - 2 && i <= products.number + 2}">
                                             <li class="page-item ${products.number == i ? 'active' : ''}">
                                                 <a class="page-link" href="/products?page=${i}&search=${search}&startDate=${startDate}&endDate=${endDate}">${i + 1}</a>

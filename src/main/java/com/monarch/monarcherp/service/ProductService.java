@@ -8,10 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -72,10 +76,17 @@ public class ProductService {
     }
 
     @Transactional
+    @Retryable(retryFor = {SQLException.class}, maxAttempts = 5,backoff = @Backoff(delay = 5000))
     public Product updateProductName(Long id, String newName) {
         Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         product.setProductName(newName);
         return productRepository.save(product);
+    }
+
+    @Recover
+    public Product recover(SQLException e,Long id,String newName){
+        System.err.println("Database down");
+        throw new RuntimeException("Cant updatted right now server is down");
     }
 }
 
