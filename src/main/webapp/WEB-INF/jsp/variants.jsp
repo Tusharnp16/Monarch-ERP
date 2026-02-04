@@ -93,9 +93,9 @@
                                 </tr>
                             </thead>
                             <tbody id="variantTableBody">
-                                <c:forEach items="${variants}" var="variant">
+                                <c:forEach items="${variants}" var="variant" varStatus="status">
                                     <tr data-parent="${variant.product.productName}">
-                                        <td><strong><c:out value="${variant.variantId}"/></strong></td>
+                                        <td><strong>${status.index+1}</strong></td>
                                         <td><span class="badge badge-soft text-primary"><c:out value="${variant.product.itemCode}"/></span></td>
                                         <td class="truncate"><c:out value="${variant.product.productName}"/></td>
                                         <td class="truncate"><c:out value="${variant.variantName}"/></td>

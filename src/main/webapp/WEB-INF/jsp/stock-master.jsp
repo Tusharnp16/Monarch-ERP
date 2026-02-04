@@ -174,7 +174,6 @@
                             <tr>
                                 <th>SID</th>
                                 <th>Product</th>
-                                <th>Variant</th>
                                 <th class="ps-3">Batch No</th>
                                 <th>Quantity</th>
                                 <th>Purchase</th>
@@ -186,16 +185,17 @@
                             </tr>
                             </thead>
                             <tbody id="stockTableBody">
-                            <c:forEach items="${stocks}" var="s">
+                            <c:forEach items="${stocks}" var="s" varStatus="status">
                                 <tr data-batch="${s.stockMasterId}">
                                     <td class="ps-3">
-                                        <strong><c:out value="${s.stockMasterId}"/></strong>
+                                        <strong>
+                                        ${status.index+1}</strong>
                                     </td>
-                                    <td><c:out value="${s.variant.product.productName}"/></td>c
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty s.variant}">
-                                                <span class="text-dark fw-bold">${s.variant.variantName}</span>
+                                                <c:out value="${s.variant.product.productName}"/>
+                                                <span class="text-dark fw-bold"> ( ${s.variant.variantName} )</span>
                                             </c:when>
                                             <c:otherwise>
                                                 <span class="text-danger small">

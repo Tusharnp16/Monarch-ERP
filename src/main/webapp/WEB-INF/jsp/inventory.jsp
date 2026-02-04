@@ -115,9 +115,9 @@
                             <tbody id="inventoryTableBody">
                             <c:choose>
                                 <c:when test="${not empty inventoryList}">
-                                    <c:forEach items="${inventoryList}" var="item">
+                                    <c:forEach items="${inventoryList}" var="item" varStatus="status">
                                         <tr data-name="${item.variant.variantName}" data-sku="${item.variant.product.itemCode}">
-                                        <td><c:out value="${item.inventoryId}"/></td>
+                                        <td>${status.index+1}</td>
                                         <td>
                                          <c:choose>
                                             <c:when test="${not empty item.variant}">
