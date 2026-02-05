@@ -37,6 +37,13 @@ public class VariantService {
         variantRepository.deleteById(id);
     }
 
+    public List<Variant> getPaginatedVariant(Long lastId){
+        if(lastId==0 ||  lastId==null){
+            return variantRepository.findTop10ByOrderByVariantIdAsc();
+        }
+        return variantRepository.findTop10ByVariantIdGreaterThanOrderByVariantIdAsc(lastId);
+    }
+
     public long getTotalVariants() {
         return variantRepository.count();
     }

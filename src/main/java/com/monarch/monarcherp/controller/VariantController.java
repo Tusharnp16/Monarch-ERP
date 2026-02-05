@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/variants")
 class VariantController {
@@ -18,12 +20,36 @@ class VariantController {
     @Autowired
     private ProductService productService;
 
+//    @GetMapping
+//    public String viewVariant(Model model) {
+//        model.addAttribute("variants", variantService.getAllVariants());
+//        model.addAttribute("parentProducts",productService.getAllProducts(2500,20));
+//        return "variants";
+//    }
+
+
     @GetMapping
-    public String viewVariant(Model model) {
-        model.addAttribute("variants", variantService.getAllVariants());
-        model.addAttribute("parentProducts",productService.getAllProducts(2500,20));
+    public String viewPaginatedVariant(@RequestParam(value = "lastId",required = false) Long lastId, Model model) {
+
+       Long finalId= lastId == null ? 0L : lastId;
+
+        List<Variant> variants = variantService.getPaginatedVariant(finalId);
+
+        Long nextCursor = null;
+        boolean hasNext = false;
+
+        if (!variants.isEmpty()) {
+            nextCursor = variants.get(variants.size() - 1).getVariantId();
+            hasNext = variants.size() == 10;
+        }
+
+        model.addAttribute("variants", variants);
+        model.addAttribute("nextCursor", nextCursor);
+        model.addAttribute("hasNext", hasNext);
+        model.addAttribute("parentProducts", productService.getAllProducts(2500, 20));
         return "variants";
     }
+
 
     @GetMapping("/{id}")
     public String viewVariant(@PathVariable Long id, Model model) {
