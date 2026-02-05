@@ -89,4 +89,3 @@ public class ProductService {
         throw new RuntimeException("Cant updatted right now server is down");
     }
 }
-

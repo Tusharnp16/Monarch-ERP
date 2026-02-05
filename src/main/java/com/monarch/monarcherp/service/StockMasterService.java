@@ -35,6 +35,10 @@ public class StockMasterService {
         return prd + "-" + stockMaster + "-" + expire;
     }
 
+    public List<StockMaster> getStockMasterByVariantId(Long id){
+        return stockMasterRepository.findByVariant_VariantId(id);
+    }
+
     public List<StockMaster> searchByBatchNo(String batchNo){
         return stockMasterRepository.findByBatchNoContainingIgnoreCase(batchNo);
     }

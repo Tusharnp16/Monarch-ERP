@@ -114,7 +114,8 @@
                                                     <button class="btn btn-sm btn-outline-info me-1"
                                                             data-bs-toggle="modal" data-bs-target="#editProductModal"
                                                             data-id="${product.productId}" data-name="${product.productName}"
-                                                            data-code="${product.itemCode}">
+                                                            data-code="${product.itemCode}"
+                                                             data-version="${product.version}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-outline-danger"
@@ -185,6 +186,7 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" name="productId" id="editProductId">
+                <input type="hidden" name="version" id="versionId">
                 <div class="mb-3">
                     <label class="form-label">Product Name</label>
                     <input type="text" class="form-control" name="productName" id="editProductName" required>
@@ -256,6 +258,7 @@
         document.getElementById('editProductId').value = btn.getAttribute('data-id');
         document.getElementById('editProductName').value = btn.getAttribute('data-name');
         document.getElementById('editItemCode').value = btn.getAttribute('data-code');
+        document.getElementById('versionId').value = btn.getAttribute('data-version');
     });
 
     // Populate Delete Modal

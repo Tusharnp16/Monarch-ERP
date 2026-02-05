@@ -64,7 +64,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM products p WHERE " +
             "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
             "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
-            "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp))",
+            "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp)) " +
+            "AND deleted_prod='false'",
             countQuery = "SELECT count(*) FROM products p WHERE " +
                     "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
                     "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
