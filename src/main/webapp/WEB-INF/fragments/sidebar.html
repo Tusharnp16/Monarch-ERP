@@ -2,52 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Monarch ERP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        /* --- Monarch ERP Global Variables --- */
+        /* --- Monarch ERP Variables --- */
         :root {
             --sidebar-width: 260px;
-            --brand-color: #0d6efd;
+            --nav-blue: #0ea5e9;
+            --nav-active-bg: rgba(14, 165, 233, 0.15);
+            --sidebar-gradient: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-muted: #94a3b8;
             --bg-soft: #f8f9fa;
-            --card-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
-            --sidebar-bg: #212529;
-        }
-
-.sidebar-logo {
-    height: 30px;
-    width: auto;
-    object-fit: contain;
-    vertical-align: middle;
-
-    /* --- Rounded Corner Logic --- */
-    border-radius: 6px;         /* Adjust this number for more or less curve */
-    border: 1px solid rgb(18, 18, 18); /* Optional: adds a subtle border so it pops */
-    background-color: #5e5252;     /* Optional: if your logo has a transparent background but you want a white rounded box behind it */
-    padding: 2px;               /* Optional: gives the logo a little "breathing room" inside the box */
-}
-
-.brand-text {
-    font-size: 1.1rem;
-    font-weight: 700;
-    white-space: nowrap; /* Prevents "ERP" from dropping to a second line */
-}
-
-/* Ensure the brand container doesn't grow too large */
-.brand {
-    overflow: hidden;
-    height: 40px;
-    display: flex;
-    align-items: center;
-}
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
 
         /* --- Base Layout --- */
-        html, body { height: 100%; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg-soft); }
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-soft);
+        }
 
         .app-shell {
             display: grid;
@@ -55,151 +32,223 @@
             min-height: 100vh;
         }
 
-        /* --- Sidebar Fragment Styles --- */
+        /* --- Sidebar Styles --- */
         .sidebar {
-            background: var(--sidebar-bg);
+            background: var(--sidebar-gradient);
             color: #fff;
             position: sticky;
             top: 0;
             height: 100vh;
-            padding: 1rem;
-            border-right: 1px solid rgba(255,255,255,0.08);
+            width: var(--sidebar-width);
             display: flex;
             flex-direction: column;
+            border-right: 1px solid var(--border-glass);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+            /* THE FIX FOR SCROLLING: */
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        .sidebar .brand { font-weight: 700; letter-spacing: 0.3px; font-size: 1.25rem; }
-        .sidebar .nav-link {
-            color: #adb5bd;
-            border-radius: .375rem;
-            padding: 0.8rem 1rem;
-            transition: all 0.2s;
-        }
+        /* Sleek Custom Scrollbar */
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
-        .sidebar .nav-link.active, .sidebar .nav-link:hover {
-            color: #fff;
-            background: rgba(255,255,255,0.08);
-        }
+        /* --- Brand Section --- */
+        .brand-container {
 
-        /* --- Main Content & Topbar --- */
-        .main { padding: 0; display: flex; flex-direction: column; }
+            padding: 1.5rem 1rem;
 
-        .topbar {
             position: sticky;
             top: 0;
-            z-index: 1030;
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
+            background: #0f172a; /* Match gradient top */
+            z-index: 10;
         }
 
-        .topbar .container-fluid { padding: .75rem 1rem; }
+        .brand-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        /* --- Global Component Styles --- */
-        .card { border: none; box-shadow: var(--card-shadow); border-radius: 0.5rem; }
-        .table thead { background-color: #f1f3f5; }
-        .text-muted-small { color: #6c757d; font-size: .875rem; }
+        .sidebar-logo {
+            height: 28px;
+            width: auto;
+            border-radius: 6px;
+            background: #5e5252;
+            padding: 2px;
+            border: 1px solid #121212;
+        }
 
-        /* --- Status Indicators --- */
-        .status-pill { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .status-instock { background-color: #198754; }
-        .status-low { background-color: #fd7e14; }
-        .status-out { background-color: #dc3545; }
+        .brand-text {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
 
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 992px) {
-            .app-shell { grid-template-columns: 1fr; }
-            .sidebar {
-                position: fixed;
-                left: -100%;
-                width: var(--sidebar-width);
-                transition: left .25s ease;
-                z-index: 1040;
-            }
-            .sidebar.open { left: 0; }
+        /* --- Navigation --- */
+        .nav-list {
+            list-style: none;
+            padding: 0 1rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .nav-item { margin-bottom: 4px; }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.1rem;
+            margin-right: 12px;
+            transition: color 0.2s;
+        }
+
+        /* --- Active & Hover States --- */
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            color: #fff !important;
+            background: var(--nav-active-bg) !important;
+            border: 1px solid var(--nav-blue) !important;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+        }
+
+        .nav-link.active i {
+            color: var(--nav-blue);
+        }
+
+        .nav-link.logout-btn:hover {
+            background: rgba(220, 53, 69, 0.1);
+            color: #ff4d4d;
+            border-color: rgba(220, 53, 69, 0.2);
+        }
+
+        /* --- Footer --- */
+        .sidebar-footer {
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .version-tag {
+            font-size: 0.7rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        hr.divider {
+            border: 0;
+            border-top: 1px solid var(--border-glass);
+            margin: 1.5rem 0;
         }
     </style>
 </head>
 <body>
-<nav class="sidebar">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="brand d-flex align-items-centern gap-1">
-            <img src="/logo.png" alt="Monarch Logo" class="sidebar-logo">
-            <i class="fa-solid text-warning"></i>
-            <span>Monarch ERP</span>
+
+<div class="app-shell">
+    <nav class="sidebar">
+        <div class="brand-container">
+            <div class="brand-box">
+                <img src="/logo.png" alt="Monarch Logo" class="sidebar-logo">
+                <span class="brand-text">MONARCH ERP</span>
+            </div>
         </div>
-        <button class="btn btn-sm btn-outline-light d-lg-none" id="toggleSidebar">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-    </div>
 
-    <ul class="nav nav-pills flex-column gap-1">
-        <li class="nav-item">
-            <a href="/products" class="nav-link ${pageContext.request.requestURI.contains('products') ? 'active' : ''}">
-                <i class="fas fa-box me-2"></i> Products
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/variants" class="nav-link ${pageContext.request.requestURI.contains('variants') ? 'active' : ''}">
-                <i class="fas fa-tags me-2"></i> Variants
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/inventory" class="nav-link ${pageContext.request.requestURI.contains('inventory') ? 'active' : ''}">
-                <i class="fas fa-warehouse me-2"></i> Inventory
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/stockmaster" class="nav-link ${pageContext.request.requestURI.contains('stockmaster') ? 'active' : ''}">
-                <i class="fas fa-chart-line me-2"></i> Stock Master
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/purchase" class="nav-link ${pageContext.request.requestURI.endsWith('/purchase') ? 'active' : ''}">
-                <i class="fas fa-shopping-cart me-2"></i> Purchase
-            </a>
-        </li>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/products" class="nav-link ${pageContext.request.requestURI.contains('products') ? 'active' : ''}">
+                    <i class="fas fa-box"></i> Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/variants" class="nav-link ${pageContext.request.requestURI.contains('variants') ? 'active' : ''}">
+                    <i class="fas fa-tags"></i> Variants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/inventory" class="nav-link ${pageContext.request.requestURI.contains('inventory') ? 'active' : ''}">
+                    <i class="fas fa-warehouse"></i> Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/stockmaster" class="nav-link ${pageContext.request.requestURI.contains('stockmaster') ? 'active' : ''}">
+                    <i class="fas fa-chart-line"></i> Stock Master
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/purchase" class="nav-link ${pageContext.request.requestURI.endsWith('/purchase') ? 'active' : ''}">
+                    <i class="fas fa-shopping-cart"></i> Purchase
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/contact" class="nav-link ${pageContext.request.requestURI.contains('contact') ? 'active' : ''}">
+                    <i class="fas fa-address-book"></i> Contact
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/purchase/report" class="nav-link ${pageContext.request.requestURI.contains('report') ? 'active' : ''}">
+                    <i class="fas fa-file-alt"></i> Report
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/customer" class="nav-link ${pageContext.request.requestURI.contains('customer') ? 'active' : ''}">
+                    <i class="fas fa-user-friends"></i> Customer
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/salesinvoice" class="nav-link ${pageContext.request.requestURI.contains('sales') ? 'active' : ''}">
+                    <i class="fas fa-file-invoice-dollar"></i> Sales
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/salesitem/recentitems" class="nav-link ${pageContext.request.requestURI.contains('recentitems') ? 'active' : ''}">
+                    <i class="fas fa-history"></i> Recent Sales
+                </a>
+            </li>
 
-        <li class="nav-item">
-            <a href="/contact" class="nav-link ${pageContext.request.requestURI.contains('contact') ? 'active' : ''}">
-                <i class="fas fa-address-book me-2"></i> Contact
-            </a>
-        </li>
+            <hr class="divider">
 
-        <li class="nav-item">
-            <a href="/purchase/report" class="nav-link ${pageContext.request.requestURI.contains('report') ? 'active' : ''}">
-                <i class="fas fa-file-alt me-2"></i> Report
-            </a>
-        </li>
+            <li class="nav-item">
+                <a href="/auth/logout" onclick="logout()" class="nav-link logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
 
-        <li class="nav-item">
-            <a href="/customer" class="nav-link ${pageContext.request.requestURI.contains('customer') ? 'active' : ''}">
-                <i class="fas fa-file-alt me-2"></i> Customer
-            </a>
-        </li>
+        <div class="sidebar-footer">
+            <div class="version-tag">v1.0 Monarch ERP</div>
+        </div>
+    </nav>
 
-        <li class="nav-item">
-            <a href="/salesinvoice" class="nav-link ${pageContext.request.requestURI.contains('sales') ? 'active' : ''}">
-                <i class="fas fa-file-alt me-2"></i> Sales
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="/salesitem/recentitems" class="nav-link ${pageContext.request.requestURI.contains('recentitems') ? 'active' : ''}">
-                <i class="fas fa-file-alt me-2"></i> Recent Sales
-            </a>
-        </li>
-
-        <li class="nav-item">
-        <a href="/auth/logout" onclick="logout()" class="nav-link">
-            <i class="fas fa-sign-out-alt me-2"></i> Logout
-        </a>
-    </li>
-    </ul>
-    <hr class="border-secondary my-4">
-    <div class="text-muted-small text-center">
-        v1.0 Monarch ERP
-    </div>
-</nav>
+    <main class="main-content">
+    </main>
+</div>
 
 <script>
     function logout() {
@@ -214,7 +263,6 @@
             window.location.href = '/auth/login';
         });
     }
-
 </script>
 
 </body>

@@ -33,12 +33,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        // 1. Try to get token from Header
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
         }
-        // 2. Try to get token from Cookie (if header is missing)
+
         else if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
