@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class ProductControllerAPI {
         this.stockMasterService = stockMasterService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<ApiResponse<Product>> saveProduct(@RequestBody Product product) {
         Product savedProduct = productService.saveProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(savedProduct, "Product Created Successfully"));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EntityModel<Product>>> getProduct(@PathVariable Long id) {
@@ -108,6 +111,7 @@ public class ProductControllerAPI {
         return ResponseEntity.ok(ApiResponse.success(stockMasters, "Stock Fetched"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
@@ -119,6 +123,7 @@ public class ProductControllerAPI {
 //            description = "Updates the display name of an existing product. The ID must exist in the database."
 //    )
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/name")
     public ResponseEntity<ApiResponse<Product>> updateProductName(@PathVariable Long id, @RequestParam String newName) {
         Product updated = productService.updateProductName(id, newName);

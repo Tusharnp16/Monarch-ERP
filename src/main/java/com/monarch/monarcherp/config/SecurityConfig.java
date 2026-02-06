@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import jakarta.servlet.DispatcherType;
 
 @Configuration
-@EnableMethodSecurity  // enables @PreAuthorize
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired JwtFilter jwtFilter;
@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/auth/**",
                                 "/api/**",
+                                "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
                                 "/health").permitAll()

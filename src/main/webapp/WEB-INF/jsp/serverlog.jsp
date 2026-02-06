@@ -10,8 +10,8 @@
 <%@ page import="java.io.*, java.util.*" %>
 
 <%
-    // Server-side logic to read the file
-    String logPath = "/var/logs/system.log"; // Update this to your actual log path
+
+    String logPath = "C:\\Windows\\System32\\winevt\\Logs"; // Update this to your actual log path
     List<String> logLines = new ArrayList<>();
 
     try (BufferedReader reader = new BufferedReader(new FileReader(logPath))) {
