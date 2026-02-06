@@ -5,8 +5,10 @@ import com.monarch.monarcherp.dto.LoginRequest;
 import com.monarch.monarcherp.model.BlacklistedToken;
 import com.monarch.monarcherp.model.RefreshToken;
 import com.monarch.monarcherp.model.User;
+import com.monarch.monarcherp.model.UserLoginLog;
 import com.monarch.monarcherp.repository.BlacklistRepository;
 import com.monarch.monarcherp.repository.RefreshTokenRepository;
+import com.monarch.monarcherp.repository.UserLoginLogRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
 import com.monarch.monarcherp.service.TokenService;
 import com.monarch.monarcherp.service.UserService;
@@ -47,6 +49,9 @@ public class AuthController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserLoginLogRepository userLoginLogRepository;
+
     @GetMapping("/login")
     public String getLoginPage(){
         return "login";
@@ -82,11 +87,17 @@ public class AuthController {
         tokenService.saveRefreshToken(new RefreshToken(null, userDetails.getUsername(), refreshToken,
                 jwtUtils.getExpiration(refreshToken)));
 
+        UserLoginLog log=UserLoginLog.builder()
+                .username(userDetails.getUsername())
+                .build();
+        userLoginLogRepository.save(log);
+
         return ResponseEntity.ok(Map.of(
                 "accessToken", accessToken,
                 "refreshToken", refreshToken
         ));
     }
+
 
     @PostMapping("/refresh")
     @ResponseBody

@@ -28,6 +28,12 @@ class VariantController {
 //    }
 
 
+//    @GetMapping("/contact")
+//    public String health() {
+//        return "contacts";
+//    }
+
+
     @GetMapping
     public String viewPaginatedVariant(@RequestParam(value = "lastId",required = false) Long lastId, Model model) {
 

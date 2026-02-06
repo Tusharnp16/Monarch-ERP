@@ -54,3 +54,55 @@ class ContactController {
     }
 
 }
+//
+//
+//package com.monarch.monarcherp.controller;
+//
+//import com.monarch.monarcherp.model.Contact;
+//import com.monarch.monarcherp.service.ContactService;
+//import com.monarch.monarcherp.dto.ApiResponse;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//
+//@RestController
+//@RequestMapping("/api/contacts")
+//public class ContactController {
+//
+//    private final ContactService contactService;
+//
+//    public ContactController(ContactService contactService) {
+//        this.contactService = contactService;
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<List<Contact>>> getAllContacts() {
+//        List<Contact> contacts = contactService.getAllContacts();
+//        return ResponseEntity.ok(ApiResponse.success(contacts, "Contacts retrieved successfully"));
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ApiResponse<Contact>> getContactById(@PathVariable Long id) {
+//        Contact contact = contactService.getContact(id);
+//        return ResponseEntity.ok(ApiResponse.success(contact, "Contact found"));
+//    }
+//
+//    @PostMapping("/add")
+//    public ResponseEntity<ApiResponse<Contact>> addContact(@RequestBody Contact contact) {
+//        Contact savedContact = contactService.saveContact(contact);
+//        return ResponseEntity.ok(ApiResponse.success(savedContact, "Contact created successfully"));
+//    }
+//
+//    @PutMapping("/update") // Use PutMapping for updates
+//    public ResponseEntity<ApiResponse<Contact>> updateContact(@RequestBody Contact contact) {
+//        Contact updatedContact = contactService.saveContact(contact);
+//        return ResponseEntity.ok(ApiResponse.success(updatedContact, "Contact updated successfully"));
+//    }
+//
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<ApiResponse<Void>> deleteContact(@PathVariable Long id) {
+//        contactService.deleteContact(id);
+//        return ResponseEntity.ok(ApiResponse.success(null, "Contact deleted successfully"));
+//    }
+//}
