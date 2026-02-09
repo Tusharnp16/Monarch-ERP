@@ -71,7 +71,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request,HttpServletRequest httpRequest) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -87,8 +87,11 @@ public class AuthController {
         tokenService.saveRefreshToken(new RefreshToken(null, userDetails.getUsername(), refreshToken,
                 jwtUtils.getExpiration(refreshToken)));
 
+        String clientIp = getClientIp(httpRequest);
+
         UserLoginLog log=UserLoginLog.builder()
                 .username(userDetails.getUsername())
+                .loginIp(clientIp)
                 .build();
         userLoginLogRepository.save(log);
 
@@ -96,6 +99,30 @@ public class AuthController {
                 "accessToken", accessToken,
                 "refreshToken", refreshToken
         ));
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String remoteAddr = "";
+
+        if (request != null) {
+            remoteAddr = request.getHeader("X-Forwarded-For");
+            if (remoteAddr == null || "".equals(remoteAddr) || "unknown".equalsIgnoreCase(remoteAddr)) {
+                remoteAddr = request.getHeader("Proxy-Client-IP");
+            }
+            if (remoteAddr == null || "".equals(remoteAddr) || "unknown".equalsIgnoreCase(remoteAddr)) {
+                remoteAddr = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (remoteAddr == null || "".equals(remoteAddr) || "unknown".equalsIgnoreCase(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+
+        // If there are multiple IPs in X-Forwarded-For (comma separated), take the first one
+        if (remoteAddr != null && remoteAddr.contains(",")) {
+            return remoteAddr.split(",")[0].trim();
+        }
+
+        return remoteAddr;
     }
 
 

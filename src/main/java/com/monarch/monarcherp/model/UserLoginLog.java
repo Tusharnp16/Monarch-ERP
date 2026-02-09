@@ -23,4 +23,6 @@ public class UserLoginLog {
 
     @CreationTimestamp
     private LocalDateTime loginTime;
+
+    private String loginIp;
 }

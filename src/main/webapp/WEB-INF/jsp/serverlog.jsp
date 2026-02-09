@@ -90,7 +90,7 @@
                                                     <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">Success</span>
                                                 </td>
                                                 <td class="text-end pe-4">
-                                                    <span class="text-muted-small"><i class="fa-solid fa-display me-1"></i> System Verified</span>
+                                                    <span class="text-muted-small"><i class="fa-solid fa-display me-1"></i> ${log.loginIp}</span>
                                                 </td>
                                             </tr>
                                         </c:forEach>

@@ -53,4 +53,9 @@ class TestingController {
     public String varinat() {
         return "variants";
     }
+
+    @GetMapping("/customers")
+    public String customer() {
+        return "customers";
+    }
 }
