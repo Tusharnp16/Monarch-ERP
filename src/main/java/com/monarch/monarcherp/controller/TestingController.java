@@ -37,4 +37,11 @@ class TestingController {
         model.addAttribute("logs", userLoginLogRepository.findByUsernameOrderByLoginTimeDesc(currentUsername));
         return "serverlog";
     }
+
+    @GetMapping("/contacts")
+    public String contact() {
+        return "contacts";
+    }
+
+
 }
