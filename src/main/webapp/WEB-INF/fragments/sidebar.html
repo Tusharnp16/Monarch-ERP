@@ -148,6 +148,11 @@
             border-color: rgba(220, 53, 69, 0.2);
         }
 
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+             color: #fff;
+             background: rgba(255,255,255,0.08);
+        }
+
         /* --- Footer --- */
         .sidebar-footer {
             padding: 1.5rem;
@@ -167,6 +172,8 @@
             border-top: 1px solid var(--border-glass);
             margin: 1.5rem 0;
         }
+
+
     </style>
 </head>
 <body>
@@ -182,7 +189,7 @@
 
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="/products" class="nav-link ${pageContext.request.requestURI.contains('products') ? 'active' : ''}">
+                <a href="/products" class="nav-link">
                     <i class="fas fa-box"></i> Products
                 </a>
             </li>
@@ -242,7 +249,7 @@
             <hr class="divider">
 
             <li class="nav-item">
-                <a href="/auth/logout" onclick="logout()" class="nav-link logout-btn">
+                <a href="javascript:void(0)" onclick="logout()" class="nav-link logout-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </li>
@@ -262,16 +269,34 @@
 <script>
     function logout() {
         const token = localStorage.getItem("accessToken");
-        fetch('/logout', {
+        fetch('/auth/logout', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             }
         }).then(() => {
             localStorage.removeItem("accessToken");
             window.location.href = '/auth/login';
-        });
+        }).catch(err => {
+        console.error("Logout failed", err);
+        window.location.href = '/auth/login';
+    });
     }
+     document.addEventListener("DOMContentLoaded", function() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('#main-nav .nav-link');
+
+        navLinks.forEach(link => {
+            // Get the href attribute (e.g., "/products")
+            const linkPath = link.getAttribute('href');
+
+            // Check if the current URL contains the link path
+            if (currentPath.includes(linkPath) && linkPath !== '/') {
+                link.classList.add('active');
+            }
+        });
+    });
 </script>
 
 </body>

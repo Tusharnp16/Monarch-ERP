@@ -85,7 +85,7 @@
   </form>
 
   <div class="footer-links">
-    Didn't have account!! <a href="/register"> Register Here</a>
+    Didn't have account!! <a href="/auth/register"> Register Here</a>
   </div>
 </div>
 <script>
@@ -107,7 +107,6 @@ document.getElementById('loginForm').onsubmit = async (e) => {
     if (!response.ok) throw new Error();
 
     const data = await response.json();
-
 
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("refreshToken", data.refreshToken);

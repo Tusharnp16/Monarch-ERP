@@ -182,7 +182,7 @@
     </form>
 
     <div class="footer-links">
-        Already using Monarch? <a href="/login">Sign In</a>
+        Already using Monarch? <a href="/auth/login">Sign In</a>
     </div>
 </div>
 <script>
@@ -212,7 +212,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
         msgEl.style.display = 'block';
 
         setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href = "/auth/login";
         }, 1500);
 
     } catch (err) {

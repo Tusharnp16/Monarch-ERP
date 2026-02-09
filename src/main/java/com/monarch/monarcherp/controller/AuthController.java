@@ -12,7 +12,9 @@ import com.monarch.monarcherp.repository.UserLoginLogRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
 import com.monarch.monarcherp.service.TokenService;
 import com.monarch.monarcherp.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -149,7 +151,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     @ResponseBody
-    public ResponseEntity<?> logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
         String header = request.getHeader("Authorization");
 
@@ -157,7 +159,12 @@ public class AuthController {
             String token = header.substring(7);
             blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
 
-            // IMPORTANT: Also delete the Refresh Token from DB so they can't refresh
+            Cookie cookie = new Cookie("accessToken",null);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+
             String username = jwtUtils.extractUsername(token);
             tokenService.deleteTokensByUsername(username);
 
