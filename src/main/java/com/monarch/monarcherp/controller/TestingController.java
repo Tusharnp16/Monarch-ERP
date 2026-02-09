@@ -44,4 +44,8 @@ class TestingController {
     }
 
 
+    @GetMapping("/products")
+    public String product() {
+        return "products";
+    }
 }
