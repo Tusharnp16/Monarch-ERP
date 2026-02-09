@@ -55,6 +55,5 @@ public class Variant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnore
     private Product product;
 }
