@@ -69,6 +69,11 @@ class TestingController {
         return "inventory";
     }
 
+    @GetMapping("/stockmaster")
+    public String viewStockMaster(){
+        return "stock-master";
+    }
+
     @GetMapping("/customers")
     public String customer() {
         return "customers";

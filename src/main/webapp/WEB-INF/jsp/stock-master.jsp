@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page isELIgnored="true" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,6 +38,12 @@
             display: grid;
             grid-template-columns: var(--sidebar-width) 1fr;
             min-height: 100vh;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
         }
 
         .sidebar {
@@ -185,52 +192,7 @@
                             </tr>
                             </thead>
                             <tbody id="stockTableBody">
-                            <c:forEach items="${stocks}" var="s" varStatus="status">
-                                <tr data-batch="${s.stockMasterId}">
-                                    <td class="ps-3">
-                                        <strong>
-                                        ${status.index+1}</strong>
-                                    </td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${not empty s.variant}">
-                                                <c:out value="${s.variant.product.productName}"/>
-                                                <span class="text-dark fw-bold"> ( ${s.variant.variantName} )</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="text-danger small">
-                                                        <i class="fas fa-exclamation-triangle me-1"></i> Removed
-                                                </span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td><c:out value="${s.batchNo}"/></td>
-                                    <td>
-                                        <span class="badge ${s.quantity < 10 ? 'bg-danger' : 'badge-soft'}">${s.quantity}</span>
-                                    </td>
-                                    <td>
-                                            ${s.purchasePrice.price}
-                                    </td>
-                                    <td>
-                                            ${s.landingCost.price}
-                                    </td>
-                                    <td>
-                                            ${s.mrp.price}
-                                    </td>
-                                    <td>
-                                            ${s.sellingPrice.price}
-                                    </td>
-                                    <td><c:out value="${s.expiryDate}"/></td>
-                                    <td class="text-end pe-3">
-                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
-                                                data-bs-target="#editStockModal"
-                                                data-id="${s.stockMasterId}" data-price="${s.sellingPrice.price}"
-                                                data-mrp="${s.mrp.price}" data-batch="${s.batchNo}">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </c:forEach>
+
                             </tbody>
                         </table>
                     </div>
@@ -262,7 +224,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Selling Price</label>
-                        <input type="number" step="0.01" min="0" class="form-control price-input" id="edit-sellingPrice"
+                        <input type="number" class="form-control price-input" id="edit-sellingPrice"
                                name="sellingPrice" required>
                     </div>
                 </div>
@@ -276,82 +238,147 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+const API_BASE_URL = '/api/stockmaster';
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchStocks();
+});
 
 
-    document.getElementById('stockSearch').addEventListener('input', function (e) {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll('#stockTableBody tr').forEach(row => {
-            const content = row.textContent.toLowerCase();
-            row.style.display = content.includes(term) ? '' : 'none';
-        });
-    });
-
-
-    document.getElementById('stockSearch').addEventListener('input', function () {
-        const term = this.value;
-
-        fetch(`/stockmaster/search?term=` + encodeURIComponent(term))
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('stockTableBody').innerHTML = html;
-            })
-            .catch(err => console.error('Search error:', err));
-    });
-
-
-    (function () {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                const mrpInput = form.querySelector('input[name="mrp"]');
-                const sellingInput = form.querySelector('input[name="sellingPrice"]');
-
-                const mrpVal = parseFloat(mrpInput.value) || 0;
-                const sellingVal = parseFloat(sellingInput.value) || 0;
-
-                // 2. Custom Validation Check
-                if (sellingVal > mrpVal) {
-                    sellingInput.setCustomValidity("Selling price is lower than MRP");
-                } else {
-                    sellingInput.setCustomValidity("");
-                }
-
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            }, false)
+function fetchStocks() {
+    fetch(API_BASE_URL)
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                renderTable(response.data);
+                updateSummary(response.data);
+            }
         })
-    })()
-
-    document.querySelectorAll('.price-input').forEach(input => {
-        input.addEventListener('keydown', e => {
-            if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
-        });
-    });
+        .catch(err => console.error("Fetch Error:", err));
+}
 
 
-    const editStockModal = document.getElementById('editStockModal');
-    if (editStockModal) {
-        editStockModal.addEventListener('show.bs.modal', event => {
-            // Button that triggered the modal
-            const button = event.relatedTarget;
+function renderTable(stocks) {
+    const tableBody = document.getElementById('stockTableBody');
+    tableBody.innerHTML = '';
 
-            // Extract info from data-attributes
-            const stockId = button.getAttribute('data-id');
-            const sellingPrice = button.getAttribute('data-price');
-            const mrp = button.getAttribute('data-mrp');
-            const batch = button.getAttribute('data-batch');
-
-            // Update the modal's content
-            editStockModal.querySelector('#edit-stockId').value = stockId;
-            editStockModal.querySelector('#edit-sellingPrice').value = sellingPrice;
-            editStockModal.querySelector('#edit-batchNo').value = batch;
-            editStockModal.querySelector('#edit-mrp').value = mrp;
-        });
+    if (!stocks || stocks.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="10" class="text-center">No stock records found.</td></tr>';
+        return;
     }
+
+    stocks.forEach((s, index) => {
+        const row = `
+            <tr>
+                <td class="ps-3"><strong>${index + 1}</strong></td>
+                <td>
+                    ${s.variant ? `${s.variant.product.productName} <span class="text-dark fw-bold">(${s.variant.variantName})</span>` : '<span class="text-danger small"><i class="fas fa-exclamation-triangle"></i> Removed</span>'}
+                </td>
+                <td>${s.batchNo || 'N/A'}</td>
+                <td><span class="badge ${s.quantity < 10 ? 'bg-danger' : 'badge-soft'}">${s.quantity}</span></td>
+                <td>${s.purchasePrice?.price || 0}</td>
+                <td>${s.landingCost?.price || 0}</td>
+                <td>${s.mrp?.price || 0}</td>
+                <td>${s.sellingPrice?.price || 0}</td>
+                <td>${s.expiryDate || 'N/A'}</td>
+                <td class="text-end pe-3">
+                    <button class="btn btn-sm btn-outline-info"
+                            onclick="openEditModal(${s.stockMasterId}, '${s.batchNo}', ${s.mrp?.price || 0}, ${s.sellingPrice?.price || 0})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+    });
+}
+
+function updateSummary(stocks) {
+    const total = stocks.reduce((sum, s) => sum + (s.quantity || 0), 0);
+    const qtyElement = document.querySelector('.h3.text-primary');
+    if (qtyElement) qtyElement.textContent = total;
+}
+
+
+document.getElementById('stockSearch').addEventListener('input', function(e) {
+    const term = e.target.value;
+    if (term.trim().length === 0) {
+        fetchStocks();
+        return;
+    }
+
+    fetch(`${API_BASE_URL}/search?term=${encodeURIComponent(term)}`)
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) renderTable(response.data);
+        })
+        .catch(err => console.error("Search Error:", err));
+});
+
+
+function openEditModal(id, batch, mrp, sellingPrice) {
+    document.getElementById('edit-stockId').value = id;
+    document.getElementById('edit-batchNo').value = batch;
+    document.getElementById('edit-mrp').value = mrp;
+    document.getElementById('edit-sellingPrice').value = sellingPrice;
+
+    const modalElement = document.getElementById('editStockModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.show();
+}
+
+
+document.querySelector('#editStockModal form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = this;
+
+
+    const id = document.getElementById('edit-stockId').value;
+    const mrp = parseFloat(document.getElementById('edit-mrp').value);
+    const sellingPrice = parseFloat(document.getElementById('edit-sellingPrice').value);
+    const sellingInput = document.getElementById('edit-sellingPrice');
+
+   if (sellingPrice > mrp) {
+           e.preventDefault();
+           sellingInput.setCustomValidity("Selling price cannot exceed MRP");
+           this.classList.add('was-validated');
+           return;
+       } else {
+           sellingInput.setCustomValidity("");
+       }
+
+       if (!form.checkValidity()) {
+               form.classList.add('was-validated');
+               form.reportValidity();
+               return;
+       }
+
+    const params = new URLSearchParams();
+    params.append('stockMasterId', id);
+    params.append('mrp', mrp);
+    params.append('sellingPrice', sellingPrice);
+
+    fetch(`${API_BASE_URL}/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (response.success) {
+            const modalElement = document.getElementById('editStockModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) modal.hide();
+
+            fetchStocks();
+
+        } else {
+          fetchStocks();
+        }
+    })
+    .catch(err => console.error('Update error:', err));
+});
 </script>
 
 </body>
