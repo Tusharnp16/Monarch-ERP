@@ -300,12 +300,12 @@
         const statusDiv = document.getElementById('customerStatus');
         if (mobile.length < 10) return;
 
-        fetch('/customer/api/search?mobile=' + mobile)
+        fetch('/api/customers/search?mobile=' + mobile)
             .then(response => response.status === 204 ? null : response.json())
             .then(data => {
                 if (data) {
-                    document.getElementById('custName').value = data.name || '';
-                    document.getElementById('custEmail').value = data.email || '';
+                    document.getElementById('custName').value = data.data.name || '';
+                    document.getElementById('custEmail').value = data.data.email || '';
                     statusDiv.innerHTML = '<span class="text-success small">Existing Customer Loaded</span>';
                 } else {
                     statusDiv.innerHTML = '<span class="text-primary small">New Customer - Enter Details</span>';
