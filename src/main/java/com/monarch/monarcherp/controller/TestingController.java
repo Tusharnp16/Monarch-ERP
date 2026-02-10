@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.UserLoginLog;
 import com.monarch.monarcherp.repository.UserLoginLogRepository;
 import jakarta.servlet.ServletRequest;
@@ -61,6 +62,11 @@ class TestingController {
     @GetMapping("/variants")
     public String varinat() {
         return "variants";
+    }
+
+    @GetMapping("/inventory")
+    public String viewInventory(){
+        return "inventory";
     }
 
     @GetMapping("/customers")

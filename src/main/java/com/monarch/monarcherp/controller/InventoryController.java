@@ -10,31 +10,35 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/inventory")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/inventory")
 class InventoryController {
 
     @Autowired
     InventoryService inventoryService;
 
     @GetMapping
-    public String viewInventory(Model model){
-        model.addAttribute("inventoryList",inventoryService.getInventory());
-        return "inventory";
+    public ResponseEntity<ApiResponse<List<Inventory>>> viewInventory(){
+        List<Inventory> inventory=inventoryService.getInventory();
+        return ResponseEntity.ok(ApiResponse.success(inventory,"Inventory fetched"));
     }
 
-    @GetMapping("history")
-    public String inventoryHistory(){
-        return "workingpage";
-    }
+//    @GetMapping("/history")
+//    public String inventoryHistory(){
+//        return "workingpage";
+//    }
 
-    @ResponseBody
-    @PatchMapping("/api/update/{id}/{qty}")
+    @PostMapping("/update")
     public ResponseEntity<ApiResponse<Inventory>> updateInventory(
-            @PathVariable("id") Long id,
-            @PathVariable("qty") int qty) {
+            @RequestParam("inventoryId") Long id,
+            @RequestParam("quantity") int qty,
+            @RequestParam("adjustmentType") String type) {
 
-        Inventory inventory = inventoryService.updateInventory(id, qty);
+        System.out.println( "DEBUG : "+type);
+
+        Inventory inventory = inventoryService.updateInventory(id, qty,type);
         return ResponseEntity.ok(ApiResponse.success(inventory, "Inventory Updated"));
     }
 }

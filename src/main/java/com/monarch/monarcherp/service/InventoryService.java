@@ -20,13 +20,22 @@ public class InventoryService {
     }
 
 
-    public Inventory updateInventory(Long id,int quantity){
+    public Inventory updateInventory(Long id,int quantity,String type){
 
         Inventory inventory=inventoryRepository.findById(id).orElseThrow(()->new RuntimeException("Resource Not Found"));
 
         inventory.setVariant(inventory.getVariant());
+        int newQunatity = inventory.getQuantity();
 
-        inventory.setQuantity(quantity);
+        if(type.equals("ADD")){
+            newQunatity+=quantity;
+        } else if (type.equals("SUBTRACT")) {
+            newQunatity-=quantity;
+        }else{
+            newQunatity=quantity;
+        }
+
+        inventory.setQuantity(newQunatity);
 
         return inventoryRepository.save(inventory);
     }

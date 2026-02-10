@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page isELIgnored="true" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,19 +79,19 @@
                 <div class="col-md-4">
                     <div class="card p-3 border-start border-4 border-success">
                         <div class="text-muted-small text-uppercase">Total Items In Stock</div>
-                        <div class="h4 mb-0"><c:out value="${totalStockCount != null ? totalStockCount : '0'}"/></div>
+                           <div id="totalStockCount" class="h4 mb-0">0</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-3 border-start border-4 border-warning">
                         <div class="text-muted-small text-uppercase">Low Stock Alerts</div>
-                        <div class="h4 mb-0 text-warning"><c:out value="${lowStockCount != null ? lowStockCount : '0'}"/></div>
+                        <div class="h4 mb-0 text-warning">10</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-3 border-start border-4 border-danger">
                         <div class="text-muted-small text-uppercase">Out of Stock</div>
-                        <div class="h4 mb-0 text-danger"><c:out value="${outOfStockCount != null ? outOfStockCount : '0'}"/></div>
+                        <div class="h4 mb-0 text-danger">50</div>
                     </div>
                 </div>
             </div>
@@ -112,65 +113,14 @@
                                 <th class="text-end pe-3">Actions</th>
                             </tr>
                             </thead>
-                            <tbody id="inventoryTableBody">
-                            <c:choose>
-                                <c:when test="${not empty inventoryList}">
-                                    <c:forEach items="${inventoryList}" var="item" varStatus="status">
-                                        <tr data-name="${item.variant.variantName}" data-sku="${item.variant.product.itemCode}">
-                                        <td>${status.index+1}</td>
-                                        <td>
-                                         <c:choose>
-                                            <c:when test="${not empty item.variant}">
-                                                <span class="text-dark fw-bold">${item.variant.variantName}</span>
-                                                 <div class="text-muted-small">
-                                                <span class="badge badge-soft text-primary"><c:out value="${item.variant.product.itemCode}"/></span></div>
-
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="text-danger small">
-                                                        <i class="fas fa-exclamation-triangle me-1"></i> Removed
-                                                </span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        </td>
-
-                                            <td><c:out value="${item.availableQuantity}"/></td>
-                                            <td><span class="fw-bold"><c:out value="${item.quantity}"/></span></td>
-                                            <td>
-                                                <c:set var="avail" value="${item.availableQuantity}" />
-                                                <c:choose>
-                                                    <c:when test="${avail <= 0}">
-                                                        <span class="status-pill status-out"></span> Out of Stock
-                                                    </c:when>
-                                                    <c:when test="${avail < 10}">
-                                                        <span class="status-pill status-low"></span> Low Stock
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="status-pill status-instock"></span> In Stock
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td class="text-end pe-3">
-                                                <button class="btn btn-sm btn-light action-history" data-id="${item.inventoryId}" title="View History">
-                                                    <i class="fas fa-history text-secondary"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-light action-move" data-id="${item.inventoryId}" title="Stock Movement">
-                                                    <i class="fas fa-exchange-alt text-primary"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="6" class="text-center py-5">
-                                            <i class="fa-regular fa-face-frown fa-2x text-muted mb-2"></i>
-                                            <p class="mb-0">No inventory data found.</p>
-                                        </td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                            </tbody>
+                           <tbody id="inventoryTableBody">
+                               <tr>
+                                   <td colspan="6" class="text-center py-5">
+                                       <div class="spinner-border text-primary" role="status"></div>
+                                       <p class="mt-2">Fetching inventory...</p>
+                                   </td>
+                               </tr>
+                           </tbody>
                         </table>
                     </div>
                 </div>
@@ -181,7 +131,7 @@
 
 <div class="modal fade" id="adjustStockModal" tabindex="-1">
     <div class="modal-dialog">
-        <form class="modal-content" action="/inventory/adjust" method="POST">
+        <form class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Manual Stock Adjustment</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -189,12 +139,10 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Select Product Variant</label>
-                    <select class="form-select" name="inventoryId" required>
-                        <option value="">Choose...</option>
-                        <c:forEach items="${inventoryList}" var="item">
-                            <option value="${item.inventoryId}">${item.variant.product.productName} (${item.variant.variantName})</option>
-                        </c:forEach>
+                    <select id="adjustmentSelect" class="form-select" name="inventoryId" required>
+                        <option value="">Loading products...</option>
                     </select>
+
                 </div>
                 <div class="row mb-3">
                     <div class="col">
@@ -217,7 +165,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Update Stock</button>
+                <button type="submit" class="btn btn-primary" >Update Stock</button>
             </div>
         </form>
     </div>
@@ -225,33 +173,120 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // 1. Client-side Search Functionality
-    document.getElementById('inventorySearch')?.addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#inventoryTableBody tr[data-name]');
+   const API_URL = '/api/inventory';
 
-        rows.forEach(row => {
-            const name = row.getAttribute('data-name').toLowerCase();
-            const sku = row.getAttribute('data-sku').toLowerCase();
-            row.style.display = (name.includes(query) || sku.includes(query)) ? '' : 'none';
-        });
-    });
+   document.addEventListener('DOMContentLoaded', fetchInventory);
 
-    // 2. Action Button Event Listeners
-    document.querySelectorAll('.action-history').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            window.location.href = '/inventory/history?id=' + id;
-        });
-    });
+   async function fetchInventory() {
+       try {
+           const response = await fetch(API_URL);
+           const result = await response.json();
 
-    document.querySelectorAll('.action-move').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            // Logic for opening a transfer modal or redirecting
-            alert('Initiating stock movement for Inventory ID: ' + id);
-        });
-    });
+           if (result.success) {
+               const data = result.data;
+               renderStats(data);
+               renderTable(data);
+               populateAdjustmentModal(data);
+           }
+       } catch (error) {
+           console.error("Failed to load inventory:", error);
+           document.getElementById('inventoryTableBody').innerHTML =
+               `<tr><td colspan="6" class="text-center text-danger">Error loading inventory data.</td></tr>`;
+       }
+   }
+
+   function renderStats(list) {
+       const total = list.reduce((sum, item) => sum + item.quantity, 0);
+       const low = list.filter(item => item.availableQuantity > 0 && item.availableQuantity < 10).length;
+       const out = list.filter(item => item.availableQuantity <= 0).length;
+
+       document.getElementById('totalStockCount').innerText = total;
+   }
+
+   function renderTable(list) {
+       const body = document.getElementById('inventoryTableBody');
+
+       if (!list || list.length === 0) {
+           body.innerHTML = '<tr><td colspan="6" class="text-center py-5">No inventory data found.</td></tr>';
+           return;
+       }
+
+       body.innerHTML = list.map((item, index) => {
+           const avail = item.availableQuantity;
+           let statusHtml = '';
+
+           if (avail <= 0) {
+               statusHtml = '<span class="status-pill status-out"></span> Out of Stock';
+           } else if (avail < 10) {
+               statusHtml = '<span class="status-pill status-low"></span> Low Stock';
+           } else {
+               statusHtml = '<span class="status-pill status-instock"></span> In Stock';
+           }
+
+           const variantName = item.variant && item.variant.variantName ? item.variant.variantName : "Removed";
+           const sku = item.variant && item.variant.product && item.variant.product.itemCode ? item.variant.product.itemCode : "N/A";
+
+           return `
+               <tr data-name="${variantName}" data-sku="${sku}">
+                   <td>${index + 1}</td>
+                   <td>
+                       <span class="text-dark fw-bold">${variantName}</span>
+                       <div class="text-muted-small"><span class="badge badge-soft text-primary">${sku}</span></div>
+                   </td>
+                   <td>${item.availableQuantity}</td>
+                   <td><span class="fw-bold">${item.quantity}</span></td>
+                   <td>${statusHtml}</td>
+                   <td class="text-end pe-3">
+                       <button class="btn btn-sm btn-light" onclick="viewHistory(${item.inventoryId})" title="View History">
+                           <i class="fas fa-history text-secondary"></i>
+                       </button>
+                       <button class="btn btn-sm btn-light" onclick="moveStock(${item.inventoryId})" title="Stock Movement">
+                           <i class="fas fa-exchange-alt text-primary"></i>
+                       </button>
+                   </td>
+               </tr>
+           `;
+       }).join('');
+   }
+
+   document.getElementById('inventorySearch')?.addEventListener('input', function(e) {
+       const query = e.target.value.toLowerCase();
+       const rows = document.querySelectorAll('#inventoryTableBody tr[data-name]');
+
+       rows.forEach(row => {
+           const name = row.getAttribute('data-name').toLowerCase();
+           const sku = row.getAttribute('data-sku').toLowerCase();
+           row.style.display = (name.includes(query) || sku.includes(query)) ? '' : 'none';
+       });
+   });
+
+   function populateAdjustmentModal(list) {
+       const select = document.getElementById('adjustmentSelect');
+       select.innerHTML = '<option value="">Choose...</option>' +
+           list.map(item => `
+               <option value="${item.inventoryId}">
+                   ${item.variant?.product?.productName} (${item.variant?.variantName})
+               </option>
+           `).join('');
+   }
+
+   document.querySelector('#adjustStockModal form').addEventListener('submit', async (e) => {
+       e.preventDefault();
+       const formData = new FormData(e.target);
+       console.log(formData)
+
+       const res = await fetch('/api/inventory/update', {
+           method: 'POST',
+           body: formData
+       });
+
+       if (res.ok) {
+           location.reload();
+       }
+   });
+
+   function viewHistory(id) { window.location.href = `/inventory/history?id=${id}`; }
+   function moveStock(id) { alert('Movement for ID: ' + id); }
 </script>
 </body>
 </html>
