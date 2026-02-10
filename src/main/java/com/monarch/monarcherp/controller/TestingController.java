@@ -74,6 +74,11 @@ class TestingController {
         return "stock-master";
     }
 
+    @GetMapping("/salesitem/recentitems")
+    public String viewRecentItem(){
+        return "recentsalesitems";
+    }
+
     @GetMapping("/customers")
     public String customer() {
         return "customers";

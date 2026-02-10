@@ -1,10 +1,12 @@
 package com.monarch.monarcherp.controller;
 
+import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.model.SalesItem;
 import com.monarch.monarcherp.service.SalesInvoiceService;
 import com.monarch.monarcherp.service.SalesItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,11 +61,10 @@ class SalesItemController {
         return "redirect:/salesItem";
     }
 
-    @GetMapping("/recentitems")
-    public String viewSales(Model model) {
-        // Fetch all sales invoices
+    @GetMapping("/api/recentitems")
+    @ResponseBody
+    public ResponseEntity<ApiResponse<List<SalesInvoice>>> viewSales() {
         List<SalesInvoice> salesInvoices = salesInvoiceService.getAllSalesInvoices();
-        model.addAttribute("sales", salesInvoices);
-        return "recentsalesitems";
+        return ResponseEntity.ok(ApiResponse.success(salesInvoices,"Data fetched succesfully"));
     }
 }

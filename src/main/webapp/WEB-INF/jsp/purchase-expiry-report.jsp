@@ -78,6 +78,34 @@
         .item-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .expiry-badge { font-size: 0.75rem; padding: 0.4em 0.8em; border-radius: 50px; }
         .money-text { font-family: monospace; font-weight: bold; color: #2c3e50; }
+
+
+        @media print {
+            /* Hide the sidebar, top navigation, and action buttons */
+            .sidebar, .topbar, .btn, .no-print {
+                display: none !important;
+            }
+
+            /* Expand the main content to fill the whole page */
+            .main, .app-shell {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Ensure the card has no shadows or borders during print */
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            /* Optional: Make the font size slightly larger for readability */
+            body {
+                font-size: 12pt;
+                background-color: Black !important;
+            }
+        }
     </style>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </head>
@@ -190,7 +218,7 @@
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Expiry Report");
 
-        // Download the file
+
         XLSX.writeFile(wb, "Stock_Expiry_Report.xlsx");
     });
 </script>

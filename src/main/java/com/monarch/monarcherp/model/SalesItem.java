@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.servlet.jsp.tagext.VariableInfo;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class SalesItem {
 
     @ManyToOne
     @JoinColumn(name = "invoice_id")
+    @JsonIgnore
     private SalesInvoice salesInvoice;
 
     @ManyToOne
