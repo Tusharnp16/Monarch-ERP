@@ -20,6 +20,9 @@ public class SecurityConfig {
 
     @Autowired JwtFilter jwtFilter;
 
+    @Autowired RateLimiterFilter rateLimiterFilter;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())

@@ -30,6 +30,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        System.out.println(">>> JwtFilter triggered");
+
         String token = null;
         String username = null;
 

@@ -79,6 +79,4 @@ class PurchaseController {
         model.addAttribute("groupedItems", groupedItems);
         return "purchase-expiry-report";
     }
-
-
 }

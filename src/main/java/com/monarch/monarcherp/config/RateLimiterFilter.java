@@ -2,6 +2,7 @@ package com.monarch.monarcherp.config;
 
 import com.monarch.monarcherp.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,19 @@ public class RateLimiterFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String ipAddr = httpRequest.getRemoteAddr();
 
-        TokenBucket bucket = limiters.computeIfAbsent(ipAddr, k -> new TokenBucket());
+
+        String key;
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            key = SecurityContextHolder.getContext().getAuthentication().getName();
+        } else {
+            key = ipAddr;
+         }
+
+        TokenBucket bucket = limiters.computeIfAbsent(key, k -> new TokenBucket());
+
+        System.out.println(limiters);
 
         if (bucket.allowRequest()) {
             chain.doFilter(request, response);

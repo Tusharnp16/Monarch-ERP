@@ -33,4 +33,14 @@ public class TokenBucket {
             lastRefillTimestamp = now;
         }
     }
+
+    @Override
+    public String toString() {
+        return "TokenBucket{" +
+                "tokens=" + tokens.get() +
+                ", capacity=" + capacity +
+                ", lastRefillTimestamp=" + lastRefillTimestamp +
+                '}';
+    }
+
 }

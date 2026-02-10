@@ -94,17 +94,38 @@
                 grid-template-columns: 1fr !important;
             }
 
+            .app-shell {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .container {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
             /* Ensure the card has no shadows or borders during print */
             .card {
                 box-shadow: none !important;
                 border: none !important;
             }
 
-            /* Optional: Make the font size slightly larger for readability */
-            body {
-                font-size: 12pt;
-                background-color: Black !important;
-            }
+
+.logo-ui{
+border: 4px solid #000;
+ border-radius: 5px;
+}
+            .d-print-block {
+                    display: block !important;
+                }
+
+
+                /* Ensure colors and logo print correctly */
+                body {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
         }
     </style>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
@@ -115,6 +136,17 @@
     <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
     <main class="p-4">
+    <div class="print-header d-none d-print-block">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div class="logo-wrapper">
+            <img src="/logo.png" class="logo-ui" alt="Monarch Logo" style="height: 60px;">
+            </div>
+            <div class="text-end">
+                <h2 class="h4 mb-0">Monarch ERP</h2>
+                <p class="text-muted small mb-0">Expiry Watchlist Report</p>
+            </div>
+        </div>
+    </div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2 class="fw-bold mb-1">Stock Expiry Report</h2>
