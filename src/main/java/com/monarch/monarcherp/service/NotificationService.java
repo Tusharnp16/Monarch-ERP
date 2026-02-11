@@ -25,7 +25,7 @@ public class NotificationService {
         this.mailSender = mailSender;
     }
 
-    @Async
+    @Async("mailExecutor")
     public CompletableFuture<Void> sendInvoiceEmail(SalesInvoice invoice){
 
         try{
@@ -34,7 +34,7 @@ public class NotificationService {
             }
 
             SimpleMailMessage mailMessage=new SimpleMailMessage();
-            mailMessage.setFrom(senderEmail);
+            mailMessage.setFrom("Monarch-ERP Billing <" + senderEmail + ">");
             mailMessage.setTo(invoice.getCustomer().getEmail() );
             mailMessage.setSubject("Monarch-ERP: Sales Bill #" + invoice.getInvoiceNumber());
 
@@ -61,9 +61,9 @@ public class NotificationService {
             body.append("Total Amount: ₹").append(invoice.getGrandTotal()).append("\n\n");
             body.append("Best Regards,\n");
             body.append("Monarch-ERP Team");
+            body.append("\n\n*** This is an automated message. Please do not reply to this email. ***");
 
             mailMessage.setText(body.toString());
-
 
             mailSender.send(mailMessage);
 
@@ -73,7 +73,6 @@ public class NotificationService {
             return CompletableFuture.completedFuture(null);
         }catch (Exception e){
             log.error("FAILED to send email for Invoice {}: {}", invoice.getInvoiceNumber(), e.getMessage());
-            System.err.println("Async Error: Failed to send email for Invoice " +  invoice.getInvoiceNumber() + ". Reason: " + e.getMessage());
             return CompletableFuture.failedFuture(e);
         }
 

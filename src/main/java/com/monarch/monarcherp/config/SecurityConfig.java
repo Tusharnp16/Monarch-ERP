@@ -38,6 +38,8 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
+                                "/favicon.ico",
+                                "/logo.png",
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -48,6 +50,7 @@ public class SecurityConfig {
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(rateLimiterFilter, JwtFilter.class);
         return http.build();
     }
 

@@ -298,16 +298,25 @@
     function fetchCustomer() {
         const mobile = document.getElementById('custMobile').value.trim();
         const statusDiv = document.getElementById('customerStatus');
-        if (mobile.length < 10) return;
+
+       if (mobile.length > 0 && mobile.length < 10) {
+               statusDiv.innerHTML = '<span class="text-danger small">Error: Enter a valid 10-digit mobile number</span>';
+               return;
+           } else if (mobile.length === 0) {
+               statusDiv.innerHTML = '';
+               return;
+           }
 
         fetch('/api/customers/search?mobile=' + mobile)
             .then(response => response.status === 204 ? null : response.json())
             .then(data => {
-                if (data) {
+                if (data.success) {
                     document.getElementById('custName').value = data.data.name || '';
                     document.getElementById('custEmail').value = data.data.email || '';
                     statusDiv.innerHTML = '<span class="text-success small">Existing Customer Loaded</span>';
                 } else {
+                    document.getElementById('custName').value = '';
+                    document.getElementById('custEmail').value =  '';
                     statusDiv.innerHTML = '<span class="text-primary small">New Customer - Enter Details</span>';
                 }
             });

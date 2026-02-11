@@ -86,10 +86,7 @@ class SalesInvoiceController {
         System.out.println(salesInvoice.getId());
 
             if(salesInvoice.getCustomer().getEmail()!=null){
-                notificationService.sendInvoiceEmail(salesInvoice)
-                        .exceptionally(ex->{
-                            return null;
-                        });
+                notificationService.sendInvoiceEmail(salesInvoice);
             }
         return "redirect:/salesinvoice";
     }
