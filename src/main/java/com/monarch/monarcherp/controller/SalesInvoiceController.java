@@ -22,16 +22,18 @@ class SalesInvoiceController {
     private final CustomerService customerService;
     private final InventoryService inventoryService;
     private final DiscountConfig discountConfig;
+    private final NotificationService notificationService;
 
     @Autowired
     private SalesInvoiceRepository salesInvoiceRepository;
 
-    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService, SalesItemService salesItemService, DiscountConfig discountConfig) {
+    SalesInvoiceController(SalesInvoiceService salesInvoiceService, CustomerService customerService, VariantService variantService, InventoryService inventoryService, SalesItemService salesItemService, DiscountConfig discountConfig, NotificationService notificationService) {
         this.salesInvoiceService = salesInvoiceService;
         this.customerService = customerService;
         this.inventoryService = inventoryService;
         this.salesItemService=salesItemService;
         this.discountConfig = discountConfig;
+        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -77,7 +79,18 @@ class SalesInvoiceController {
     public String addSalesInvoice(@ModelAttribute SalesInvoice salesInvoice) {
         System.out.println(salesInvoice.getCustomer());
         System.out.println(salesInvoice.getItems());
+
+        System.out.println(salesInvoice.getId());
         salesInvoiceService.saveSalesInvoice(salesInvoice);
+
+        System.out.println(salesInvoice.getId());
+
+            if(salesInvoice.getCustomer().getEmail()!=null){
+                notificationService.sendInvoiceEmail(salesInvoice.getCustomer().getEmail(),salesInvoice.getId())
+                        .exceptionally(ex->{
+                            return null;
+                        });
+            }
         return "redirect:/salesinvoice";
     }
 

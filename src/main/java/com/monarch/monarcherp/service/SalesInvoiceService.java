@@ -25,6 +25,8 @@ public class SalesInvoiceService {
     @Autowired
     private SalesItemService salesItemService;
 
+    @Autowired NotificationService notificationService;
+
 
     SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository) {
         this.salesInvoiceRepository = salesInvoiceRepository;
@@ -35,7 +37,7 @@ public class SalesInvoiceService {
     @Transactional
     public SalesInvoice saveSalesInvoice(SalesInvoice salesInvoice) {
 
-        Optional<Customer> existingCustomer = customerRepository.findByMobile(salesInvoice.getCustomer().getMobile());;
+        Optional<Customer> existingCustomer = customerRepository.findByMobile(salesInvoice.getCustomer().getMobile());
 
         if(existingCustomer.isPresent()){
             salesInvoice.setCustomer(existingCustomer.get());
