@@ -1,10 +1,7 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.*;
-import com.monarch.monarcherp.repository.CustomerRepository;
-import com.monarch.monarcherp.repository.InventoryRepository;
-import com.monarch.monarcherp.repository.SalesInvoiceRepository;
-import com.monarch.monarcherp.repository.VariantRepository;
+import com.monarch.monarcherp.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,6 +100,10 @@ public class SalesInvoiceService {
 
     public List<SalesInvoice> getAllSalesInvoices() {
         return salesInvoiceRepository.findAll();
+    }
+
+   public List<InvoiceDisplayProjection> getAllProjectionSalesInvoices() {
+        return salesInvoiceRepository.findAllProjectedBy();
     }
 
     public void deleteSalesInvoice(Long id) {

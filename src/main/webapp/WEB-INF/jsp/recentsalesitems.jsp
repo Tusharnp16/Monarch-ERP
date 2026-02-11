@@ -80,8 +80,8 @@ function renderAccordion(sales) {
                     <div class="w-100 d-flex justify-content-between align-items-center">
                         <div>
                             <span class="fw-bold text-primary">${inv.invoiceNumber}</span>
-                            <span class="ms-3 badge bg-light text-dark border">${inv.customer.name}</span>
-                            <span class="ms-2 text-muted small">${inv.customer.mobile}</span>
+                            <span class="ms-3 badge bg-light text-dark border">${inv.customerName}</span>
+                            <span class="ms-2 text-muted small">${inv.customerNumber}</span>
                         </div>
                         <div class="text-end me-3">
                             <div class="small text-muted"><i class="fa-regular fa-calendar me-1"></i>${inv.invoiceDate}</div>
@@ -107,11 +107,11 @@ function renderAccordion(sales) {
                             <tbody>
                                 ${inv.items.map(item => `
                                     <tr>
-                                        <td>${item.variant.variantName}</td>
-                                        <td>${item.variant.colour} / ${item.variant.size}</td>
+                                        <td>${item.productName}</td>
+                                        <td>${item.variantInfo}</td>
                                         <td>${item.quantity}</td>
                                         <td>₹ ${item.unitPrice}</td>
-                                        <td class="fw-bold">₹ ${(item.quantity * item.unitPrice).toLocaleString()}</td>
+                                        <td class="fw-bold">₹ ${(item.lineTotal).toLocaleString()}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>

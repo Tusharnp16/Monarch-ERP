@@ -3,6 +3,7 @@ package com.monarch.monarcherp.controller;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.model.SalesItem;
+import com.monarch.monarcherp.repository.InvoiceDisplayProjection;
 import com.monarch.monarcherp.service.SalesInvoiceService;
 import com.monarch.monarcherp.service.SalesItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +62,18 @@ class SalesItemController {
         return "redirect:/salesItem";
     }
 
+//    @GetMapping("/api/recentitems")
+//    @ResponseBody
+//    public ResponseEntity<ApiResponse<List<SalesInvoice>>> viewSales() {
+//        List<SalesInvoice> salesInvoices = salesInvoiceService.getAllSalesInvoices();
+//        return ResponseEntity.ok(ApiResponse.success(salesInvoices,"Data fetched succesfully"));
+//    }
+
     @GetMapping("/api/recentitems")
     @ResponseBody
-    public ResponseEntity<ApiResponse<List<SalesInvoice>>> viewSales() {
-        List<SalesInvoice> salesInvoices = salesInvoiceService.getAllSalesInvoices();
-        return ResponseEntity.ok(ApiResponse.success(salesInvoices,"Data fetched succesfully"));
+    public ResponseEntity<ApiResponse<List<InvoiceDisplayProjection>>> viewProjectionSales() {
+        List<InvoiceDisplayProjection> projectionSalesInvoices = salesInvoiceService.getAllProjectionSalesInvoices();
+        return ResponseEntity.ok(ApiResponse.success(projectionSalesInvoices,"Data fetched succesfully"));
     }
+
 }
