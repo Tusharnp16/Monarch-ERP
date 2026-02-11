@@ -85,13 +85,13 @@
                 <div class="col-md-4">
                     <div class="card p-3 border-start border-4 border-warning">
                         <div class="text-muted-small text-uppercase">Low Stock Alerts</div>
-                        <div class="h4 mb-0 text-warning">10</div>
+                        <div id="totalLowCount" class="h4 mb-0 text-warning">0</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-3 border-start border-4 border-danger">
                         <div class="text-muted-small text-uppercase">Out of Stock</div>
-                        <div class="h4 mb-0 text-danger">50</div>
+                        <div id="totalOutCount" class="h4 mb-0 text-danger">0</div>
                     </div>
                 </div>
             </div>
@@ -197,10 +197,17 @@
 
    function renderStats(list) {
        const total = list.reduce((sum, item) => sum + item.quantity, 0);
+       const totalNew = list.filter(item => item.availableQuantity >= 10).length;
        const low = list.filter(item => item.availableQuantity > 0 && item.availableQuantity < 10).length;
        const out = list.filter(item => item.availableQuantity <= 0).length;
 
-       document.getElementById('totalStockCount').innerText = total;
+       console.log(low);console.log(total);
+       console.log(out);
+
+       if(totalStockCount) document.getElementById('totalStockCount').innerText = totalNew;
+       if(totalLowCount) document.getElementById('totalLowCount').innerText = low==null ? 0 : low;
+       if(totalOutCount) document.getElementById('totalOutCount').innerText = out==null ? 0 : out;
+
    }
 
    function renderTable(list) {

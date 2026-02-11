@@ -42,8 +42,6 @@ public class SalesInvoiceService {
         }else{
             salesInvoice.getCustomer().setId(null);
         }
-
-
         double subtotal=0;
 
         String financialYear = getFinancialYear();

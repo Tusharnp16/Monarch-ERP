@@ -75,6 +75,8 @@ class SalesInvoiceController {
 
     @PostMapping("/add")
     public String addSalesInvoice(@ModelAttribute SalesInvoice salesInvoice) {
+        System.out.println(salesInvoice.getCustomer());
+        System.out.println(salesInvoice.getItems());
         salesInvoiceService.saveSalesInvoice(salesInvoice);
         return "redirect:/salesinvoice";
     }
@@ -104,9 +106,4 @@ class SalesInvoiceController {
         long count = salesInvoiceRepository.countByFinancialYearPrefix(prefix) + 1;
         return prefix + String.format("%04d", count);
     }
-
-
-
-
-
 }
