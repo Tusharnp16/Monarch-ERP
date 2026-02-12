@@ -89,7 +89,8 @@ public class AuthController {
         String accessToken = jwtUtils.generateAccessToken(userDetails.getUsername(), role);
         String refreshToken = jwtUtils.generateRefreshToken(userDetails.getUsername());
 
-        tokenService.deleteTokensByUsername(userDetails.getUsername());
+//        tokenService.deleteTokensByUsername(userDetails.getUsername());
+
         tokenService.saveRefreshToken(new RefreshToken(null, userDetails.getUsername(), refreshToken,
                 jwtUtils.getExpiration(refreshToken)));
 
@@ -161,7 +162,7 @@ public class AuthController {
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
+//            blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
 
             long expiry = jwtUtils.getExpiration(token).getTime();
             redisBlacklistService.blackListToken(token,expiry);
@@ -174,6 +175,7 @@ public class AuthController {
 
             String username = jwtUtils.extractUsername(token);
             tokenService.deleteTokensByUsername(username);
+            tokenService.deleteTokensByTokenName(token);
 
             return ResponseEntity.ok("Logged out successfully");
         }

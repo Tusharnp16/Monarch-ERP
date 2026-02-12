@@ -17,6 +17,10 @@ public class TokenService {
         refreshTokenRepository.deleteByUsername(username);
     }
 
+    public void deleteTokensByTokenName(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
+
     @Transactional
     public void saveRefreshToken(RefreshToken token) {
         refreshTokenRepository.save(token);

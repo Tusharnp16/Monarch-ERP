@@ -1,9 +1,12 @@
 package com.monarch.monarcherp.config;
 
+import com.monarch.monarcherp.dto.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import jakarta.servlet.DispatcherType;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableMethodSecurity
@@ -22,11 +26,16 @@ public class SecurityConfig {
 
     @Autowired RateLimiterFilter rateLimiterFilter;
 
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    HandlerExceptionResolver handlerExceptionResolver;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .maximumSessions(-1))
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(  "/css/**",
@@ -37,14 +46,26 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
-                                "/favicon.ico",
                                 "/logo.png",
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
+                ).exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String acceptHeader = request.getHeader("Accept");
+                            if (acceptHeader != null && acceptHeader.contains("text/html")) {
+                                response.sendRedirect("/auth/login");
+                            } else {
+                                InsufficientAuthenticationException customException =
+                                        new InsufficientAuthenticationException("Please login to access Monarch ERP services.");
+                                handlerExceptionResolver.resolveException(request, response, null, customException);
+                            }
+                        })
                 );
 
+
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(rateLimiterFilter, JwtFilter.class);
         return http.build();
     }
 

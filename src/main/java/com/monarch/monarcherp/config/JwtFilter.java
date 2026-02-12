@@ -31,6 +31,13 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/auth/login") || path.equals("/auth/register");
+    }
+
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -56,7 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
 //        if (blacklistRepository.existsByToken(token)) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
 //
 
-//
+
 //        if (token != null) {
 //            if (blacklistRepository.existsByToken(token)) {
 ////                filterChain.doFilter(request, response);

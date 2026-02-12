@@ -59,8 +59,6 @@ public class ProductService {
         System.out.println("Service Layer: "+pgprd.getTotalElements());
 
         return pgprd;
-
-
     }
 
     public void deleteProduct(Long id) {
