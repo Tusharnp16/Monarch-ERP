@@ -28,7 +28,6 @@ public class VariantService {
         return variantRepository.findAll();
     }
 
-
     public List<Variant> getVariantByProductId(Long id){
         return variantRepository.findByProduct_ProductId(id);
     }

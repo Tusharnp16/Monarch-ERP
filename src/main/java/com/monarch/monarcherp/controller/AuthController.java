@@ -10,6 +10,7 @@ import com.monarch.monarcherp.repository.BlacklistRepository;
 import com.monarch.monarcherp.repository.RefreshTokenRepository;
 import com.monarch.monarcherp.repository.UserLoginLogRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
+import com.monarch.monarcherp.service.RedisBlacklistService;
 import com.monarch.monarcherp.service.TokenService;
 import com.monarch.monarcherp.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -53,6 +54,9 @@ public class AuthController {
 
     @Autowired
     UserLoginLogRepository userLoginLogRepository;
+
+    @Autowired
+    RedisBlacklistService redisBlacklistService;
 
     @GetMapping("/login")
     public String getLoginPage(){
@@ -158,6 +162,9 @@ public class AuthController {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
+
+            long expiry = jwtUtils.getExpiration(token).getTime();
+            redisBlacklistService.blackListToken(token,expiry);
 
             Cookie cookie = new Cookie("accessToken",null);
             cookie.setPath("/");

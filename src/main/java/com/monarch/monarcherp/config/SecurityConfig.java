@@ -34,7 +34,6 @@ public class SecurityConfig {
                                 "/static/**",
                                 "/images/**",
                                 "/auth/**",
-                                "/api/**",
                                 "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
@@ -43,14 +42,9 @@ public class SecurityConfig {
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
-                ).exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendRedirect("/auth/login");
-                        })
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(rateLimiterFilter, JwtFilter.class);
         return http.build();
     }
 

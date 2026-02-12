@@ -2,6 +2,7 @@ package com.monarch.monarcherp.config;
 
 import com.monarch.monarcherp.repository.BlacklistRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
+import com.monarch.monarcherp.service.RedisBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -25,6 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired JwtUtils jwtUtils;
     @Autowired CustomUserDetailsService userDetailsService;
     @Autowired BlacklistRepository blacklistRepository;
+    @Autowired
+    RedisBlacklistService redisBlacklistService;
     private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     @Override
@@ -50,15 +53,31 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        if (blacklistRepository.existsByToken(token)) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
+//        if (blacklistRepository.existsByToken(token)) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
+//
+
+//
+//        if (token != null) {
+//            if (blacklistRepository.existsByToken(token)) {
+////                filterChain.doFilter(request, response);
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                response.getWriter().write("Token is blacklisted");
+//                return;
+//            }
+//
+//            if (jwtUtils.isValid(token)) {
+//                username = jwtUtils.extractUsername(token);
+//            }
+//        }
 
         if (token != null) {
-            if (blacklistRepository.existsByToken(token)) {
+            if (redisBlacklistService.isBlackListed(token)) {
 //                filterChain.doFilter(request, response);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token is blacklisted");
                 return;
             }
+
 
             if (jwtUtils.isValid(token)) {
                 username = jwtUtils.extractUsername(token);
