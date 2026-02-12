@@ -2,7 +2,6 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -28,7 +28,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
@@ -37,6 +36,7 @@ public class ProductService {
         return productRepository.findByProductId(id);
     }
 
+    @Transactional(readOnly = true)
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
 //        return productRepository.findAll(pageable);

@@ -7,6 +7,7 @@ import com.monarch.monarcherp.repository.VariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class VariantService {
         variantRepository.deleteById(id);
     }
 
+
+    @Transactional(readOnly = true)
     public List<Variant> getPaginatedVariant(Long lastId){
         if(lastId==0 ||  lastId==null){
             return variantRepository.findTop10ByOrderByVariantIdAsc();

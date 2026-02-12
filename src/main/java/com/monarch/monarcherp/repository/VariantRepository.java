@@ -3,6 +3,7 @@ package com.monarch.monarcherp.repository;
 import com.monarch.monarcherp.model.Variant;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Window;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
@@ -15,7 +16,9 @@ public interface VariantRepository extends JpaRepository<Variant,Long> {
 //
 //    Window<Variant> findTop10VariantByVariantId(Long variantId, Sort sort);
 
+    @EntityGraph(attributePaths = {"product"})
     List<Variant> findTop10ByVariantIdGreaterThanOrderByVariantIdAsc(Long lastId);
-//
-   List<Variant> findTop10ByOrderByVariantIdAsc();
+
+    @EntityGraph(attributePaths = {"product"})
+    List<Variant> findTop10ByOrderByVariantIdAsc();
 }
