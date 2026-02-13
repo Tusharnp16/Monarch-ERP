@@ -17,7 +17,6 @@ public class RedisBlacklistService {
 
 //    private RedisTemplate<Object, Object> redisTemplate;
 
-
     public void blackListToken(String token, Long expireTime){
         long ttl=expireTime-System.currentTimeMillis();
 

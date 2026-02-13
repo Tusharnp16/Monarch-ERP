@@ -79,6 +79,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (redisBlacklistService.isBlackListed(token)) {
+
 //                filterChain.doFilter(request, response);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token is blacklisted");

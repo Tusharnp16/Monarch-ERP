@@ -50,7 +50,7 @@ public class ProductControllerAPI {
         Product getProduct = productService.getProduct(id);
         if (getProduct == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error("Product Fetched Failed"));
+                    .body(ApiResponse.error("Product Is Not Available"));
 
         }
 

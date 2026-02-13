@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 class ProductAPIService {
 
-
     private ProductRepository productRepository;
 
     ProductAPIService(ProductRepository productRepository) {
@@ -23,7 +22,7 @@ class ProductAPIService {
     }
 
     public Product getProduct(Long id) {
-        return productRepository.findByProductId(id);
+        return productRepository.findByProductId(id).orElse(null);
     }
 
     public Page<Product> getAllProducts(int page, int size) {

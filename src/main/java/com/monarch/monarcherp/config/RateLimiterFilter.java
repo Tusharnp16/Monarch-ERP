@@ -11,13 +11,14 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.filter.OncePerRequestFilter;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class RateLimiterFilter implements Filter {
+public class RateLimiterFilter extends OncePerRequestFilter {
 
 
     private final ObjectMapper objectMapper;
@@ -30,7 +31,7 @@ public class RateLimiterFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -63,4 +64,5 @@ public class RateLimiterFilter implements Filter {
             httpResponse.getWriter().write(jsonResponse);
         }
     }
+
 }

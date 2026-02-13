@@ -2,6 +2,10 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,12 +32,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @CacheEvict(value = "product_page",allEntries = true)
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
+
+    @Cacheable(value = "products",key = "#id")
     public Product getProduct(Long id) {
-        return productRepository.findByProductId(id);
+        return productRepository.findByProductId(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +51,7 @@ public class ProductService {
 
     }
 
+    @Cacheable(value="product_page", key = "{#page,#size}")
     public Page<Product> searchProducts(String search, int page, int size, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
 
@@ -61,6 +69,7 @@ public class ProductService {
         return pgprd;
     }
 
+    @CacheEvict(value = "products",key = "#id")
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
@@ -75,6 +84,7 @@ public class ProductService {
 
     @Transactional
     @Retryable(retryFor = {SQLException.class}, maxAttempts = 5,backoff = @Backoff(delay = 5000))
+    @CachePut(value = "products", key = "#id")
     public Product updateProductName(Long id, String newName) {
         Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         product.setProductName(newName);

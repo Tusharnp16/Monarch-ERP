@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Product findByProductId(Long productId);
+
+    Optional<Product> findByProductId(Long productId);
 
 
     Page<Product> findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
