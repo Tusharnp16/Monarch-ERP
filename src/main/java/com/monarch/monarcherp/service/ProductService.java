@@ -38,7 +38,7 @@ public class ProductService {
     }
 
 
-    @Cacheable(value = "products",key = "#id")
+//    @Cacheable(value = "products",key = "#id")
     public Product getProduct(Long id) {
         return productRepository.findByProductId(id).orElse(null);
     }
@@ -46,12 +46,11 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
-//        return productRepository.findAll(pageable);
+       // return productRepository.findAll(pageable);
         return productRepository.nativeProductSearch(null,null,null,pageable);
-
     }
 
-    @Cacheable(value="product_page", key = "{#page,#size}")
+//    @Cacheable(value="product_page", key = "{#page,#size}")
     public Page<Product> searchProducts(String search, int page, int size, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
 
@@ -64,12 +63,15 @@ public class ProductService {
         System.out.println("DEBUG: Service Layer ENDDATE: "+endDate);
 
         Page<Product> pgprd= productRepository.nativeProductSearch(search,startDate,endDate,pageable);
-        System.out.println("Service Layer: "+pgprd.getTotalElements());
+       // System.out.println("Service Layer: "+pgprd.getTotalElements());
 
         return pgprd;
     }
 
-    @CacheEvict(value = "products",key = "#id")
+//    @Caching(evict = {
+//            @CacheEvict(value = "products", key = "#id"),
+//            @CacheEvict(value = "product_page", allEntries = true)
+//    })
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
@@ -84,7 +86,7 @@ public class ProductService {
 
     @Transactional
     @Retryable(retryFor = {SQLException.class}, maxAttempts = 5,backoff = @Backoff(delay = 5000))
-    @CachePut(value = "products", key = "#id")
+//    @CachePut(value = "products", key = "#id")
     public Product updateProductName(Long id, String newName) {
         Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         product.setProductName(newName);

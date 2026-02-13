@@ -123,6 +123,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -145,7 +146,6 @@ public class ProductController {
         Page<Product> productPage = productService.searchProducts(search, page, size, startDate, endDate);
         return ResponseEntity.ok(ApiResponse.success(productPage,"Data fetched succesfully"));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Long id) {

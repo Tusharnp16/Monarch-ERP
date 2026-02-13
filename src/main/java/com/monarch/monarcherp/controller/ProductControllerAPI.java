@@ -98,6 +98,7 @@ public class ProductControllerAPI {
         return ResponseEntity.ok(ApiResponse.success(pagedModel, "Fetched products"));
     }
 
+
     @GetMapping("{id}/variant")
     public ResponseEntity<ApiResponse<List<Variant>>> getVariant(@PathVariable Long id) {
         List<Variant> variant = variantService.getVariantByProductId(id);

@@ -287,7 +287,8 @@
 
     async function deleteCustomer() {
         const id = document.getElementById('deleteCustomerId').value;
-        const res = await fetch(`${API_URL}/delete`, { method: 'DELETE' });
+        console.log(id)
+        const res = await fetch(`${API_URL}/delete/${id}`, { method: 'DELETE' });
         if (res.ok) {
             bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
             showNotification("Customer removed successfully");

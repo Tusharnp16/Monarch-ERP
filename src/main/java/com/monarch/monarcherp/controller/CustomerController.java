@@ -139,7 +139,7 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(updatedCustomer, "Customer updated successfully"));
     }
 
-    @DeleteMapping("/delete/{id}") // Changed to PathVariable for REST style
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Customer deleted successfully"));

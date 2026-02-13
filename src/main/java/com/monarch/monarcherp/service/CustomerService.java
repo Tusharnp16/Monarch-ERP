@@ -2,6 +2,9 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Customer;
 import com.monarch.monarcherp.repository.CustomerRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,9 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+//    @CachePut(value = "customers",key = "'all'")
+
+    @CacheEvict(value = "customers",key = "'all'")
     public Customer saveCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
@@ -23,10 +29,12 @@ public class CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
+    @Cacheable(value = "customers",key="'all'")
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
+    @CacheEvict(value = "customers",key = "'all'")
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
     }

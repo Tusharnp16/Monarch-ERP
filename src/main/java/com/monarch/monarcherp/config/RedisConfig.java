@@ -42,6 +42,7 @@ public class RedisConfig {
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
         cacheConfigs.put("product_page", cacheConfiguration.entryTtl(Duration.ofMinutes(60)));
         cacheConfigs.put("products", cacheConfiguration.entryTtl(Duration.ofHours(1)));
+        cacheConfigs.put("customers", cacheConfiguration.entryTtl(Duration.ofHours(1)));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfiguration)
