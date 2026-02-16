@@ -154,7 +154,7 @@
                         font-size: 16pt;
                         border-top: 2px solid #0d6efd;
                     }
-                }
+
             }
 
     </style>
@@ -289,7 +289,7 @@ function renderItemsTable(container, items, invoiceId) {
                 <tbody>
                     ${items.map(item => `
                         <tr>
-                            <td>${item.productName}</td>
+                            <td>${item.productName} (${item.variantName})</td>
                             <td>${item.variantInfo || '-'}</td>
                             <td>${item.quantity}</td>
                             <td>₹ ${item.unitPrice.toLocaleString()}</td>
@@ -363,9 +363,9 @@ function prepareAndPrint(collapseId, invoiceId) {
                 <tr>
                     <th>Product</th>
                     <th>Colour/Size</th>
-                    <th style="text-align:center;">Qty</th>
-                    <th style="text-align:right;">Price</th>
-                    <th style="text-align:right;">Total</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th style="text-align:left;">Total</th>
                 </tr>
             </thead>
             <tbody>

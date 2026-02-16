@@ -21,7 +21,8 @@ public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
     List<Object[]> findTopSellingProducts(@Param("startDate")LocalDate date);
 
     @Query("SELECT new com.monarch.monarcherp.dto.SalesItemDTO(" +
-            "p.productName, " +
+            "p.productName," +
+            "v.variantName, " +
             "CONCAT(v.colour, ' / ', v.size), " +
             "si.quantity, " +
             "si.unitPrice, " +

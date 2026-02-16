@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class SalesItemDTO {
     private String productName;
+    private String variantName;
     private String variantInfo;
     private Integer quantity;
     private Double unitPrice;
