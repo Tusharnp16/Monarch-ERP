@@ -20,6 +20,20 @@ public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
             "ORDER BY totalSales DESC")
     List<Object[]> findTopSellingProducts(@Param("startDate")LocalDate date);
 
+
+//    @Query(value = "SELECT \n" +
+//            "    p.product_name,\n" +
+//            "    v.variant_name,\n" +
+//            "    CONCAT(v.colour, ' / ', v.size) AS colour_size,\n" +
+//            "    si.quantity,\n" +
+//            "    si.unit_price,\n" +
+//            "    si.line_total\n" +
+//            "FROM sales_items si\n" +
+//            "JOIN variants v ON si.variant_id = v.variant_id\n" +
+//            "JOIN products p ON v.product_id = p.product_id\n" +
+//            "WHERE si.id = :id " ,nativeQuery = true)
+
+
     @Query("SELECT new com.monarch.monarcherp.dto.SalesItemDTO(" +
             "p.productName," +
             "v.variantName, " +
