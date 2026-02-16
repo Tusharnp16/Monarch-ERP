@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.model.SalesItem;
 import com.monarch.monarcherp.repository.InvoiceDisplayProjection;
@@ -74,6 +75,13 @@ class SalesItemController {
     public ResponseEntity<ApiResponse<List<InvoiceDisplayProjection>>> viewProjectionSales() {
         List<InvoiceDisplayProjection> projectionSalesInvoices = salesInvoiceService.getAllProjectionSalesInvoices();
         return ResponseEntity.ok(ApiResponse.success(projectionSalesInvoices,"Data fetched succesfully"));
+    }
+
+    @GetMapping("/api/invoice-items/{invoiceId}")
+    @ResponseBody
+    public ResponseEntity<ApiResponse<List<SalesItemDTO>>> getInvoiceItems(@PathVariable Long invoiceId) {
+        List<SalesItemDTO> items = salesInvoiceService.getSaleItemById(invoiceId);
+        return ResponseEntity.ok(ApiResponse.success(items, "Items fetched"));
     }
 
 }

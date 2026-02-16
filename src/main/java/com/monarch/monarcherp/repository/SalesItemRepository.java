@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.repository;
 
+import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.SalesItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,16 @@ public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
             "GROUP BY v.product.productName,v.variantName,v.colour,v.size " +
             "ORDER BY totalSales DESC")
     List<Object[]> findTopSellingProducts(@Param("startDate")LocalDate date);
+
+    @Query("SELECT new com.monarch.monarcherp.dto.SalesItemDTO(" +
+            "p.productName, " +
+            "CONCAT(v.colour, ' / ', v.size), " +
+            "si.quantity, " +
+            "si.unitPrice, " +
+            "si.lineTotal) " +
+            "FROM SalesItem si " +
+            "JOIN si.variant v " +
+            "JOIN v.product p " +
+            "WHERE si.salesInvoice.id = :id")
+    List<SalesItemDTO> salesItems(@Param("id") Long id);
 }

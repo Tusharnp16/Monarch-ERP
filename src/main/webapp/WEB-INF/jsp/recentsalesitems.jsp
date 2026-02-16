@@ -73,72 +73,83 @@ function renderAccordion(sales) {
     let html = `<div class="accordion" id="invoiceAccordion">`;
 
     sales.forEach((inv, index) => {
+
         html += `
         <div class="accordion-item mb-3 shadow-sm rounded invoice-card">
-            <h2 class="accordion-header" id="heading${index}">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapse${inv.id}"
+                        onclick="loadItems(${inv.id})">
                     <div class="w-100 d-flex justify-content-between align-items-center">
                         <div>
                             <span class="fw-bold text-primary">${inv.invoiceNumber}</span>
                             <span class="ms-3 badge bg-light text-dark border">${inv.customerName}</span>
-                            <span class="ms-2 text-muted small">${inv.customerNumber}</span>
                         </div>
                         <div class="text-end me-3">
-                            <div class="small text-muted"><i class="fa-regular fa-calendar me-1"></i>${inv.invoiceDate}</div>
                             <div class="fw-bold text-success">₹ ${inv.grandTotal.toLocaleString()}</div>
                         </div>
                     </div>
                 </button>
             </h2>
-            <div id="collapse${index}" class="accordion-collapse collapse" data-bs-parent="#invoiceAccordion">
-                <div class="accordion-body bg-white">
-                    <h6 class="fw-bold mb-3">Items</h6>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle item-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Variant</th>
-                                    <th>Qty</th>
-                                    <th>Unit Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${inv.items.map(item => `
-                                    <tr>
-                                        <td>${item.productName}</td>
-                                        <td>${item.variantInfo}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>₹ ${item.unitPrice}</td>
-                                        <td class="fw-bold">₹ ${(item.lineTotal).toLocaleString()}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row justify-content-end mt-3">
-                        <div class="col-md-4">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Subtotal</span><span>₹ ${inv.totalAmount.toLocaleString()}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between text-danger">
-                                    <span>Discount</span><span>- ₹ ${inv.discountAmount.toLocaleString()}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
-                                    <span>Grand Total</span><span class="text-success">₹ ${inv.grandTotal.toLocaleString()}</span>
-                                </li>
-                            </ul>
-                        </div>
+            <div id="collapse${inv.id}" class="accordion-collapse collapse" data-bs-parent="#invoiceAccordion">
+                <div class="accordion-body bg-white" id="details-${inv.id}">
+                    <div class="text-center p-3">
+                        <div class="spinner-border spinner-border-sm text-primary"></div>
+                        <p class="small">Loading items...</p>
                     </div>
                 </div>
             </div>
         </div>`;
     });
+    container.innerHTML = html + `</div>`;
+}
 
-    html += `</div>`;
-    container.innerHTML = html;
+const loadedInvoices = new Set();
+
+function loadItems(invoiceId) {
+    if (loadedInvoices.has(invoiceId)) return;
+
+    fetch(`/salesitem/api/invoice-items/${invoiceId}`)
+        .then(res => res.json())
+        .then(response => {
+            const detailContainer = document.getElementById(`details-${invoiceId}`);
+
+            if (response.success) {
+                renderItemsTable(detailContainer, response.data);
+                loadedInvoices.add(invoiceId);
+            }
+        })
+        .catch(err => console.error("Error loading items:", err));
+}
+
+function renderItemsTable(container, items) {
+    if (items.length === 0) {
+        container.innerHTML = "No items found.";
+        return;
+    }
+
+    let tableHtml = `
+        <h6 class="fw-bold mb-3">Items</h6>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                    ${items.map(item => `
+                        <tr>
+                            <td>${item.productName}</td>
+                            <td>${item.quantity}</td>
+                            <td>₹ ${item.unitPrice}</td>
+                            <td class="fw-bold">₹ ${item.lineTotal}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>`;
+
+    container.innerHTML = tableHtml;
 }
 </script>
 </body>

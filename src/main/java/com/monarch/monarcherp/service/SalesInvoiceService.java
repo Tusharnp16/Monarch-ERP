@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.*;
 import com.monarch.monarcherp.repository.*;
 import jakarta.transaction.Transactional;
@@ -23,8 +24,9 @@ public class SalesInvoiceService {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+
     @Autowired
-    private SalesItemService salesItemService;
+    private SalesItemRepository salesItemRepository;
 
     @Autowired NotificationService notificationService;
 
@@ -169,6 +171,12 @@ public class SalesInvoiceService {
         return salesInvoiceRepository.findAllProjectedBy();
     }
 
+    // salesInvoiceService
+
+    public List<SalesItemDTO> getSaleItemById(Long id){
+        return salesItemRepository.salesItems(id);
+    }
+
     public void deleteSalesInvoice(Long id) {
         salesInvoiceRepository.deleteById(id);
     }
@@ -193,6 +201,8 @@ public class SalesInvoiceService {
         SalesInvoice sl= salesInvoiceRepository.findById(id).orElse(null);
         return sl;
     }
+
+
 
 
     public boolean salesInvoiceExists(Long id) {
