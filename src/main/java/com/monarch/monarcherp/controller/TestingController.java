@@ -83,4 +83,9 @@ class TestingController {
     public String customer() {
         return "customers";
     }
+
+    @GetMapping("/purchase")
+    public String purchase() {
+        return "purchases";
+    }
 }

@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class PurchaseItem {
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
+    @JsonIgnore
     private Purchase purchase;
 
     @ManyToOne
@@ -24,6 +26,7 @@ public class PurchaseItem {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "stock_master_id", nullable = false)
+    @JsonIgnore
     private StockMaster stockMaster;
 
     @Embedded

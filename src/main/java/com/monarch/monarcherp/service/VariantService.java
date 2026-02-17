@@ -58,4 +58,8 @@ public class VariantService {
         variantRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         return  variantRepository.save(updatedData);
     }
+
+    public List<Variant> getPrVariant() {
+        return variantRepository.findAll();
+    }
 }

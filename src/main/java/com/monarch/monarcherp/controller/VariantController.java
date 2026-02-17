@@ -142,6 +142,16 @@ public class VariantController {
         return ResponseEntity.ok(ApiResponse.success(data, "Variants fetched successfully"));
     }
 
+    @GetMapping("/pr")
+    public ResponseEntity<ApiResponse<List<Variant>>> getProctedVariant() {
+        List<Variant> variant = variantService.getPrVariant();
+        if (variant == null) {
+            return ResponseEntity.ok(ApiResponse.error("Variant not found with ID: "));
+        }
+        return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Variant>> getVariantById(@PathVariable Long id) {
         Variant variant = variantService.getVariant(id);
