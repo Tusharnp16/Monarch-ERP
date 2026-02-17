@@ -1,6 +1,7 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
 <jasperReport name="MonarchERP" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6bb1945-b50b-4e16-841b-446769f8e2e2">
     <parameter name="INVOICE_ID" class="java.lang.Long"/>
+    <parameter name="logo" class="java.lang.String"/>
     <query language="sql"><![CDATA[
 
         SELECT p.product_name, v.variant_name,
@@ -34,51 +35,75 @@
     <variable name="SubtotalVar" calculation="Sum" class="java.lang.Double">
         <expression><![CDATA[$F{line_total}]]></expression>
     </variable>
-    <title height="210">
-        <element kind="staticText" uuid="121ccb67-55e3-4e24-b882-7ab2c27b59ec" x="0" y="10" width="350" height="50" forecolor="#007BFF" fontSize="42.0" bold="true">
-            <text><![CDATA[MONARCH]]></text>
-        </element>
-        <element kind="staticText" uuid="734bc377-9835-46ec-9d28-6a31099a0488" x="0" y="70" width="350" height="25" forecolor="#666666" fontSize="18.0" bold="true" vTextAlign="Bottom">
-            <text><![CDATA[ERP SOLUTIONS]]></text>
-        </element>
-        <element kind="rectangle" uuid="451b8135-0e4e-43ba-a5ae-1f59f51a8faa" x="0" y="100" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
+    <title height="231">
+        <element kind="rectangle" uuid="451b8135-0e4e-43ba-a5ae-1f59f51a8faa" x="0" y="110" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
             <pen lineWidth="0.0"/>
         </element>
-        <element kind="frame" uuid="4df523ff-c429-4943-b6ff-4ff021f04f60" x="0" y="115" width="555" height="85">
-            <element kind="staticText" uuid="16fcf745-0bfb-4ee9-8bf3-0041444271ca" x="0" y="5" width="100" height="12" forecolor="#666666" fontSize="9.0" bold="true">
+        <element kind="rectangle" uuid="c2567a83-1000-4f29-9a90-b974f5c2b1f6" x="0" y="0" width="6" height="230" backcolor="#007BFF">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+            <pen lineWidth="0.0"/>
+        </element>
+        <element kind="staticText" uuid="734bc377-9835-46ec-9d28-6a31099a0488" x="20" y="70" width="370" height="34" forecolor="#666666" fontSize="27.0" bold="true" italic="true" vTextAlign="Bottom">
+            <text><![CDATA[ERP SOLUTIONS]]></text>
+        </element>
+        <element kind="textField" uuid="47035643-bd1a-42e3-bc77-db0320bbc20a" x="294" y="20" width="250" height="15" forecolor="#6C757D" fontSize="9.0" hTextAlign="Right">
+            <expression><![CDATA[
+            new java.text.SimpleDateFormat("dd MMM yyyy | hh:mm a")
+            .format(new java.util.Date())
+        ]]></expression>
+        </element>
+        <element kind="image" uuid="f36ea59e-d9ea-41f0-87a5-8d13ea413794" x="470" y="39" width="75" height="65" scaleImage="RetainShape" usingCache="true">
+            <expression><![CDATA[$P{logo}]]></expression>
+        </element>
+        <element kind="frame" uuid="90e28375-d6a7-4a02-84b2-d8d3d782bbf0" x="20" y="130" width="515" height="85">
+            <element kind="staticText" uuid="39684e1c-f22e-4d35-a756-d821857dc55d" x="0" y="0" width="200" height="12" forecolor="#6C757D" fontSize="9.0" bold="true">
                 <text><![CDATA[BILLED TO]]></text>
             </element>
-            <element kind="textField" uuid="206c0f79-3b40-44ab-a5e6-84da94198864" x="0" y="18" width="250" height="20" fontSize="14.0" bold="true">
+            <element kind="textField" uuid="818d31d2-2f9d-42c3-b9d2-725ae368b183" x="0" y="15" width="250" height="18" fontSize="14.0" bold="true">
                 <expression><![CDATA[$F{name}]]></expression>
             </element>
-            <element kind="textField" uuid="b745acf6-84a0-4f3d-a758-e341e267dce2" x="0" y="38" width="250" height="15" forecolor="#555555" fontSize="10.0">
+            <element kind="textField" uuid="56db484a-796c-4b3f-9453-445ea41abd6a" x="0" y="35" width="250" height="15" forecolor="#495057" fontSize="10.0">
                 <expression><![CDATA[$F{email}]]></expression>
             </element>
-            <element kind="textField" uuid="856fe41f-9ab6-4866-a14f-1981e776ce15" x="0" y="53" width="250" height="15" forecolor="#555555" fontSize="10.0">
+            <element kind="textField" uuid="239d6e90-d1cd-4ac2-9e90-cadda13d65b5" x="0" y="50" width="250" height="15" forecolor="#495057" fontSize="10.0">
                 <expression><![CDATA[$F{mobile}]]></expression>
             </element>
-            <element kind="staticText" uuid="5cb95562-33dc-45d9-9b35-13225d5822f1" x="380" y="5" width="175" height="12" forecolor="#666666" fontSize="9.0" bold="true" hTextAlign="Right">
+            <element kind="staticText" uuid="3b416b7e-5d82-4d23-a239-43336dd3ce29" x="340" y="0" width="175" height="12" forecolor="#6C757D" fontSize="9.0" bold="true" hTextAlign="Right">
                 <text><![CDATA[INVOICE DETAILS]]></text>
             </element>
-            <element kind="textField" uuid="7f0a4b7d-f29e-41f1-9f60-708abbe274c6" x="380" y="18" width="175" height="20" forecolor="#007BFF" fontSize="14.0" bold="true" hTextAlign="Right">
+            <element kind="textField" uuid="345cc5b2-0064-43ee-9ded-47d25cdaeca8" x="340" y="15" width="175" height="20" forecolor="#007BFF" fontSize="14.0" bold="true" hTextAlign="Right">
                 <expression><![CDATA[$F{invoice_number}]]></expression>
             </element>
-            <element kind="textField" uuid="05cf9af8-cda0-4b3c-aff1-6ec88f59c2ba" x="380" y="38" width="175" height="15" fontSize="10.0" hTextAlign="Right">
-                <expression><![CDATA["Date: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{invoice_date})]]></expression>
+            <element kind="textField" uuid="b38beb94-ee60-430e-b1c7-6da7da3a956a" x="340" y="35" width="175" height="15" fontSize="10.0" hTextAlign="Right">
+                <expression><![CDATA[
+                "Date: " +
+                new java.text.SimpleDateFormat("dd MMM yyyy")
+                .format($F{invoice_date})
+            ]]></expression>
             </element>
-            <element kind="staticText" uuid="3020ed45-4d85-4b7d-92c8-606c96936948" x="380" y="58" width="175" height="18" forecolor="#28A745" fontSize="11.0" bold="true" hTextAlign="Right">
-                <text><![CDATA[STATUS: PAID]]></text>
+            <element kind="rectangle" uuid="7a2d931c-bc7b-4d3c-bc16-968c06986ea6" x="390" y="55" width="125" height="18" backcolor="#28A745">
+                <pen lineWidth="0.0"/>
+            </element>
+            <element kind="staticText" uuid="b256d5ea-08c2-461f-936e-904f76418125" x="390" y="57" width="125" height="14" forecolor="#FFFFFF" fontSize="10.0" bold="true" hTextAlign="Center">
+                <text><![CDATA[PAID]]></text>
+            </element>
+            <element kind="staticText" uuid="121ccb67-55e3-4e24-b882-7ab2c27b59ec" mode="Transparent" x="0" y="-100" width="339" height="50" forecolor="#007BFF" fontSize="35.0" bold="true" vTextAlign="Bottom">
+                <text><![CDATA[MONARCH]]></text>
             </element>
         </element>
-        <element kind="textField" uuid="256a4b8b-3ac3-46c9-bb4f-eaa6460c9bda" x="0" y="10" width="200" height="15" forecolor="#444444" fontSize="9.0" hTextAlign="Left">
-            <expression><![CDATA[new java.text.SimpleDateFormat("d/M/yy, h:mm a").format(new java.util.Date())]]></expression>
-        </element>
-        <element kind="staticText" uuid="9d330307-917b-4038-9351-45f1af3806db" x="0" y="30" width="200" height="40" forecolor="#007BFF" fontSize="29.0" bold="true" hTextAlign="Left" vTextAlign="Bottom">
-            <text><![CDATA[Monarch]]></text>
+        <element kind="rectangle" uuid="8ee73bd1-5010-4622-8e37-48140060e93a" x="549" y="0" width="6" height="230" backcolor="#007BFF">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+            <pen lineWidth="0.0"/>
         </element>
     </title>
     <pageHeader height="30">
-        <element kind="rectangle" uuid="c54e5399-ef2f-4960-95e4-8f732ac925cc" x="0" y="10" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
+        <element kind="rectangle" uuid="81577c4e-1394-4d6d-9f36-296f7d31afc6" x="0" y="-1" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
+            <pen lineWidth="0.0"/>
+        </element>
+        <element kind="rectangle" uuid="012ab2ab-e45c-4ce3-aea0-364fc9eb2fba" x="3" y="-231" width="550" height="4" forecolor="#007BFF" backcolor="#007BFF">
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
             <pen lineWidth="0.0"/>
         </element>
     </pageHeader>

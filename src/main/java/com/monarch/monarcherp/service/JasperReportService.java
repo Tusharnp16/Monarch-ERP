@@ -27,6 +27,7 @@ public class JasperReportService {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("INVOICE_ID", invoiceId);
+        parameters.put("logo","static/logo.png");
 
         try (Connection connection = dataSource.getConnection()) {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
