@@ -2,18 +2,19 @@ package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.dto.SalesItemDTO;
-import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.model.SalesItem;
 import com.monarch.monarcherp.repository.InvoiceDisplayProjection;
 import com.monarch.monarcherp.service.JasperReportService;
 import com.monarch.monarcherp.service.SalesInvoiceService;
 import com.monarch.monarcherp.service.SalesItemService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -34,7 +35,7 @@ class SalesItemController {
     @GetMapping
     public String viewSalesItems(Model model) {
         model.addAttribute("salesItems", salesItemService.getAllSalesItems());
-        model.addAttribute("Associate SalesItem",salesItemService.getAllSalesItems());
+        model.addAttribute("Associate SalesItem", salesItemService.getAllSalesItems());
         return "salesItems";
     }
 
@@ -77,7 +78,7 @@ class SalesItemController {
     @ResponseBody
     public ResponseEntity<ApiResponse<List<InvoiceDisplayProjection>>> viewProjectionSales() {
         List<InvoiceDisplayProjection> projectionSalesInvoices = salesInvoiceService.getAllProjectionSalesInvoices();
-        return ResponseEntity.ok(ApiResponse.success(projectionSalesInvoices,"Data fetched succesfully"));
+        return ResponseEntity.ok(ApiResponse.success(projectionSalesInvoices, "Data fetched succesfully"));
     }
 
     @GetMapping("/api/invoice-items/{invoiceId}")
@@ -103,4 +104,20 @@ class SalesItemController {
         }
     }
 
+    @GetMapping("/api/export/monthly")
+    public void exportSales(@RequestParam int month, @RequestParam int year, HttpServletResponse response) throws IOException {
+
+        try {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            String fileName = String.format("Sales_Export_%d_%d.xlsx", month, year);
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+            salesInvoiceService.exportMonthlySalesToStream(month, year, response.getOutputStream());
+
+            response.flushBuffer();
+
+        } catch (IOException e) {
+            response.sendError(500,"Internet Issues");
+        }
+    }
 }

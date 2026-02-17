@@ -167,7 +167,12 @@
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h4"><i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Sales Invoices</h2>
-            <a href="/salesinvoice" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> New Invoice</a>
+            <div class="d-flex gap-2">
+                <button onclick="exportMonthlySales()" class="btn btn-success border-0 shadow-sm">
+                    <i class="fa-solid fa-file-excel me-1"></i> Monthly Export
+                </button>
+                <a href="/salesinvoice" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> New Invoice</a>
+            </div>
         </div>
 
         <div id="invoiceContainer">
@@ -180,6 +185,49 @@
 </div>
 
 <div id="printSection" class="d-none d-print-block"></div>
+
+<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-file-excel me-2"></i>Export Monthly Sales</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Select Month</label>
+                        <select id="exportMonth" class="form-select">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Select Year</label>
+                        <select id="exportYear" class="form-select">
+                            </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" onclick="confirmExport()" class="btn btn-success px-4">
+                    Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -272,7 +320,7 @@ function renderItemsTable(container, items, invoiceId) {
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold m-0">Items</h6>
            <button class="btn btn-sm btn-outline-danger d-print-none"
-                   onclick="window.location.href='/salesitem/api/invoice/print/${invoiceId}'">
+                   onclick="window.open('/salesitem/api/invoice/print/${invoiceId}', '_blank')">
                <i class="fa-solid fa-file-pdf me-1"></i> Print Bill
            </button>
         </div>
@@ -399,6 +447,40 @@ function prepareAndPrint(collapseId, invoiceId) {
 
     window.print();
     printSection.innerHTML ='' ;
+}
+// Initialize the year dropdown and set defaults
+document.addEventListener('DOMContentLoaded', () => {
+    const yearSelect = document.getElementById('exportYear');
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+
+    // Fill last 5 years
+    for (let i = 0; i < 5; i++) {
+        let year = currentYear - i;
+        yearSelect.options.add(new Option(year, year));
+    }
+
+    // Set defaults to current month/year
+    document.getElementById('exportMonth').value = currentMonth;
+});
+
+// The refined export trigger
+function exportMonthlySales() {
+    const myModal = new bootstrap.Modal(document.getElementById('exportModal'));
+    myModal.show();
+}
+
+function confirmExport() {
+    const month = document.getElementById('exportMonth').value;
+    const year = document.getElementById('exportYear').value;
+
+    // Close modal
+    const modalElement = document.getElementById('exportModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+
+    // Trigger Download
+    window.location.href = `/salesitem/api/export/monthly?month=${month}&year=${year}`;
 }
 </script>
 </body>

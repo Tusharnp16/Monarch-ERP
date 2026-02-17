@@ -141,6 +141,7 @@
                                         <button class="btn btn-sm btn-light border"><i class="fas fa-print"></i>
                                         </button>
                                     </td>
+
                                 </tr>
                                 <tr id="details-${p.purchaseId}" class="detail-row">
                                     <td colspan="6" class="px-4 py-3 bg-light">

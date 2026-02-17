@@ -3,32 +3,36 @@ package com.monarch.monarcherp.service;
 import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.*;
 import com.monarch.monarcherp.repository.*;
-import jakarta.transaction.Transactional;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Service
 public class SalesInvoiceService {
 
 
     private final CustomerRepository customerRepository;
+    @Autowired
+    NotificationService notificationService;
     private SalesInvoiceRepository salesInvoiceRepository;
-
     @Autowired
     private VariantRepository variantRepository;
-
     @Autowired
     private InventoryRepository inventoryRepository;
-
     @Autowired
     private SalesItemRepository salesItemRepository;
-
-    @Autowired NotificationService notificationService;
 
 
     SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository) {
@@ -167,13 +171,13 @@ public class SalesInvoiceService {
         return salesInvoiceRepository.findAll();
     }
 
-   public List<InvoiceDisplayProjection> getAllProjectionSalesInvoices() {
+    public List<InvoiceDisplayProjection> getAllProjectionSalesInvoices() {
         return salesInvoiceRepository.findAllProjectedBy();
     }
 
     // salesInvoiceService
 
-    public List<SalesItemDTO> getSaleItemById(Long id){
+    public List<SalesItemDTO> getSaleItemById(Long id) {
         return salesItemRepository.salesItems(id);
     }
 
@@ -197,17 +201,51 @@ public class SalesInvoiceService {
         }
     }
 
-    public SalesInvoice getById(long id){
-        SalesInvoice sl= salesInvoiceRepository.findById(id).orElse(null);
+    public SalesInvoice getById(long id) {
+        SalesInvoice sl = salesInvoiceRepository.findById(id).orElse(null);
         return sl;
     }
-
-
 
 
     public boolean salesInvoiceExists(Long id) {
         return salesInvoiceRepository.existsById(id);
     }
+
+    @Transactional(readOnly = true)
+    public void exportMonthlySalesToStream(int month, int year, OutputStream outputStream) throws IOException {
+
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
+            SXSSFSheet sheet = workbook.createSheet("Monthly Sales");
+
+            createHeader(sheet);
+
+            try (Stream<SalesInvoice> salesStream = salesInvoiceRepository.streamByMonthAndYear(month, year)) {
+                AtomicInteger rowIdx = new AtomicInteger(1);
+
+                salesStream.forEach(invoice -> {
+                    System.out.println(invoice.getInvoiceDate());
+                    System.out.println(invoice.getInvoiceNumber());
+                    Row row =sheet.createRow(rowIdx.getAndIncrement());
+                    row.createCell(0).setCellValue(invoice.getInvoiceDate().toString());
+                    row.createCell(1).setCellValue(invoice.getInvoiceNumber());
+                    row.createCell(2).setCellValue(invoice.getCustomer().getName());
+                    row.createCell(3).setCellValue(invoice.getGrandTotal());
+                });
+            }
+
+            workbook.write(outputStream);
+            workbook.dispose();
+        }
+    }
+
+    private void createHeader(SXSSFSheet sheet) {
+        Row header = sheet.createRow(0);
+        String[] columns = {"Date", "Invoice #", "Customer", "Amount"};
+        for (int i = 0; i < columns.length; i++) {
+            header.createCell(i).setCellValue(columns[i]);
+        }
+    }
+
 //
 //    public SalesInvoice updateSalesInvoiceName(Long id, String newName) {
 //        SalesInvoice salesInvoice= salesInvoiceRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));

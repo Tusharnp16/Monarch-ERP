@@ -1,12 +1,17 @@
 package com.monarch.monarcherp.repository;
 
 import com.monarch.monarcherp.model.SalesInvoice;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.hibernate.jpa.HibernateHints;
 import org.springframework.data.repository.query.Param;
+import jakarta.persistence.QueryHint;
+import org.springframework.data.jpa.repository.QueryHints;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface SalesInvoiceRepository extends JpaRepository<SalesInvoice, Long> {
 
@@ -20,4 +25,11 @@ public interface SalesInvoiceRepository extends JpaRepository<SalesInvoice, Long
             "items.variant.product"
     })
     List<InvoiceDisplayProjection> findAllProjectedBy();
+
+    @QueryHints(value = {
+            @QueryHint(name = "org.hibernate.fetchSize", value = "100"),
+            @QueryHint(name = "org.hibernate.readOnly", value = "true")
+    })
+    @Query("SELECT s FROM SalesInvoice s WHERE MONTH(s.invoiceDate) = :m AND YEAR(s.invoiceDate) = :y")
+    Stream<SalesInvoice> streamByMonthAndYear(@Param("m") int month, @Param("y") int year);
 }
