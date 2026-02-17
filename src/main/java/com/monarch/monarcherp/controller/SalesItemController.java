@@ -94,13 +94,12 @@ class SalesItemController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            // This opens the PDF in the browser instead of just downloading it
             headers.setContentDisposition(ContentDisposition.inline().filename("Invoice_" + id + ".pdf").build());
 
             return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.EARLY_HINTS);
         }
     }
 

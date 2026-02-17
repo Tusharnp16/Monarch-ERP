@@ -271,9 +271,10 @@ function renderItemsTable(container, items, invoiceId) {
     let tableHtml = `
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold m-0">Items</h6>
-            <button class="btn btn-sm btn-outline-danger d-print-none" onclick="prepareAndPrint('collapse${invoiceId}', ${invoiceId})">
-                <i class="fa-solid fa-file-pdf me-1"></i> Print Bill
-            </button>
+           <button class="btn btn-sm btn-outline-danger d-print-none"
+                   onclick="window.location.href='/salesitem/api/invoice/print/${invoiceId}'">
+               <i class="fa-solid fa-file-pdf me-1"></i> Print Bill
+           </button>
         </div>
         <div class="table-responsive">
             <table class="table table-sm align-middle item-table">
@@ -317,6 +318,8 @@ function renderItemsTable(container, items, invoiceId) {
 
     container.innerHTML = tableHtml;
 }
+
+// /salesitem/api/invoice/print/453
 
 function prepareAndPrint(collapseId, invoiceId) {
     const accordionItem = document.getElementById(collapseId).closest('.accordion-item');

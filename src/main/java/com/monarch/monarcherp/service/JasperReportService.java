@@ -16,26 +16,23 @@ public class JasperReportService {
     private DataSource dataSource;
 
     public byte[] generateInvoice(Long invoiceId) throws Exception {
-        // 1. Load the JRXML file from the resources folder
-        InputStream reportStream = getClass().getResourceAsStream("/reports/MonarchERP.jrxml");
+
+        InputStream reportStream = getClass().getResourceAsStream("/reports/MonarchBill.jrxml");
 
         if (reportStream == null) {
             throw new RuntimeException("Report file not found in /resources/reports/MonarchERP.jrxml");
         }
 
-        // 2. Compile the report template
         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
 
-        // 3. Setup parameters for the SQL query
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("INVOICE_ID", invoiceId);
 
-        // 4. Fill the report using your PostgreSQL connection
         try (Connection connection = dataSource.getConnection()) {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
 
-            // 5. Convert the filled report to a PDF byte array
             return JasperExportManager.exportReportToPdf(jasperPrint);
+
         }
     }
 }
