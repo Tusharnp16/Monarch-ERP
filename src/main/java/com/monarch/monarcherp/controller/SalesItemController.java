@@ -111,11 +111,8 @@ class SalesItemController {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             String fileName = String.format("Sales_Export_%d_%d.xlsx", month, year);
             response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-
             salesInvoiceService.exportMonthlySalesToStream(month, year, response.getOutputStream());
-
             response.flushBuffer();
-
         } catch (IOException e) {
             response.sendError(500,"Internet Issues");
         }

@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.dto.PurchaseDTO;
 import com.monarch.monarcherp.model.Purchase;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.repository.PurchaseItemRepository;
@@ -66,6 +67,12 @@ public class PurchaseService {
     public Purchase updatePurchaseName(Long id, String newName) {
         Purchase purchase= purchaseRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
         return  purchaseRepository.save(purchase);
+    }
+
+    //findAllPurchaseSummaries
+
+    public List<PurchaseDTO> purchaseSummary(){
+       return purchaseRepository.findAllPurchaseSummaries();
     }
 
 

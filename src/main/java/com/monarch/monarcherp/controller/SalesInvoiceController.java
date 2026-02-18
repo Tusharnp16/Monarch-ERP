@@ -45,7 +45,6 @@ class SalesInvoiceController {
                         .filter(i->i.getVariant()!=null)
                         .collect(Collectors.toList());
         model.addAttribute("inventory", activeInventory);
-
         model.addAttribute("maxDiscountLimit", discountConfig.getMaxDiscountValue());
 
         try {

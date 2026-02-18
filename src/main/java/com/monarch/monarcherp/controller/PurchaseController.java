@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.dto.PurchaseDTO;
 import com.monarch.monarcherp.model.Purchase;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.service.ContactService;
@@ -31,9 +32,16 @@ public class PurchaseController {
         this.reportService = reportService;
     }
 
-    @GetMapping
+    @GetMapping("/pr")
     public ResponseEntity<ApiResponse<List<Purchase>>> getAllPurchases() {
         List<Purchase> purchases = purchaseService.getAllPurchases();
+        return ResponseEntity.ok(ApiResponse.success(purchases, "Purchases retrieved successfully"));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PurchaseDTO>>> getAllPurchasesDTO() {
+        List<PurchaseDTO> purchases = purchaseService.purchaseSummary();
         return ResponseEntity.ok(ApiResponse.success(purchases, "Purchases retrieved successfully"));
     }
 

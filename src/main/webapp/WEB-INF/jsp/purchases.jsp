@@ -170,11 +170,11 @@
     function renderTable(purchases) {
         const tbody = document.getElementById('purchaseTableBody');
         tbody.innerHTML = purchases.map(p => {
-            // Safety check for supplier object
-            const supplierName = p.supplier ? p.supplier.name : 'Unknown';
-            const supplierMobile = p.supplier ? p.supplier.mobileno : '-';
-            const total = p.totalAmount ? p.totalAmount.price : 0;
-            const createdDate = p.createdDate ? p.createdDate.split('T')[0] : '-';
+            const supplierName = p.supplierName ? p.supplierName : 'Unknown';
+            const supplierMobile = p.supplierNumber ? p.supplierNumber : '-';
+            const total = p.totalAmount ? p.totalAmount : 0;
+            const createdDate = p.date ? p.date.split('T')[0] : '-';
+            console.log(createdDate);
 
             return `
                 <tr class="main-row">
@@ -189,7 +189,7 @@
                         <div class="text-muted small">${supplierMobile}</div>
                     </td>
                     <td><span class="text-muted">${createdDate}</span></td>
-                    <td><span class="badge rounded-pill bg-light text-dark border">${p.items ? p.items.length : 0} Items</span></td>
+                    <td><span class="badge rounded-pill bg-light text-dark border">${p.itemCount ? p.itemCount : 0} Items</span></td>
                     <td class="fw-bold text-primary">₹ ${total.toLocaleString()}</td>
                     <td class="text-end pe-3">
                         <button class="btn btn-sm btn-light border"><i class="fas fa-print"></i></button>
@@ -243,7 +243,7 @@
         try {
             const [supRes, varRes] = await Promise.all([
                 fetch('/api/contacts'),
-                fetch('/api/variants/pr')
+                fetch('/api/variants/pr'),
             ]);
             const suppliers = await supRes.json();
             const variants = await varRes.json();
@@ -355,6 +355,8 @@
             totalAmount: { price: parseFloat(document.getElementById('totalBillAmount').value) },
             items: items
         };
+
+
 
         try {
             const res = await fetch(`/api/purchase/add?gstIn=${document.getElementById('hiddenGstIn').value}`, {
