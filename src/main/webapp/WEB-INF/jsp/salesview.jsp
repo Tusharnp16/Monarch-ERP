@@ -121,7 +121,7 @@
                                     <td><span class="text-muted">${s.invoiceDate}</span></td>
                                     <td><span class="badge rounded-pill bg-light text-dark border">${s.items.size()} Qty</span></td>
                                     <td class="text-danger">- ₹ ${s.discountAmount}</td>
-                                    <td class="fw-bold text-success">₹ ${s.invoice.grandTmfnkdjfotal}</td>
+                                    <td class="fw-bold text-success">₹ ${s.invoice.grandTotal}</td>
                                     <td class="text-end pe-3">
                                         <button class="btn btn-sm btn-light border" title="Print Invoice">
                                             <i class="fas fa-print"></i>

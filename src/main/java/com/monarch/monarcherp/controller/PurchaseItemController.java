@@ -1,9 +1,12 @@
 package com.monarch.monarcherp.controller;
 
+import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.PurchaseItem;
+import com.monarch.monarcherp.repository.PurchaseDetailProjection;
 import com.monarch.monarcherp.service.PurchaseItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,19 @@ public class PurchaseItemController {
 //    @Autowired
 //    private ProductService productService;
 
-    @GetMapping
-    public String viewPurchaseItems(Model model) {
-        model.addAttribute("purchaseItems", purchaseItemService.getAllPurchaseItems());
-//        model.addAttribute("parentProducts",productService.getAllProducts());
-        return "purchase-item";
+//    @GetMapping
+//    public String viewPurchaseItems(Model model) {
+//        model.addAttribute("purchaseItems", purchaseItemService.getAllPurchaseItems());
+////        model.addAttribute("parentProducts",productService.getAllProducts());
+//        return "purchase-item";
+//    }
+
+    @GetMapping("/pr/{id}")
+    @ResponseBody
+    public ResponseEntity<ApiResponse<List<PurchaseDetailProjection>>> viewPurchaseItems(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(ApiResponse.success(purchaseItemService.getPurchaseItems(id),"Data Fetched"));
     }
+
 
     @GetMapping("/{id}")
     public String viewPurchaseItem(@PathVariable Long id, Model model) {

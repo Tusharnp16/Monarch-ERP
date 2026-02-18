@@ -16,6 +16,26 @@
         .inner-table-wrapper { background: white; border-radius: 8px; border: 1px solid #dee2e6; margin: 10px 0; }
         .bill-badge { background: #fff4e6; color: #d9480f; border: 1px solid #ffd8a8; font-weight: 600; }
         .input-readonly { background-color: #e9ecef !important; font-weight: 600; }
+        /* Removes spin-buttons from number inputs */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* Ensure readonly text is visible and centered */
+        .input-readonly {
+            background-color: #e9ecef !important;
+            font-weight: 600;
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+            text-overflow: ellipsis;
+        }
+
+        /* Adjust table to handle width better */
+        .table-responsive { overflow-x: auto; }
     </style>
 </head>
 <body>
@@ -106,22 +126,21 @@
                     <table class="table table-bordered align-middle">
                         <thead class="table-light small">
                             <tr>
-                                <th style="width: 30%;">Variant</th>
-                                <th style="width: 10%;">Qty</th>
-                                <th style="width: 15%;">Price (Ex)</th>
-                                <th style="width: 15%;">Tax</th>
-                                <th style="width: 15%;">Landing (Inc)</th>
-                                <th style="width: 15%;">Net Total</th>
-                                <th>Expiry</th>
+                                <th style="width: 25%;">Variant</th>
+                                <th style="width: 8%;">Qty</th>
+                                <th style="width: 12%;">Price (Ex)</th>
+                                <th style="width: 12%;">Tax</th>
+                                <th style="width: 12%;">Landing (Inc)</th>
+                                <th style="width: 18%;">Net Total</th> <th style="width: 13%;">Expiry</th>
                                 <th style="width: 5%;"></th>
                             </tr>
                         </thead>
                         <tbody id="purchaseItemsContainer">
                             <tr class="item-row">
                                 <td><select class="form-select form-select-sm variant-select" required></select></td>
-                                <td><input type="number" class="form-control form-control-sm qty-input" value="1" min="1" required></td>
-                                <td><input type="number" step="0.01" class="form-control form-control-sm price-input" placeholder="0.00" required></td>
-                                <td><input type="number" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
+                                <td><input type="number" class="form-control form-control-sm qty-input" value="1" min="1" oninput="if(this.value<1)this.value=1" required></td>
+                                <td><input type="number" step="0.01" class="form-control form-control-sm price-input" placeholder="0.00" min="0" oninput="if(this.value<0)this.value=0" required></td>
+                                 <td><input type="number" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm landing-input input-readonly" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm net-input input-readonly text-primary" readonly></td>
                                 <td><input type="date" class="form-control form-control-sm expire-input"></td>
@@ -149,6 +168,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         fetchPurchases();
         loadMetadata();
+
+        const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('.expire-input').forEach(input => input.setAttribute('min', today));
     });
 
     // 1. Fetch Main Table Data
@@ -170,16 +192,15 @@
     function renderTable(purchases) {
         const tbody = document.getElementById('purchaseTableBody');
         tbody.innerHTML = purchases.map(p => {
-            const supplierName = p.supplierName ? p.supplierName : 'Unknown';
-            const supplierMobile = p.supplierNumber ? p.supplierNumber : '-';
-            const total = p.totalAmount ? p.totalAmount : 0;
+            const supplierName = p.supplierName || 'Unknown';
+            const supplierMobile = p.supplierNumber || '-';
+            const total = p.totalAmount || 0;
             const createdDate = p.date ? p.date.split('T')[0] : '-';
-            console.log(createdDate);
 
             return `
                 <tr class="main-row">
                     <td class="ps-3">
-                        <a class="bill-link" onclick="toggleDetails('details-${p.purchaseId}', this)">
+                        <a class="bill-link" onclick="toggleDetails(${p.purchaseId}, this)">
                             <i class="fa-solid fa-caret-right me-2 text-muted"></i>
                             <span class="badge bill-badge px-2 py-1">${p.billNo || 'N/A'}</span>
                         </a>
@@ -189,8 +210,8 @@
                         <div class="text-muted small">${supplierMobile}</div>
                     </td>
                     <td><span class="text-muted">${createdDate}</span></td>
-                    <td><span class="badge rounded-pill bg-light text-dark border">${p.itemCount ? p.itemCount : 0} Items</span></td>
-                    <td class="fw-bold text-primary">₹ ${total.toLocaleString()}</td>
+                    <td><span class="badge rounded-pill bg-light text-dark border">${p.itemCount || 0} Items</span></td>
+                    <td class="fw-bold text-primary">₹ ${total.toLocaleString('en-IN')}</td>
                     <td class="text-end pe-3">
                         <button class="btn btn-sm btn-light border"><i class="fas fa-print"></i></button>
                     </td>
@@ -211,24 +232,8 @@
                                         <th class="text-end">Expire Date</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    ${(p.items || []).map(item => {
-                                        // CRITICAL FIX: Safety check for variant and product
-                                        const prodName = (item.variant && item.variant.product) ? item.variant.product.productName : 'Removed Product';
-                                        const itemCode = (item.variant && item.variant.product) ? item.variant.product.itemCode : '???';
-                                        const varName = item.variant ? item.variant.variantName : '';
-
-                                        return `
-                                        <tr>
-                                            <td>[${itemCode}] ${prodName} <span class="text-muted small"> - ${varName}</span></td>
-                                            <td class="text-center">${item.qty || 0}</td>
-                                            <td>₹ ${item.price ? item.price.price.toLocaleString() : 0}</td>
-                                            <td>₹ ${item.taxAmount ? item.taxAmount.price.toLocaleString() : 0}</td>
-                                            <td>₹ ${item.landingCost ? item.landingCost.price.toLocaleString() : 0}</td>
-                                            <td class="fw-bold text-dark">₹ ${item.netAmount ? item.netAmount.price.toLocaleString() : 0}</td>
-                                            <td class="text-end text-muted small">${item.expireDate || '-'}</td>
-                                        </tr>
-                                    `}).join('')}
+                                <tbody id="items-body-${p.purchaseId}">
+                                    <tr><td colspan="7" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div> Loading...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -236,6 +241,57 @@
                 </tr>
             `;
         }).join('');
+    }
+
+    async function toggleDetails(purchaseId, element) {
+        const row = document.getElementById(`details-${purchaseId}`);
+        const itemsBody = document.getElementById(`items-body-${purchaseId}`);
+        const icon = element.querySelector('i');
+        const isOpen = row.style.display === "table-row";
+
+        // 1. Toggle visibility
+        row.style.display = isOpen ? "none" : "table-row";
+        icon.classList.toggle('fa-caret-right', isOpen);
+        icon.classList.toggle('fa-caret-down', !isOpen);
+
+
+        if (!isOpen && itemsBody.getAttribute('data-loaded') !== 'true') {
+            try {
+
+                const res = await fetch(`/purchaseitem/pr/${purchaseId}`);
+                const response = await res.json();
+
+                if (response.success && response.data) {
+                    renderItems(purchaseId, response.data);
+                    itemsBody.setAttribute('data-loaded', 'true');
+                } else {
+                    itemsBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Failed to load items.</td></tr>';
+                }
+            } catch (err) {
+                console.error("Error fetching details:", err);
+                itemsBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading items.</td></tr>';
+            }
+        }
+    }
+
+    function renderItems(purchaseId, items) {
+        const itemsBody = document.getElementById(`items-body-${purchaseId}`);
+        if (items.length === 0) {
+            itemsBody.innerHTML = '<tr><td colspan="7" class="text-center">No items found.</td></tr>';
+            return;
+        }
+
+        itemsBody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.productDisplay} <span class="text-muted small"> - ${item.variantDisplay}</span></td>
+                <td class="text-center">${item.qty || 0}</td>
+                <td>₹ ${item.unitPrice?.toLocaleString('en-IN') || 0}</td>
+                <td>₹ ${item.taxAmount?.toLocaleString('en-IN') || 0}</td>
+                <td>₹ ${item.landingCost?.toLocaleString('en-IN') || 0}</td>
+                <td class="fw-bold text-dark">₹ ${item.netAmount?.toLocaleString('en-IN') || 0}</td>
+                <td class="text-end text-muted small">${item.expireDate || '-'}</td>
+            </tr>
+        `).join('');
     }
 
     // 2. Load Dropdowns
@@ -248,16 +304,16 @@
             const suppliers = await supRes.json();
             const variants = await varRes.json();
 
-            // FIX: Access .data property from your ApiResponse
+
             variantsData = variants.data || [];
 
             const sSelect = document.getElementById('supplierSelect');
             const supplierList = suppliers.data || [];
 
             sSelect.innerHTML = '<option value="">Choose Supplier...</option>' +
-                supplierList.map(s => `<option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Intra" : "Inter"})</option>`).join('');
+                supplierList.map(s => `<option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Inter" : "Outer"})</option>`).join('');
 
-            // Now populate the first row
+
             const firstVariantSelect = document.querySelector('.variant-select');
             if (firstVariantSelect) populateVariantDropdown(firstVariantSelect);
 
@@ -275,25 +331,20 @@
 
         select.innerHTML = variantsData.map(v => {
             const pName = v.product ? v.product.productName : 'Unknown';
-            return `<option value="${v.variantId}">${pName} [${v.variantName}]</option>`;
+            return `<option value="${v.variantId}">${pName} [${v.variantName} (${v.colour} / ${v.size})]</option>`;
         }).join('');
-    }
-
-    // --- Logic for UI and Calculations ---
-    function toggleDetails(rowId, element) {
-        const row = document.getElementById(rowId);
-        const icon = element.querySelector('i');
-        const isOpen = row.style.display === "table-row";
-        row.style.display = isOpen ? "none" : "table-row";
-        icon.classList.toggle('fa-caret-right', isOpen);
-        icon.classList.toggle('fa-caret-down', !isOpen);
     }
 
     document.getElementById('addRowBtn').addEventListener('click', () => {
         const container = document.getElementById('purchaseItemsContainer');
         const newRow = document.querySelector('.item-row').cloneNode(true);
 
-        // Reset inputs
+        const today = new Date().toISOString().split('T')[0];
+            newRow.querySelectorAll('input').forEach(i => {
+                i.value = i.classList.contains('qty-input') ? "1" : "";
+                if(i.classList.contains('expire-input')) i.setAttribute('min', today);
+            });
+
         newRow.querySelectorAll('input').forEach(i => i.value = i.classList.contains('qty-input') ? "1" : "");
 
         // Populate the dropdown in the new row
@@ -309,7 +360,7 @@
         document.getElementById('hiddenGstIn').value = gst;
         const badge = document.getElementById('taxTypeBadge');
         if (gst) {
-            badge.innerText = gst == 24 ? "IntraState (CGST + SGST)" : "InterState (IGST)";
+            badge.innerText = gst == 24 ? "InterState (CGST + SGST)" : "OuterState (IGST)";
             badge.className = `badge ms-2 ${gst == 24 ? 'bg-success' : 'bg-primary'}`;
         }
     });
@@ -355,8 +406,6 @@
             totalAmount: { price: parseFloat(document.getElementById('totalBillAmount').value) },
             items: items
         };
-
-
 
         try {
             const res = await fetch(`/api/purchase/add?gstIn=${document.getElementById('hiddenGstIn').value}`, {

@@ -123,4 +123,8 @@ public class PurchaseItemService {
         return purchaseItemRepository.save(updatedData);
     }
 
+    public List<PurchaseDetailProjection> getPurchaseItems(Long purchaseId) {
+        return purchaseItemRepository.findAllByPurchasePurchaseId(purchaseId);
+    }
+
 }
