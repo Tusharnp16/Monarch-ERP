@@ -5,6 +5,7 @@ import com.monarch.monarcherp.repository.ContactRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ContactService {
@@ -46,4 +47,15 @@ public class ContactService {
         return  contactRepository.save(contact);
     }
 
+    public List<Contact> getPartialContacts() {
+        List<Object[]> rawData = contactRepository.findPartialContactRaw();
+
+        return rawData.stream().map(result -> {
+            Contact contact = new Contact();
+            contact.setContactId(((Number) result[0]).longValue());
+            contact.setName((String) result[1]);
+            contact.setGstIn((Integer) result[2]);
+            return contact;
+        }).collect(Collectors.toList());
+    }
 }

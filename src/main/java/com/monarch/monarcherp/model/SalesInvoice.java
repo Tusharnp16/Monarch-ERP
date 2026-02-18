@@ -1,6 +1,5 @@
 package com.monarch.monarcherp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,7 +32,7 @@ public class SalesInvoice {
     private Customer customer;
 
     private Double totalAmount;
-    private Double taxAmount=0.0;
+    private Double taxAmount = 0.0;
 
     private Double discountAmount;
     private Double grandTotal;

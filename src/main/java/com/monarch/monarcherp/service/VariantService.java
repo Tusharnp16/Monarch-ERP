@@ -60,6 +60,6 @@ public class VariantService {
     }
 
     public List<Variant> getPrVariant() {
-        return variantRepository.findAll();
+        return variantRepository.findAllWithProduct();
     }
 }

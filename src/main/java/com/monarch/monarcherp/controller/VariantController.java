@@ -95,7 +95,9 @@
 
 package com.monarch.monarcherp.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.Variant;
 import com.monarch.monarcherp.service.ProductService;
@@ -105,7 +107,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -142,15 +144,12 @@ public class VariantController {
         return ResponseEntity.ok(ApiResponse.success(data, "Variants fetched successfully"));
     }
 
-    @GetMapping("/pr")
+    @GetMapping("/lookup")
+    @JsonView(VariantViews.Compact.class)
     public ResponseEntity<ApiResponse<List<Variant>>> getProctedVariant() {
         List<Variant> variant = variantService.getPrVariant();
-        if (variant == null) {
-            return ResponseEntity.ok(ApiResponse.error("Variant not found with ID: "));
-        }
         return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Variant>> getVariantById(@PathVariable Long id) {

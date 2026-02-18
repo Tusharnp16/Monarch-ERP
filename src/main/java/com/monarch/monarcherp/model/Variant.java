@@ -2,6 +2,8 @@ package com.monarch.monarcherp.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.monarch.monarcherp.dto.VariantViews;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CollectionId;
@@ -26,12 +28,17 @@ public class Variant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(VariantViews.Compact.class)
     private Long variantId;
 
     @Column(name="variant_name")
+    @JsonView(VariantViews.Compact.class)
     private String variantName;
 
+    @JsonView(VariantViews.Compact.class)
     private String colour;
+
+    @JsonView(VariantViews.Compact.class)
     private String size;
 
     @Embedded
@@ -55,5 +62,6 @@ public class Variant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonView(VariantViews.Compact.class)
     private Product product;
 }

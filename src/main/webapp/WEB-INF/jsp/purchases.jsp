@@ -182,12 +182,11 @@
             document.querySelectorAll('.expire-input').forEach(input => input.setAttribute('min', today));
     });
 
-    // 1. Fetch Main Table Data
     function fetchPurchases() {
         fetch('/api/purchase')
             .then(res => res.json())
             .then(response => {
-                // Ensure response.data exists before trying to render
+
                 if (response.success && response.data) {
                     renderTable(response.data);
                 } else {
@@ -303,16 +302,15 @@
         `).join('');
     }
 
-    // 2. Load Dropdowns
     async function loadMetadata() {
         try {
             const [supRes, varRes] = await Promise.all([
-                fetch('/api/contacts'),
-                fetch('/api/variants/pr'),
+                fetch('/api/contacts/lookup'),
+                fetch('/api/variants/lookup'),
             ]);
+
             const suppliers = await supRes.json();
             const variants = await varRes.json();
-
 
             variantsData = variants.data || [];
 
@@ -385,7 +383,7 @@
         document.querySelectorAll('.item-row').forEach(row => {
             const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
             const basePrice = parseFloat(row.querySelector('.price-input').value) || 0;
-            const tax = basePrice * IGST_RATE;
+            const tax = basePrice * IGST_RATE * qty;
             const landing = basePrice + tax;
             const net = landing * qty;
 

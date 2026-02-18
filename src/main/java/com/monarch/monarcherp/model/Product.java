@@ -1,6 +1,8 @@
 package com.monarch.monarcherp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.monarch.monarcherp.dto.VariantViews;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -32,6 +34,7 @@ public class Product implements Serializable {
     private Long productId;
 
     @Column(nullable = false)
+    @JsonView(VariantViews.Compact.class)
     private String productName;
 
     @Column(unique = true, nullable = false)

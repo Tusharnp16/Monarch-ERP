@@ -84,6 +84,15 @@ public class ContactController {
         );
     }
 
+    @GetMapping("/lookup")
+    public ResponseEntity<ApiResponse<List<Contact>>> getPartialContacts() {
+        List<Contact> contacts = contactService.getPartialContacts();
+        return ResponseEntity.ok(
+                ApiResponse.success(contacts,
+                        contacts.isEmpty() ? "No contacts found" : "Contacts retrieved successfully")
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Contact>> getContactById(@PathVariable Long id) {
         Contact contact = contactService.getContact(id);

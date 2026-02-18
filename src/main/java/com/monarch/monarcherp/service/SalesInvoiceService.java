@@ -214,7 +214,7 @@ public class SalesInvoiceService {
     @Transactional(readOnly = true)
     public void exportMonthlySalesToStream(int month, int year, OutputStream outputStream) throws IOException {
 
-        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
+            try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
             SXSSFSheet sheet = workbook.createSheet("Monthly Sales");
 
             createHeader(sheet);
@@ -223,8 +223,6 @@ public class SalesInvoiceService {
                 AtomicInteger rowIdx = new AtomicInteger(1);
 
                 salesStream.forEach(invoice -> {
-                    System.out.println(invoice.getInvoiceDate());
-                    System.out.println(invoice.getInvoiceNumber());
                     Row row =sheet.createRow(rowIdx.getAndIncrement());
                     row.createCell(0).setCellValue(invoice.getInvoiceDate().toString());
                     row.createCell(1).setCellValue(invoice.getInvoiceNumber());
@@ -232,8 +230,9 @@ public class SalesInvoiceService {
                     row.createCell(3).setCellValue(invoice.getGrandTotal());
                 });
             }
-
             workbook.write(outputStream);
+
+            System.out.println("Temp files are at: " + System.getProperty("java.io.tmpdir"));
             workbook.dispose();
         }
     }

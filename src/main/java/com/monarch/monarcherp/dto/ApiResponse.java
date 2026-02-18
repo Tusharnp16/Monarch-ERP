@@ -1,10 +1,14 @@
 package com.monarch.monarcherp.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,17 +17,25 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApiResponse<T> {
 
+
+    @JsonView(Object.class)
     private boolean success;
+
+    @JsonView(Object.class)
     private String message;
+
+    @JsonView(Object.class)
     private T data;
-    private Long timeStamp;
+
+    @JsonView(Object.class)
+    private LocalDateTime timeStamp;
 
     public static <T> ApiResponse<T> success(T data,String message){
             ApiResponse<T> response=new ApiResponse<>();
             response.success=true;
             response.message=message;
             response.data=data;
-            response.timeStamp=System.currentTimeMillis();
+            response.timeStamp = LocalDateTime.now();
             return response;
     }
 
@@ -32,7 +44,7 @@ public class ApiResponse<T> {
         response.success=false;
         response.message=message;
         response.data=null;
-        response.timeStamp=System.currentTimeMillis();
+        response.timeStamp = LocalDateTime.now();
         return response;
     }
 

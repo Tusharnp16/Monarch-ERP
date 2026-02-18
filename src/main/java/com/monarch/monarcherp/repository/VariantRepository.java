@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Window;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -21,4 +22,8 @@ public interface VariantRepository extends JpaRepository<Variant,Long> {
 
     @EntityGraph(attributePaths = {"product"})
     List<Variant> findTop10ByOrderByVariantIdAsc();
+
+
+    @Query("SELECT v FROM Variant v JOIN FETCH v.product")
+    List<Variant> findAllWithProduct();
 }
