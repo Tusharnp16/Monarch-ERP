@@ -8,6 +8,7 @@ import com.monarch.monarcherp.repository.PurchaseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -69,7 +70,18 @@ public class PurchaseService {
         return  purchaseRepository.save(purchase);
     }
 
-    //findAllPurchaseSummaries
+
+    public String getFinancialYear() {
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        int month = today.getMonthValue();
+
+        if (month >= 4) {
+            return year + "-" + String.valueOf(year + 1).substring(2);
+        } else {
+            return (year - 1) + "-" + String.valueOf(year).substring(2);
+        }
+    }
 
     public List<PurchaseDTO> purchaseSummary(){
        return purchaseRepository.findAllPurchaseSummaries();

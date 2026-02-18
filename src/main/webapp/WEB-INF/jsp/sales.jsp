@@ -381,8 +381,6 @@
         }
         calculate();
     }
-
-    // ===== FORM VALIDATION =====
     document.getElementById("salesForm").addEventListener("submit", function (e) {
 
         const mobile = document.getElementById("custMobile").value.trim();

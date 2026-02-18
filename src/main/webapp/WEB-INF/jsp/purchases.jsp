@@ -99,7 +99,7 @@
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Bill Number</label>
                         <input type="hidden" id="hiddenGstIn">
-                        <input type="text" class="form-control" id="billNo" placeholder="BILL/2026/001" required>
+                        <input type="text" class="form-control" id="billNo" placeholder="BILL/2026/001" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Supplier</label>
@@ -138,7 +138,7 @@
                         <tbody id="purchaseItemsContainer">
                             <tr class="item-row">
                                 <td><select class="form-select form-select-sm variant-select" required></select></td>
-                                <td><input type="number" class="form-control form-control-sm qty-input" value="1" min="1" oninput="if(this.value<1)this.value=1" required></td>
+                                <td><input type="number" class="form-control form-control-sm qty-input" value="1" min="0" oninput="if(this.value<0)this.value=0" required></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm price-input" placeholder="0.00" min="0" oninput="if(this.value<0)this.value=0" required></td>
                                  <td><input type="number" class="form-control form-control-sm tax-amount-input input-readonly" readonly></td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm landing-input input-readonly" readonly></td>
@@ -164,6 +164,15 @@
 <script>
     const IGST_RATE = 0.18;
     let variantsData = [];
+
+     fetch('/api/purchase/next-number')
+         .then(res => res.text())
+         .then(no => {
+             const billInput = document.getElementById('billNo');
+             if(billInput) billInput.value = no;
+         });
+
+
 
     document.addEventListener('DOMContentLoaded', () => {
         fetchPurchases();
@@ -425,6 +434,8 @@
             alert("Network error while saving.");
         }
     };
+
+
 </script>
 </body>
 </html>

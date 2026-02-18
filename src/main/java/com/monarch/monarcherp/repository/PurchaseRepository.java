@@ -22,4 +22,8 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             "p.totalAmount.price) " +
             "FROM Purchase p")
     List<PurchaseDTO> findAllPurchaseSummaries();
+
+
+    @Query("SELECT COUNT(p) FROM Purchase p WHERE p.billNo LIKE :prefix%")
+    long countByFinancialYearPrefix(@Param("prefix") String prefix);
 }
