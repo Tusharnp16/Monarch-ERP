@@ -39,7 +39,7 @@ public class Product implements Serializable {
     private String productName;
 
     @Column(unique = true, nullable = false)
-    @JsonView({VariantViews.forInventory.class,VariantViews.forProducts.class})
+    @JsonView({VariantViews.forInventory.class})
     private String itemCode;
 
     @Version

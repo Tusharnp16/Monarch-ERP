@@ -242,7 +242,7 @@
         </form>
         <div class="card mt-4 invoice-card">
             <div class="card-header bg-white fw-bold">
-                <i class="fa-solid fa-fire text-danger me-2"></i>Top Selling (7 Days)
+              Top Selling (7 Days)
             </div>
 
             <table class="table">

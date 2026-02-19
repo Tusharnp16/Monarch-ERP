@@ -306,34 +306,45 @@
 
  function loadParentProducts() {
 
-     $('.variant-select').select2({
-         theme: 'bootstrap-5',
-         width: '100%',
-         placeholder: 'Search for a product...',
-         allowClear: true,
-         minimumInputLength: 5,
-         dropdownParent: $('#addVariantModal'),
-         ajax: {
-             url: '/api/products/compact',
-             dataType: 'json',
-             delay: 300,
-             data: function (params) {
-                 return {
-                     name: params.term
-                 };
-             },
-             processResults: function (response) {
-                 // Adjust this to match your specific JSON structure
-                 const items = response.data || [];
-                 return {
-                     results: items.map(p => ({
-                         id: p.productId,
-                         text: p.productName
-                     }))
-                 };
-             },
-             cache: true
-         }
+     $('.variant-select').each(function() {
+         var $element = $(this);
+
+         var $modal = $element.closest('.modal');
+
+         $element.select2({
+             theme: 'bootstrap-5',
+             width: '100%',
+             placeholder: 'Search for a product...',
+             allowClear: true,
+             minimumInputLength: 5,
+             dropdownParent: $modal.length ? $modal : $(document.body),
+             ajax: {
+                 url: '/api/products/compact',
+                 dataType: 'json',
+                 delay: 300,
+                 data: function (params) {
+                     return {
+                         name: params.term
+                     };
+                 },
+                 processResults: function (response) {
+                     var items = response.data || [];
+                     return {
+                         results: items.map(function(p) {
+                             return {
+                                 id: p.productId,
+                                 text: p.productName
+                             };
+                         })
+                     };
+                 },
+                 cache: true
+             }
+         });
+     });
+
+     $('#productFilter').on('select2:select select2:unselect', function () {
+         filterTable();
      });
 
      // Event listener for the table filter dropdown
