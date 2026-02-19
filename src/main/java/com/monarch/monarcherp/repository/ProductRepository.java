@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -79,4 +80,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("endDate") LocalDate endDate,
             Pageable pageable
     );
+
+    List<Product> findByProductNameContainingIgnoreCase(String name);
 }

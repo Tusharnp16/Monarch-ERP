@@ -31,14 +31,15 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(VariantViews.forProducts.class)
     private Long productId;
 
     @Column(nullable = false)
-    @JsonView(VariantViews.Compact.class)
+    @JsonView({VariantViews.Compact.class,VariantViews.forProducts.class})
     private String productName;
 
     @Column(unique = true, nullable = false)
-    @JsonView(VariantViews.forInventory.class)
+    @JsonView({VariantViews.forInventory.class,VariantViews.forProducts.class})
     private String itemCode;
 
     @Version

@@ -146,7 +146,7 @@ public class VariantController {
 
     @GetMapping("/lookup")
     @JsonView(VariantViews.Compact.class)
-    public ResponseEntity<ApiResponse<List<Variant>>> getProctedVariant() {
+    public ResponseEntity<ApiResponse<List<Variant>>> getProtectedVariant() {
         List<Variant> variant = variantService.getPrVariant();
         return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
     }

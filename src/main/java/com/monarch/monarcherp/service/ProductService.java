@@ -98,4 +98,8 @@ public class ProductService {
         System.err.println("Database down");
         throw new RuntimeException("Cant updatted right now server is down");
     }
+
+    public List<Product> getAllCompactProducts(String name) {
+        return productRepository.findByProductNameContainingIgnoreCase(name);
+    }
 }

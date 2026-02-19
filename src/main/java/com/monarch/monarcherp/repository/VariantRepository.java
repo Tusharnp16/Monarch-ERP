@@ -26,4 +26,7 @@ public interface VariantRepository extends JpaRepository<Variant,Long> {
 
     @Query("SELECT v FROM Variant v JOIN FETCH v.product")
     List<Variant> findAllWithProduct();
+
+
+
 }

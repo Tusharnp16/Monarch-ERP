@@ -6,4 +6,6 @@ public class VariantViews {
     public interface Full extends Compact {}
 
     public interface forInventory {}
+
+    public interface forProducts {}
 }

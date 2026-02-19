@@ -36,6 +36,11 @@
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
 
@@ -65,11 +70,8 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <select class="form-select" id="productFilter">
+                            <select class="form-select variant-select" id="productFilter">
                                 <option value="">All Parent Products</option>
-                                <c:forEach items="${parentProducts.content}" var="parent">
-                                    <option value="${parent.productName}">${parent.productName}</option>
-                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -128,12 +130,9 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Parent Product</label>
-                    <select class="form-select" name="productId" required>
-                        <option value="" selected disabled>Select Product</option>
-                        <c:forEach items="${parentProducts.content}" var="p">
-                            <option value="${p.productId}">${p.productName}</option>
-                        </c:forEach>
-                    </select>
+                       <select class="form-select variant-select" name="productId" required>
+                                                    <option value="" selected disabled>Select Product</option>
+                                                </select>
                     <div class="invalid-feedback">Please select a parent product.</div>
                 </div>
                 <div class="mb-3">
@@ -268,12 +267,27 @@
         } else { nextItem.style.display = 'none'; }
     }
 
-    // 2. Original Populating Logic (via relatedTarget)
+    // 1. Edit Variant Modal Listener
     const editModal = document.getElementById('editVariantModal');
     editModal?.addEventListener('show.bs.modal', event => {
         const btn = event.relatedTarget;
+
+        // Get values from button attributes
+        const productId = btn.getAttribute('data-productid');
+        const productName = btn.getAttribute('data-parent'); // Ensure your table row has this!
+
+
+        const editSelect = $('#editVariantModal select[name="productId"]');
+        if (productId && productName) {
+            // new Option(text, id, defaultSelected, selected)
+            const newOption = new Option(productName, productId, true, true);
+            editSelect.append(newOption).trigger('change');
+        }
+        // -----------------------------
+
+        // Populate the rest of the hidden and text fields
         document.getElementById('editVariantId').value = btn.getAttribute('data-id');
-        document.getElementById('prdid').value = btn.getAttribute('data-productid');
+        document.getElementById('prdid').value = productId;
         document.getElementById('editVariantName').value = btn.getAttribute('data-name');
         document.getElementById('editVariantColour').value = btn.getAttribute('data-colour');
         document.getElementById('editVariantSize').value = btn.getAttribute('data-size');
@@ -281,11 +295,52 @@
         document.getElementById('editVariantSellingPrice').value = btn.getAttribute('data-sellingprice');
     });
 
+    // 2. Delete Confirmation Modal Listener
+    document.getElementById('confirmDeleteVariantModal')?.addEventListener('show.bs.modal', event => {
+        const btn = event.relatedTarget;
+        document.getElementById('deleteVariantId').value = btn.getAttribute('data-id');
+    });
     document.getElementById('confirmDeleteVariantModal')?.addEventListener('show.bs.modal', event => {
         document.getElementById('deleteVariantId').value = event.relatedTarget.getAttribute('data-id');
     });
 
+ function loadParentProducts() {
 
+     $('.variant-select').select2({
+         theme: 'bootstrap-5',
+         width: '100%',
+         placeholder: 'Search for a product...',
+         allowClear: true,
+         minimumInputLength: 5,
+         dropdownParent: $('#addVariantModal'),
+         ajax: {
+             url: '/api/products/compact',
+             dataType: 'json',
+             delay: 300,
+             data: function (params) {
+                 return {
+                     name: params.term
+                 };
+             },
+             processResults: function (response) {
+                 // Adjust this to match your specific JSON structure
+                 const items = response.data || [];
+                 return {
+                     results: items.map(p => ({
+                         id: p.productId,
+                         text: p.productName
+                     }))
+                 };
+             },
+             cache: true
+         }
+     });
+
+     // Event listener for the table filter dropdown
+     $('#productFilter').on('select2:select select2:unselect', function () {
+         filterTable();
+     });
+ }
     const handleForm = (formId, method, urlFunc) => {
         const form = document.getElementById(formId);
         form.addEventListener('submit', async e => {
@@ -342,6 +397,8 @@
         });
     }
 
+
+    loadParentProducts();
     loadVariants();
 </script>
 </body>

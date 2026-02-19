@@ -90,7 +90,24 @@
         .card-footer {
             border-top: 1px solid #eee;
         }
+
+        /* Fix Select2 height and alignment in Bootstrap 5 */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px; /* Matches standard Bootstrap form-control height */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hide the duplicate placeholder in the dropdown list */
+        .select2-results__option[aria-selected="true"] {
+            display: none;
+        }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body class="bg-soft">
@@ -302,10 +319,12 @@
        if (mobile.length > 0 && mobile.length < 10) {
                statusDiv.innerHTML = '<span class="text-danger small">Error: Enter a valid 10-digit mobile number</span>';
                return;
-           } else if (mobile.length === 0) {
+       } else if (mobile.length === 0) {
                statusDiv.innerHTML = '';
                return;
-           }
+       }
+
+       if(mobile.length === 10){
 
         fetch('/api/customers/search?mobile=' + mobile)
             .then(response => response.status === 204 ? null : response.json())
@@ -320,37 +339,57 @@
                     statusDiv.innerHTML = '<span class="text-primary small">New Customer - Enter Details</span>';
                 }
             });
+        }
     }
 
     let rowCount = 1;
 
-    function addRow() {
-        const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
-        const newRow = table.insertRow();
-        newRow.className = "item-row";
+   function addRow() {
+       const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
+       const newRow = table.insertRow();
+       newRow.className = "item-row";
 
-        let options = '<option value="">Select Variant</option>';
-        inventoryData.forEach(v => {
-            options += '<option value="' + v.id + '">' + v.name + ' (' + v.color + ' / ' + v.size + ')</option>';
-        });
+       let options = '<option value=""></option>';
+       inventoryData.forEach(v => {
+           options += `<option value="${v.id}">${v.name} (${v.color} / ${v.size})</option>`;
+       });
 
-        newRow.innerHTML =
-            '<td>' +
-            '<select class="form-select variant-select" name="items[' + rowCount + '].variant.variantId" onchange="updateRowDetails(this)" required>' +
-            options +
-            '</select>' +
-            '</td>' +
-            '<td>' +
-            '<input type="number" class="form-control qty" name="items[' + rowCount + '].quantity" value="1" min="1" oninput="validateStock(this)" required>' +
-            '<small class="stock-label text-muted"></small>' +
-            '</td>' +
-            '<td><input type="number" class="form-control mrp" name="items[' + rowCount + '].mrp" step="0.01" readonly></td>' +
+       newRow.innerHTML = `
+           <td>
+               <select class="form-select variant-select" name="items[${rowCount}].variant.variantId" onchange="updateRowDetails(this)" required>
+                   ${options}
+               </select>
+           </td>
+           <td>
+               <input type="number" class="form-control qty" name="items[${rowCount}].quantity" value="1" min="1" oninput="validateStock(this)" required>
+               <small class="stock-label text-muted"></small>
+           </td>
+           <td><input type="number" class="form-control mrp" name="items[${rowCount}].mrp" step="0.01" readonly></td>
+           <td><input type="number" class="form-control price" name="items[${rowCount}].unitPrice" step="0.01" oninput="calculate()" readonly></td>
+           <td><span class="row-total fw-bold">0.00</span></td>
+           <td>
+               <button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
+           </td>`;
 
-            '<td><input type="number" class="form-control price" name="items[' + rowCount + '].unitPrice" step="0.01" oninput="calculate()" readonly></td>' +
-            '<td><span class="row-total fw-bold">0.00</span></td>' +
-            '<td><button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>';
-        rowCount++;
-    }
+       $(newRow).find('.variant-select').select2({
+           theme: 'bootstrap-5',
+           width: '100%',
+           placeholder: 'Type to search...'
+
+       });
+
+       rowCount++;
+   }
+
+   $(document).ready(function() {
+
+       $('.variant-select').select2({
+           theme: 'bootstrap-5',
+           width: '100%'
+       });
+
+       calculate();
+   });
 
     function removeRow(btn) {
         btn.closest('tr').remove();
@@ -481,6 +520,11 @@
         document.getElementById('subtotal').innerText = subtotal.toFixed(2);
         document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
     }
+
+    $(document).on('change', '.variant-select', function() {
+        updateRowDetails(this);
+    });
+
     // function calculate() {
     //     let subtotal = 0;
     //
