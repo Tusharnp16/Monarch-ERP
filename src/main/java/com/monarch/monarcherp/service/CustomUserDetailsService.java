@@ -15,16 +15,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RedisBlacklistService redisBlacklistService;
+
     @Override
-//    @Cacheable(value = "users", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        User user = redisBlacklistService.loadUserEntityByUsername(username);
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUserName())
                 .password(user.getPassword())
-                .authorities("ROLE_"+user.getRole())
+                .authorities("ROLE_" + user.getRole())
                 .build();
     }
+
 }

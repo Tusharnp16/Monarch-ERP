@@ -23,12 +23,15 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired JwtUtils jwtUtils;
-    @Autowired CustomUserDetailsService userDetailsService;
-    @Autowired BlacklistRepository blacklistRepository;
+    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
+    @Autowired
+    JwtUtils jwtUtils;
+    @Autowired
+    CustomUserDetailsService userDetailsService;
+    @Autowired
+    BlacklistRepository blacklistRepository;
     @Autowired
     RedisBlacklistService redisBlacklistService;
-    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -49,9 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
-        }
-
-        else if (request.getCookies() != null) {
+        } else if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
                     token = cookie.getValue();
@@ -85,7 +86,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.getWriter().write("Token is blacklisted");
                 return;
             }
-
 
             if (jwtUtils.isValid(token)) {
                 username = jwtUtils.extractUsername(token);

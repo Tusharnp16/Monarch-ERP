@@ -320,7 +320,6 @@
             sSelect.innerHTML = '<option value="">Choose Supplier...</option>' +
                 supplierList.map(s => `<option value="${s.contactId}" data-gst="${s.gstIn}">${s.name} (${s.gstIn == 24 ? "Inter" : "Outer"})</option>`).join('');
 
-
             const firstVariantSelect = document.querySelector('.variant-select');
             if (firstVariantSelect) populateVariantDropdown(firstVariantSelect);
 
