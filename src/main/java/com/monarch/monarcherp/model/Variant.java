@@ -26,7 +26,7 @@ public class Variant {
     private Long variantId;
 
     @Column(name="variant_name")
-    @JsonView(VariantViews.Compact.class)
+    @JsonView({VariantViews.Compact.class,VariantViews.forInventory.class})
     private String variantName;
 
     @JsonView(VariantViews.Compact.class)
@@ -56,6 +56,6 @@ public class Variant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonView(VariantViews.Compact.class)
+    @JsonView({VariantViews.Compact.class,VariantViews.forInventory.class})
     private Product product;
 }

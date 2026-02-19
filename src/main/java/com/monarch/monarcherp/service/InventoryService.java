@@ -19,6 +19,12 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
+    //findAllWithVariant
+
+    public List<Inventory> getInventoryWithVariant() {
+        return inventoryRepository.findAllWithVariant();
+    }
+
 
     public Inventory updateInventory(Long id,int quantity,String type){
 

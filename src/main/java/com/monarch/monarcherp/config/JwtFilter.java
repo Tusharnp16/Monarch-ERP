@@ -102,7 +102,6 @@ public class JwtFilter extends OncePerRequestFilter {
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         log.info("JWT Limiting Filter Working");
 
         filterChain.doFilter(request, response);

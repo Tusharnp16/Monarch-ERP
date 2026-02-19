@@ -15,4 +15,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
    Optional<Inventory> findByVariant_VariantId(Long variantId);
 
 
+
+   @Query("SELECT i FROM Inventory i JOIN FETCH i.variant")
+   List<Inventory> findAllWithVariant();
+
+
 }

@@ -1,6 +1,8 @@
 package com.monarch.monarcherp.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.service.InventoryService;
 import jakarta.websocket.server.PathParam;
@@ -20,8 +22,9 @@ class InventoryController {
     InventoryService inventoryService;
 
     @GetMapping
+    @JsonView(VariantViews.forInventory.class)
     public ResponseEntity<ApiResponse<List<Inventory>>> viewInventory(){
-        List<Inventory> inventory=inventoryService.getInventory();
+        List<Inventory> inventory=inventoryService.getInventoryWithVariant();
         return ResponseEntity.ok(ApiResponse.success(inventory,"Inventory fetched"));
     }
 

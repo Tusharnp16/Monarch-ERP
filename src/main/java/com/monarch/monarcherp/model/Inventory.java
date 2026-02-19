@@ -1,5 +1,7 @@
 package com.monarch.monarcherp.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.monarch.monarcherp.dto.VariantViews;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,14 +22,17 @@ public class Inventory {
     private Long inventoryId;
 
     @OneToOne
+    @JsonView(VariantViews.forInventory.class)
     private Variant variant;
 
+    @JsonView(VariantViews.forInventory.class)
     private int quantity;
 
     @Version
     private Integer version;
 
     @Column(name="available_quantity")
+    @JsonView(VariantViews.forInventory.class)
     private int availableQuantity;
 
     @Embedded
