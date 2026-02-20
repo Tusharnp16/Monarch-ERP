@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Inventory;
+import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.service.InventoryService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +45,19 @@ class InventoryController {
         Inventory inventory = inventoryService.updateInventory(id, qty,type);
         return ResponseEntity.ok(ApiResponse.success(inventory, "Inventory Updated"));
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<ApiResponse<List<Inventory>>> getInventoryHistory(){
+        List<Inventory> inventoryHistory=inventoryService.getInventoryHistory();
+        return ResponseEntity.ok(ApiResponse.success(inventoryHistory,"Inventory History fetched"));
+    }
+
+    @GetMapping("/search")
+
+    public ResponseEntity<ApiResponse<List<Inventory>>> getCompactProduct(@RequestParam(required = false) String name) {
+        List<Inventory> inventoryList = inventoryService.getInventoryforSales(name);
+        return ResponseEntity.ok(ApiResponse.success(inventoryList,"Data fetched succesfully"));
+    }
+
 }
+

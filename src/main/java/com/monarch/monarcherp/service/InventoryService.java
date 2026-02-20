@@ -2,6 +2,7 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Contact;
 import com.monarch.monarcherp.model.Inventory;
+import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,13 @@ public class InventoryService {
         inventory.setQuantity(newQunatity);
 
         return inventoryRepository.save(inventory);
+    }
+
+    public List<Inventory> getInventoryHistory() {
+        return inventoryRepository.findAllHistory();
+    }
+
+    public List<Inventory> getInventoryforSales(String name) {
+       return inventoryRepository.searchByVariantName(name);
     }
 }

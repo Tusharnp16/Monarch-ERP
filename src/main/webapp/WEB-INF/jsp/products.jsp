@@ -29,6 +29,7 @@
             .sidebar { position: fixed; left: -100%; width: var(--sidebar-width); z-index: 1050; transition: left .25s ease; }
             .sidebar.open { left: 0; }
         }
+
     </style>
 </head>
 <body>

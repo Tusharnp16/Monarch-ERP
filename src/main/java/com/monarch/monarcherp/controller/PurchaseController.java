@@ -41,8 +41,6 @@ public class PurchaseController {
         List<Purchase> purchases = purchaseService.getAllPurchases();
         return ResponseEntity.ok(ApiResponse.success(purchases, "Purchases retrieved successfully"));
     }
-
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<PurchaseDTO>>> getAllPurchasesDTO() {
         List<PurchaseDTO> purchases = purchaseService.purchaseSummary();

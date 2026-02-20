@@ -1,9 +1,13 @@
 package com.monarch.monarcherp.controller;
 
+import com.monarch.monarcherp.config.DiscountConfig;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.UserLoginLog;
 import com.monarch.monarcherp.repository.UserLoginLogRepository;
+import com.monarch.monarcherp.service.CustomerService;
+import com.monarch.monarcherp.service.InventoryService;
+import com.monarch.monarcherp.service.SalesItemService;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import tools.jackson.core.util.RecyclerPool;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping
@@ -24,6 +29,18 @@ class TestingController {
 
     @Autowired
     UserLoginLogRepository userLoginLogRepository;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private InventoryService inventoryService;
+
+    @Autowired
+    private SalesItemService salesItemService;
+
+    @Autowired
+    private DiscountConfig discountConfig;
 
     @GetMapping("/")
     public String getDefaultPage(){
@@ -87,9 +104,9 @@ class TestingController {
     public String purchase() {
         return "purchases";
     }
-//
-//    @GetMapping("/salesinvoice")
-//    public String salesInvoice() {
-//        return "sales";
-//    }
+
+    @GetMapping("/salesinvoice")
+    public String salesInvoice() {
+        return "sales";
+    }
 }

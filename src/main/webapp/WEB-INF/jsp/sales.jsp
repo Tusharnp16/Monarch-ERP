@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="true" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,107 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .invoice-card {
-            border-top: 4px solid #0d6efd;
-        }
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-        .item-row {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-
-        .bg-soft {
-            background-color: #f8f9fa;
-        }
-
-        .stock-label {
-            font-size: 0.75rem;
-            display: block;
-            margin-top: 4px;
-            min-height: 1rem;
-        }
-
-        .low-stock {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        body {
-            background-color: #f4f6f9;
-        }
-
-        .is-invalid {
-            border-color: #dc3545 !important;
-            background-color: #fff5f5;
-        }
-
-        .stock-label.low-stock {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-
-        .invoice-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .invoice-card .card-header {
-            border-bottom: 1px solid #eee;
-            font-size: 15px;
-        }
-
-        .item-row {
-            border-bottom: 1px solid #f1f1f1;
-        }
-
-        .bg-soft {
-            background-color: #f8f9fa;
-        }
-
-        .stock-label {
-            font-size: 0.75rem;
-            margin-top: 4px;
-            display: block;
-        }
-
-        .low-stock {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        #grandTotal {
-            font-size: 1.4rem;
-        }
-
-        #subtotal {
-            font-weight: 600;
-        }
-
-
-        .card-footer {
-            border-top: 1px solid #eee;
-        }
-
-        /* Fix Select2 height and alignment in Bootstrap 5 */
-        .select2-container--bootstrap-5 .select2-selection {
-            min-height: 38px; /* Matches standard Bootstrap form-control height */
-            display: flex;
-            align-items: center;
-        }
-
-        /* Hide the duplicate placeholder in the dropdown list */
-        .select2-results__option[aria-selected="true"] {
-            display: none;
-        }
-    </style>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+    <style>
+        .invoice-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #0d6efd; }
+        .item-row { border-bottom: 1px solid #f1f1f1; padding: 10px 0; }
+        .bg-soft { background-color: #f8f9fa; }
+        .stock-label { font-size: 0.75rem; display: block; margin-top: 4px; min-height: 1rem; }
+        .low-stock { color: #dc3545; font-weight: 600; }
+        body { background-color: #f4f6f9; }
+        #grandTotal { font-size: 1.4rem; color: #0d6efd; font-weight: bold; }
+        #subtotal { font-weight: 600; }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-soft">
@@ -115,7 +31,7 @@
     <%@ include file="/WEB-INF/fragments/sidebar.html" %>
 
     <div class="container py-5">
-        <form action="/salesinvoice/add" method="post" id="salesForm">
+        <form action="/api/sales-invoices" method="post" id="salesForm">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h4"><i class="fa-solid fa-file-invoice-dollar me-2"></i>New Sales Invoice</h2>
                 <button type="submit" class="btn btn-primary">
@@ -131,8 +47,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Mobile Number</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" maxlength="10" name="customer.mobile"
-                                           id="custMobile" required>
+                                    <input type="text" class="form-control" maxlength="10" name="customer.mobile" id="custMobile" required>
                                     <button class="btn btn-outline-primary" type="button" onclick="fetchCustomer()">
                                         <i class="fa-solid fa-search"></i>
                                     </button>
@@ -171,7 +86,6 @@
                                     <th style="width:40%">Variant</th>
                                     <th>Qty</th>
                                     <th>MRP</th>
-                                    <th>Selling Cost</th>
                                     <th>Price</th>
                                     <th>Total</th>
                                     <th></th>
@@ -180,30 +94,19 @@
                                 <tbody>
                                 <tr class="item-row">
                                     <td>
-                                        <select class="form-select variant-select" name="items[0].variant.variantId"
-                                                onchange="updateRowDetails(this)" required>
-                                            <option value="">Select Variant</option>
-                                            <c:forEach items="${inventory}" var="i">
-                                                <c:if test="${not empty i.variant.variantName}">
-                                                    <option value="${i.variant.variantId}">${i.variant.variantName} ( ${i.variant.colour} / ${i.variant.size} )</option>
-                                                </c:if>
-                                            </c:forEach>
+                                        <select class="form-select variant-select" name="items[0].variant.variantId" required>
+                                            <option value="">Search Inventory...</option>
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control qty" name="items[0].quantity" value="1"
-                                               min="1" oninput="validateStock(this)" required>
+                                        <input type="number" class="form-control qty" name="items[0].quantity" value="1" min="1" oninput="validateStock(this)" required>
                                         <small class="stock-label text-muted"></small>
                                     </td>
-                                    <td><input type="number" class="form-control mrp" name="items[0].sellingPrice"
-                                               step="0.01" readonly required></td>
-
-                                    <td><input type="number" class="form-control price" name="items[0].unitPrice"
-                                               step="0.01" oninput="calculate()" readonly required></td>
+                                    <td><input type="number" class="form-control mrp" step="0.01" readonly required></td>
+                                    <td><input type="number" class="form-control price" name="items[0].unitPrice" step="0.01" oninput="calculate()" readonly required></td>
                                     <td><span class="row-total fw-bold">0.00</span></td>
                                     <td>
-                                        <button type="button" class="btn btn-link text-danger"
-                                                onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
+                                        <button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -214,8 +117,7 @@
                             <div class="row">
                                 <div class="col-md-7">
                                     <label class="form-label text-muted small fw-bold">Internal Notes</label>
-                                    <textarea class="form-control" name="notes" rows="3"
-                                              placeholder="Reference..."></textarea>
+                                    <textarea class="form-control" name="notes" rows="3" placeholder="Reference..."></textarea>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="d-flex justify-content-between mb-2">
@@ -224,14 +126,12 @@
                                     </div>
                                     <div class="d-flex justify-content-between mb-2 align-items-center">
                                         <span class="text-muted">Discount</span>
-                                        <input type="number" name="discountAmount" id="discount"
-                                               class="form-control form-control-sm w-50" value="0" min="0"
-                                               oninput="calculate()">
+                                        <input type="number" name="discountAmount" id="discount" class="form-control form-control-sm w-50" value="0" min="0" oninput="calculate()">
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between">
                                         <span class="h5">Grand Total</span>
-                                        <span class="h5 text-primary fw-bold" id="grandTotal">0.00</span>
+                                        <span id="grandTotal">0.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -240,333 +140,269 @@
                 </div>
             </div>
         </form>
+
         <div class="card mt-4 invoice-card">
             <div class="card-header bg-white fw-bold">
-              Top Selling (7 Days)
+                <i class="fa-solid fa-fire text-danger me-2"></i>Top Selling (7 Days)
             </div>
-
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Variant</th>
-                    <th>Specs</th>
-                    <th>Sold</th>
-                    <th>Total Amount</th>
-                </tr>
+                    <tr><th>Product</th><th>Variant</th><th>Specs</th><th>Sold</th><th>Total Amount</th></tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${topSellers}" var="item">
                     <tr>
-                        <td>${item[0]}</td>
-                        <td>${item[1]}</td>
-                        <td>
-                            <span class="badge bg-secondary">${item[2]}</span> <span
-                                class="badge bg-info">${item[3]}</span></td>
-                        <td class="fw-bold text-primary">${item[4]}</td>
-                        <td class="fw-bold text-primary">${item[5]}</td>
+                        <td>${item[0]}</td><td>${item[1]}</td>
+                        <td><span class="badge bg-secondary">${item[2]}</span> <span class="badge bg-info">${item[3]}</span></td>
+                        <td class="fw-bold text-primary">${item[4]}</td><td class="fw-bold text-primary">${item[5]}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
         </div>
-
     </div>
+</div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto" id="toastTitle">System Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toastMessage"></div>
+  </div>
 </div>
 
 <script>
+    // Configuration
+    const MAX_DISCOUNT_PERCENT = 0.15; // Set your default limit here
 
-    let mobileTimer;
-    document.getElementById("custMobile").addEventListener("input", function () {
-        clearTimeout(mobileTimer);
-        const mobile = this.value.trim();
-
-        if (/^[0-9]{10}$/.test(mobile)) {
-            mobileTimer = setTimeout(fetchCustomer, 400); // slight delay to avoid rapid API calls
-        }
-
-        if (mobile.length == 0) {
-            document.getElementById('custName').value = '';
-            document.getElementById('custEmail').value = '';
-            document.getElementById('statusDiv').value = '';
-
-            statusDiv.innerHTML = ' ';
-        }
+    $(document).ready(function() {
+        initializeSelect2($('.variant-select'));
+        fetchInvoiceNumber();
+        calculate();
     });
 
-    const inventoryData = [
-        <c:forEach items="${inventory}" var="i" varStatus="s">
-        <c:if test="${not empty i.variant.variantName}">
-        {
-            id: "${i.variant.variantId}",
-            name: "${i.variant.variantName}",
-            color: "${i.variant.colour}",
-            size: "${i.variant.size}",
-            price: ${i.variant.sellingPrice != null ? i.variant.sellingPrice.price : 0},
-            mrp: ${i.variant.mrp!=null ? i.variant.mrp.price : 0},
-            stock: ${i.availableQuantity != null ? i.availableQuantity : 0}
-        }<c:if test="${!s.last}">, </c:if>
-        </c:if>
-        </c:forEach>
-    ];
-
-    console.log(inventoryData)
-
-    function fetchCustomer() {
-        const mobile = document.getElementById('custMobile').value.trim();
-        const statusDiv = document.getElementById('customerStatus');
-
-       if (mobile.length > 0 && mobile.length < 10) {
-               statusDiv.innerHTML = '<span class="text-danger small">Error: Enter a valid 10-digit mobile number</span>';
-               return;
-       } else if (mobile.length === 0) {
-               statusDiv.innerHTML = '';
-               return;
-       }
-
-       if(mobile.length === 10){
-
-        fetch('/api/customers/search?mobile=' + mobile)
-            .then(response => response.status === 204 ? null : response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('custName').value = data.data.name || '';
-                    document.getElementById('custEmail').value = data.data.email || '';
-                    statusDiv.innerHTML = '<span class="text-success small">Existing Customer Loaded</span>';
-                } else {
-                    document.getElementById('custName').value = '';
-                    document.getElementById('custEmail').value =  '';
-                    statusDiv.innerHTML = '<span class="text-primary small">New Customer - Enter Details</span>';
+    function initializeSelect2(element) {
+        element.select2({
+            theme: 'bootstrap-5',
+            placeholder: "Search Inventory...",
+            allowClear: true,
+            ajax: {
+                url: "/api/inventory/search",
+                dataType: "json",
+                delay: 250,
+                data: params => ({ name: params.term }),
+                processResults: function(response) {
+                    return {
+                        results: (response.data || []).map(function(item) {
+                            var v = item.variant;
+                            return {
+                                id: v.variantId,
+                                text: v.variantName + " (" + v.colour + " / " + v.size + ")",
+                                fullData: item
+                            };
+                        })
+                    };
                 }
-            });
-        }
-    }
-
-    let rowCount = 1;
-
-   function addRow() {
-       const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
-       const newRow = table.insertRow();
-       newRow.className = "item-row";
-
-       let options = '<option value=""></option>';
-       inventoryData.forEach(v => {
-           options += `<option value="${v.id}">${v.name} (${v.color} / ${v.size})</option>`;
-       });
-
-       newRow.innerHTML = `
-           <td>
-               <select class="form-select variant-select" name="items[${rowCount}].variant.variantId" onchange="updateRowDetails(this)" required>
-                   ${options}
-               </select>
-           </td>
-           <td>
-               <input type="number" class="form-control qty" name="items[${rowCount}].quantity" value="1" min="1" oninput="validateStock(this)" required>
-               <small class="stock-label text-muted"></small>
-           </td>
-           <td><input type="number" class="form-control mrp" name="items[${rowCount}].mrp" step="0.01" readonly></td>
-           <td><input type="number" class="form-control price" name="items[${rowCount}].unitPrice" step="0.01" oninput="calculate()" readonly></td>
-           <td><span class="row-total fw-bold">0.00</span></td>
-           <td>
-               <button type="button" class="btn btn-link text-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
-           </td>`;
-
-       $(newRow).find('.variant-select').select2({
-           theme: 'bootstrap-5',
-           width: '100%',
-           placeholder: 'Type to search...'
-
-       });
-
-       rowCount++;
-   }
-
-   $(document).ready(function() {
-
-       $('.variant-select').select2({
-           theme: 'bootstrap-5',
-           width: '100%'
-       });
-
-       calculate();
-   });
-
-    function removeRow(btn) {
-        btn.closest('tr').remove();
-        calculate();
-    }
-
-    function updateRowDetails(select) {
-        const row = select.closest('tr');
-        const variantId = select.value;
-        const priceInput = row.querySelector('.price');
-        const qtyInput = row.querySelector('.qty');
-        const mrpInput = row.querySelector('.mrp');
-        const stockLabel = row.querySelector('.stock-label');
-
-        const data = inventoryData.find(v => v.id == variantId);
-
-        if (data) {
-            priceInput.value = data.price
-            mrpInput.value = data.mrp;
-            qtyInput.max = data.stock;
-            stockLabel.innerText = "In Stock: " + data.stock;
-            if (data.stock < 5) stockLabel.classList.add('low-stock');
-            else stockLabel.classList.remove('low-stock');
-        } else {
-            priceInput.value = 0;
-            qtyInput.max = "";
-            stockLabel.innerText = "";
-        }
-        calculate();
-    }
-    document.getElementById("salesForm").addEventListener("submit", function (e) {
-
-        const mobile = document.getElementById("custMobile").value.trim();
-        const name = document.getElementById("custName").value.trim();
-        const rows = document.querySelectorAll(".item-row");
-
-        if (!/^[0-9]{10}$/.test(mobile)) {
-            alert("Enter valid 10-digit mobile number");
-            e.preventDefault();
-            return;
-        }
-
-
-        if (name.length < 2) {
-            alert("Customer name is required");
-            e.preventDefault();
-            return;
-        }
-
-        if (rows.length === 0) {
-            alert("Add at least one item to invoice");
-            e.preventDefault();
-            return;
-        }
-
-        let valid = true;
-
-        rows.forEach(row => {
-            const qty = row.querySelector(".qty");
-            const price = row.querySelector(".price");
-
-            if (parseFloat(qty.value) <= 0) {
-                qty.classList.add("is-invalid");
-                valid = false;
-            } else qty.classList.remove("is-invalid");
-
-            if (parseFloat(price.value) <= 0) {
-                price.classList.add("is-invalid");
-                valid = false;
-            } else price.classList.remove("is-invalid");
+            }
         });
 
-        const discount = parseFloat(document.getElementById("discount").value);
-        if (discount < 0) {
-            alert("Discount cannot be negative");
-            e.preventDefault();
-            return;
+        element.on("select2:select", function (e) {
+            var item = e.params.data.fullData;
+            var row = $(this).closest("tr");
+
+            var mrp = (item.variant.mrp) ? item.variant.mrp.price : 0;
+            var price = (item.variant.sellingPrice) ? item.variant.sellingPrice.price : 0;
+            var stock = item.availableQuantity || 0;
+
+            row.find(".mrp").val(mrp.toFixed(2));
+            row.find(".price").val(price.toFixed(2));
+            row.find(".qty").attr("max", stock);
+
+            var stockLabel = row.find(".stock-label");
+            stockLabel.text("Stock: " + stock);
+            if (stock < 5) stockLabel.addClass('low-stock');
+            else stockLabel.removeClass('low-stock');
+
+            calculate();
+        });
+    }
+
+    function addRow() {
+        var tbody = $('#itemsTable tbody');
+        var count = tbody.find('tr').length;
+        var newRow = tbody.find('tr:first').clone();
+
+        // Destroy and reset Select2 for the new row
+        newRow.find('.select2-container').remove();
+        newRow.find('select').removeClass('select2-hidden-accessible').removeAttr('data-select2-id').empty().append('<option value="">Search Inventory...</option>');
+
+        newRow.find('input').val('').removeClass('is-invalid');
+        newRow.find('.qty').val(1);
+        newRow.find('.row-total').text('0.00');
+        newRow.find('.stock-label').text('');
+
+        newRow.find('select, input').each(function() {
+            var name = $(this).attr('name');
+            if(name) $(this).attr('name', name.replace(/\[\d+\]/, "[" + count + "]"));
+        });
+
+        tbody.append(newRow);
+        initializeSelect2(newRow.find('.variant-select'));
+    }
+
+    function removeRow(btn) {
+        if ($('#itemsTable tbody tr').length > 1) {
+            $(btn).closest('tr').remove();
+            calculate();
         }
+    }
 
-        if (!valid) {
-            alert("Please correct highlighted item fields");
-            e.preventDefault();
-        }
-    });
+    function fetchCustomer() {
+        const mobile = $('#custMobile').val().trim();
+        if (mobile.length !== 10) return;
 
+        fetch('/api/customers/search?mobile=' + mobile)
+            .then(res => res.status === 204 ? null : res.json())
+            .then(data => {
+                if (data && data.success) {
+                    $('#custName').val(data.data.name);
+                    $('#custEmail').val(data.data.email);
+                    $('#customerStatus').html('<span class="text-success small">Customer Found</span>');
+                } else {
+                    $('#custName').val('');
+                    $('#custEmail').val('');
+                    $('#customerStatus').html('<span class="text-primary small">New Customer</span>');
+                }
+            });
+    }
 
-    fetch('/salesinvoice/next-number')
-        .then(res => res.text())
-        .then(no => document.getElementById('invoiceNumber').value = no);
+    function fetchInvoiceNumber() {
+        fetch('/api/sales-invoices/next-number')
+            .then(res => res.json())
+            .then(res => $('#invoiceNumber').val(res.data));
+    }
 
     function validateStock(input) {
-        const max = parseInt(input.max);
-        if (max && parseInt(input.value) > max) {
+        var max = parseInt($(input).attr("max"));
+        if (max && parseInt($(input).val()) > max) {
             alert("Insufficient Stock! Available: " + max);
-            input.value = max;
+            $(input).val(max);
         }
         calculate();
     }
 
     function calculate() {
-        let subtotal = 0;
-
-        document.querySelectorAll('.item-row').forEach(row => {
-            const qty = parseFloat(row.querySelector('.qty').value) || 0;
-            const price = parseFloat(row.querySelector('.price').value) || 0;
-            const total = qty * price;
-            row.querySelector('.row-total').innerText = total.toFixed(2);
+        var subtotal = 0;
+        $('.item-row').each(function() {
+            var q = parseFloat($(this).find('.qty').val()) || 0;
+            var p = parseFloat($(this).find('.price').val()) || 0;
+            var total = q * p;
+            $(this).find('.row-total').text(total.toFixed(2));
             subtotal += total;
         });
 
-        let discountInput = document.getElementById('discount');
-        let discount = parseFloat(discountInput.value) || 0;
+        var disc = parseFloat($('#discount').val()) || 0;
+        var maxAllowed = subtotal * MAX_DISCOUNT_PERCENT;
 
-        const limitPercentage = ${maxDiscountLimit != null ? maxDiscountLimit : 0.15};
-        const maxAllowedDiscount = subtotal * limitPercentage;
-
-        if (discount > maxAllowedDiscount) {
-
-            alert("Maximum allowed discount is " + (limitPercentage * 100) + "% (₹" + maxAllowedDiscount.toFixed(2) + ")");
-
-            discount = maxAllowedDiscount;
-            discountInput.value = maxAllowedDiscount.toFixed(2);
-            discountInput.classList.add("is-invalid");
+        if (disc > maxAllowed) {
+            showNotification("Error", "Maximum allowed discount is 15%", "bg-danger text-white");
+            disc = maxAllowed;
+            $('#discount').val(disc.toFixed(2)).addClass("is-invalid");
         } else {
-            discountInput.classList.remove("is-invalid");
+            $('#discount').removeClass("is-invalid");
         }
 
-        document.getElementById('subtotal').innerText = subtotal.toFixed(2);
-        document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
+        $('#subtotal').text(subtotal.toFixed(2));
+        $('#grandTotal').text((subtotal - disc).toFixed(2));
     }
 
-    $(document).on('change', '.variant-select', function() {
-        updateRowDetails(this);
+    $('#custMobile').on('input', function() {
+        if (this.value.length === 10) fetchCustomer();
     });
 
-    // function calculate() {
-    //     let subtotal = 0;
-    //
-    //     document.querySelectorAll('.item-row').forEach(row => {
-    //         const qty = parseFloat(row.querySelector('.qty').value) || 0;
-    //         const price = parseFloat(row.querySelector('.price').value) || 0;
-    //         const total = qty * price;
-    //         row.querySelector('.row-total').innerText = total.toFixed(2);
-    //         subtotal += total;
-    //     });
-    //
-    //     let discountInput = document.getElementById('discount');
-    //     let discount = parseFloat(discountInput.value) || 0;
-    //
-    //     const maxDiscount = subtotal * 0.5;
-    //
-    //
-    //     if (discount > maxDiscount) {
-    //         discount = maxDiscount;
-    //         discountInput.value = maxDiscount.toFixed(2);
-    //         discountInput.classList.add("is-invalid");
-    //     } else {
-    //         discountInput.classList.remove("is-invalid");
-    //     }
-    //
-    //     document.getElementById('subtotal').innerText = subtotal.toFixed(2);
-    //     document.getElementById('grandTotal').innerText = (subtotal - discount).toFixed(2);
-    //
-    //     // const subtotal = parseFloat(document.getElementById("subtotal").innerText) || 0;
-    //     // const discount = parseFloat(document.getElementById("discount").value) || 0;
-    //
-    //     if (discount > subtotal * 0.5) {
-    //         alert("Discount cannot exceed 50% of subtotal");
-    //         document.getElementById("discount").classList.add("is-invalid");
-    //         e.preventDefault();
-    //         return;
-    //     }
-    //
-    // }
+    // Add this submission handler
+    document.getElementById("salesForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Stop standard form submission
 
-    // Run calculation once on load
-    window.onload = calculate;
+        // 1. Validation
+        const rows = document.querySelectorAll(".item-row");
+        if (rows.length === 0) {
+            showNotification("Error","Provide detailes", "bg-danger text-white");
+            return;
+        }
+
+        // 2. Construct JSON object based on your SalesInvoice.java model
+        const invoiceData = {
+            invoiceNumber: document.getElementById("invoiceNumber").value,
+            customer: {
+                name: document.getElementById("custName").value,
+                mobile: document.getElementById("custMobile").value,
+                email: document.getElementById("custEmail").value
+            },
+            discountAmount: parseFloat(document.getElementById("discount").value) || 0,
+            items: []
+        };
+
+        // 3. Map items to match SalesItem model
+        rows.forEach(row => {
+            const variantId = row.querySelector(".variant-select").value;
+            if (variantId) {
+                invoiceData.items.push({
+                    variant: { variantId: parseInt(variantId) },
+                    quantity: parseInt(row.querySelector(".qty").value),
+                    unitPrice: parseFloat(row.querySelector(".price").value)
+                });
+            }
+        });
+
+
+        fetch('/api/sales-invoices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(invoiceData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+               showNotification("Success", "Invoice #" + data.data.invoiceNumber + " saved successfully!", "bg-success text-white");
+                window.location.reload();
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(err => {
+
+            showNotification("Error", "Submission Error", "bg-danger text-white");
+        });
+    });
+
+     function showNotification(title, message, bgClass) {
+            const toastEl = document.getElementById('liveToast');
+            const toast = new bootstrap.Toast(toastEl);
+
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            toastEl.className = `toast ${bgClass}`; // Set color
+
+            toast.show();
+     }
+
+     function resetButton(btn, text) {
+                btn.disabled = false;
+                btn.innerHTML = text;
+    }
+
+
+
+    $('#custMobile').on('input', function() {
+        if (this.value.length === 10) fetchCustomer();
+    });
+
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
