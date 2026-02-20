@@ -53,7 +53,6 @@ class TestingController {
         return "contacts";
     }
 
-
     @GetMapping("/products")
     public String product() {
         return "products";
