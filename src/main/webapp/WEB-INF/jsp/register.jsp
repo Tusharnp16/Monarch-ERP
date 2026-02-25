@@ -182,7 +182,7 @@
     </form>
 
     <div class="footer-links">
-        Already using Monarch? <a href="/auth/login">Sign In</a>
+        Already using Monarch? <a href="/api/auth/login">Sign In</a>
     </div>
 </div>
 <script>
@@ -199,7 +199,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
     };
 
     try {
-        const response = await fetch('/auth/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
@@ -212,7 +212,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
         msgEl.style.display = 'block';
 
         setTimeout(() => {
-            window.location.href = "/auth/login";
+            window.location.href = "/api/auth/login";
         }, 1500);
 
     } catch (err) {

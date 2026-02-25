@@ -85,7 +85,7 @@
   </form>
 
   <div class="footer-links">
-    Didn't have account!! <a href="/auth/register"> Register Here</a>
+    Didn't have account!! <a href="/api/auth/register"> Register Here</a>
   </div>
 </div>
 <script>
@@ -98,7 +98,7 @@ document.getElementById('loginForm').onsubmit = async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('/auth/login', {
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

@@ -168,22 +168,22 @@
 
 </div>
 
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center p-4">
-                <i class="fa-solid fa-circle-exclamation fa-3x text-danger mb-3"></i>
-                <h5>Delete Product?</h5>
-                <p class="text-muted small">This action cannot be undone.</p>
-                <input type="hidden" id="deleteProductId">
-                <div class="d-flex gap-2 justify-content-center mt-4">
-                    <button class="btn btn-light flex-grow-1" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger flex-grow-1" id="confirmDeleteBtn">Delete</button>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <i class="fa-solid fa-circle-exclamation fa-3x text-danger mb-3"></i>
+                    <h5>Delete Product?</h5>
+                    <p class="text-muted small">This action cannot be undone.</p>
+                    <input type="hidden" id="deleteProductId">
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button class="btn btn-light flex-grow-1" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger flex-grow-1" id="confirmDeleteBtn">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -355,7 +355,7 @@ document.getElementById('editProductForm').onsubmit = async (e) => {
 
 document.getElementById('confirmDeleteBtn').onclick = async () => {
     const id = document.getElementById('deleteProductId').value;
-    const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
+    const res =  await fetch(`${API}/${id}`, { method: 'DELETE' });
     if(res.ok) {
         bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
         loadProducts(currentPage);

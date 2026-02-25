@@ -16,7 +16,9 @@ import com.monarch.monarcherp.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -70,6 +72,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+        if(!userService.userExists(user.getUserName()).isEmpty()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already taken");
+        }
         userService.saveUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
@@ -156,6 +161,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     @ResponseBody
+    @Transactional
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
         String header = request.getHeader("Authorization");

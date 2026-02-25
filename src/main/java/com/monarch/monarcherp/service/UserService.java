@@ -44,8 +44,8 @@ public class UserService {
         return userRepository.count();
     }
 
-    public boolean userExists(Long id) {
-        return userRepository.existsById(id);
+    public Optional<User> userExists(String userName) {
+        return userRepository.findByUserName(userName);
     }
 
     public User updateUser(User user) {

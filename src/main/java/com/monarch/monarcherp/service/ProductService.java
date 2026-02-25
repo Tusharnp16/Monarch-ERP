@@ -32,7 +32,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @CacheEvict(value = "product_page",allEntries = true)
+//    @CacheEvict(value = "product_page",allEntries = true)
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }

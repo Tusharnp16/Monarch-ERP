@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,6 +47,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .maximumSessions(-1))
                 .authorizeHttpRequests(auth -> auth
@@ -54,7 +56,7 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/static/**",
                                 "/images/**",
-                                "/auth/**",
+                                "/api/auth/**",
                                 "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
@@ -66,7 +68,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             String acceptHeader = request.getHeader("Accept");
                             if (acceptHeader != null && acceptHeader.contains("text/html")) {
-                                response.sendRedirect("/auth/login");
+                                response.sendRedirect("/api/auth/login");
                             } else {
                                 InsufficientAuthenticationException customException =
                                         new InsufficientAuthenticationException("Please login to access Monarch ERP services.");

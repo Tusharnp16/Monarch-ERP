@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     from product p left join variant v on p.product_id=v.product_id WHERE total_count > 5 AND v.mrp >1000;
      */
 
+
+
+
 }
