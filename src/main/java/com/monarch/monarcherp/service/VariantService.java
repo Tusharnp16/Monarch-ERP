@@ -9,10 +9,14 @@ import com.monarch.monarcherp.repository.VariantRepository;
 import com.monarch.monarcherp.repository.VariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 @Service
@@ -32,9 +36,7 @@ public class VariantService {
         Variant savedVariant =  variantRepository.save(variant);
 
         try {
-
             String payload = objectMapper.writeValueAsString(savedVariant);
-
             OutboxEvent event = new OutboxEvent();
             event.setAggregateId(savedVariant.getVariantId().toString());
             event.setType("VARIANT_CREATED");
@@ -53,8 +55,25 @@ public class VariantService {
         return variantRepository.getVariantByVariantId(id);
     }
 
-    public List<Variant> getAllVariants() {
-        return variantRepository.findAll();
+    @KafkaListener(topics = "variant-topic",groupId = "variant_info")
+    public void getNewVariantFromKafka(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+        String threadName = Thread.currentThread().getName();
+        System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+    }
+
+    @KafkaListener(topics = "variant-topic",groupId = "variant_info")
+    public void getNewVariantFromKafkaParition(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+        String threadName = Thread.currentThread().getName();
+        System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+    }
+
+    @KafkaListener(topics = "variant-topic",groupId = "inventory_info")
+    public void getNewVariantFromKafkaInventory(String payload) {
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+        String threadName = Thread.currentThread().getName();
+        System.out.println(timestamp+threadName+"Kafka-inventory new variant received : " + payload);
     }
 
     public List<Variant> getVariantByProductId(Long id){
@@ -68,6 +87,7 @@ public class VariantService {
 
     @Transactional(readOnly = true)
     public List<Variant> getPaginatedVariant(Long lastId){
+
         if(lastId==0 ||  lastId==null){
             return variantRepository.findTop10ByOrderByVariantIdAsc();
         }

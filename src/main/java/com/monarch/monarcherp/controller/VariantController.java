@@ -160,6 +160,20 @@ public class VariantController {
         return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
     }
 
+//    @GetMapping("/kafka-variant")
+//    public ResponseEntity<ApiResponse<Variant>> listingKafkaVarinat() {
+//        return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
+//    }
+//
+//    @GetMapping("/kafka-inventory")
+//    public ResponseEntity<ApiResponse<Variant>> listingKafkaInventory() {
+//        Variant variant = variantService.getVariant(id);
+//        if (variant == null) {
+//            return ResponseEntity.ok(ApiResponse.error("Variant not found with ID: " + id));
+//        }
+//        return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
+//    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<Variant>> addVariant(
             @RequestBody Variant variant,
