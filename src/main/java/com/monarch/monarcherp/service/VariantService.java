@@ -88,10 +88,14 @@ public class VariantService {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
         System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+        if (payload.contains("FAIL_TRIGGER")) {
+            System.err.println("!!! Simulating a Failure for DLQ Testing !!!");
+            throw new RuntimeException("Manual Failure Triggered for Variant: " + payload);
+        }
 //        messagingTemplate.convertAndSend("/topic/variants",payload);
         processAndBroadcast(payload, partition, "Listener-1");
     }
-
+//
 //    @KafkaListener(topics = "variant-topic", groupId = "admin_alerts")
 //    public void sendAdminAlerts(String payload) {
 //        try {

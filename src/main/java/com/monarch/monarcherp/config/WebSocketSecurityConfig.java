@@ -13,20 +13,24 @@
 //public class WebSocketSecurityConfig {
 //
 //    @Bean
-//    AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
-//        messages
-//                // 1. ALLOW the "door" to open (CONNECT) and close (DISCONNECT)
-//                // Without this, you get the "Failed to send message" ERROR
-//                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
+//    AuthorizationManager<Message<?>> messageAuthorizationManager(
+//            MessageMatcherDelegatingAuthorizationManager.Builder messages) {
 //
-//                // 2. Allow messages that don't have a specific destination
+//        messages
+//                .simpTypeMatchers(
+//                        SimpMessageType.CONNECT,
+//                        SimpMessageType.DISCONNECT,
+//                        SimpMessageType.OTHER
+//                ).permitAll()
+//
 //                .nullDestMatcher().permitAll()
 //
-//                // 3. Your specific business rules for Monarch ERP
-//                .simpSubscribeDestMatchers("/topic/admin-alerts").hasRole("ADMIN")
-//                .simpSubscribeDestMatchers("/topic/variants").authenticated()
+//                .simpSubscribeDestMatchers("/topic/admin-alerts")
+//                .hasRole("ADMIN")
 //
-//                // 4. Fallback for safety
+//                .simpSubscribeDestMatchers("/topic/variants")
+//                .authenticated()
+//
 //                .anyMessage().authenticated();
 //
 //        return messages.build();

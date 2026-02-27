@@ -101,6 +101,8 @@ public class AuthController {
 
         String clientIp = getClientIp(httpRequest);
 
+        System.out.println(userDetails.getAuthorities());
+
         UserLoginLog log=UserLoginLog.builder()
                 .username(userDetails.getUsername())
                 .loginIp(clientIp)
