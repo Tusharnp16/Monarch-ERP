@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
@@ -30,6 +31,9 @@ public class VariantService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public Variant saveVariant(Variant variant) {
 
@@ -60,6 +64,23 @@ public class VariantService {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
         System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+        processAndBroadcast(payload, partition, "Listener-1");
+
+//        try {
+//            Variant incoming = objectMapper.readValue(payload, Variant.class);
+//
+//            // CRITICAL CHANGE: Use the repository method that has @EntityGraph
+//            // Do not use a standard findById or getVariantByVariantId if they don't have the graph
+//            Variant fullVariant = variantRepository.getVariantWithProductGraph(incoming.getVariantId());
+//
+//            if (fullVariant != null) {
+//                System.out.println("Broadcasting to WebSocket: " + fullVariant.getVariantName());
+//                messagingTemplate.convertAndSend("/topic/variants", fullVariant);
+//            }
+//
+//    } catch (Exception e) {
+//        System.err.println("Error processing WebSocket broadcast: " + e.getMessage());
+//    }
     }
 
     @KafkaListener(topics = "variant-topic",groupId = "variant_info")
@@ -67,6 +88,39 @@ public class VariantService {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
         System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+//        messagingTemplate.convertAndSend("/topic/variants",payload);
+        processAndBroadcast(payload, partition, "Listener-1");
+    }
+
+//    @KafkaListener(topics = "variant-topic", groupId = "admin_alerts")
+//    public void sendAdminAlerts(String payload) {
+//        try {
+//            Variant incoming = objectMapper.readValue(payload, Variant.class);
+//            Variant fullVariant = variantRepository.getVariantWithProductGraph(incoming.getVariantId());
+//
+//            if (fullVariant != null) {
+//                String alertMsg = "Admin Notice: " + fullVariant.getVariantName() + " has been added/updated.";
+//
+//                messagingTemplate.convertAndSend("/topic/admin-alerts", alertMsg);
+//            }
+//        } catch (Exception e) {
+//            System.err.println("Admin Alert Failure: " + e.getMessage());
+//        }
+//    }
+
+
+    private void processAndBroadcast(String payload, int partition, String listenerName) {
+        try {
+            Variant incoming = objectMapper.readValue(payload, Variant.class);
+            Variant fullVariant = variantRepository.getVariantWithProductGraph(incoming.getVariantId());
+
+            if (fullVariant != null) {
+                System.out.println(listenerName + " on Partition " + partition + " broadcasting: " + fullVariant.getVariantName());
+                messagingTemplate.convertAndSend("/topic/variants", fullVariant);
+            }
+        } catch (Exception e) {
+            System.err.println(listenerName + " error: " + e.getMessage());
+        }
     }
 
     @KafkaListener(topics = "variant-topic",groupId = "inventory_info")
@@ -89,9 +143,9 @@ public class VariantService {
     public List<Variant> getPaginatedVariant(Long lastId){
 
         if(lastId==0 ||  lastId==null){
-            return variantRepository.findTop10ByOrderByVariantIdAsc();
+            return variantRepository.findTop10ByOrderByVariantIdDesc();
         }
-        return variantRepository.findTop10ByVariantIdGreaterThanOrderByVariantIdAsc(lastId);
+        return variantRepository.findTop10ByVariantIdLessThanOrderByVariantIdDesc(lastId);
     }
 
     public long getTotalVariants() {

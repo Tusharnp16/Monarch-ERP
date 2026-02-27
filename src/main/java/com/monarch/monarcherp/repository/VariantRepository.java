@@ -6,6 +6,7 @@ import org.springframework.data.domain.Window;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 import java.util.List;
@@ -18,15 +19,18 @@ public interface VariantRepository extends JpaRepository<Variant,Long> {
 //    Window<Variant> findTop10VariantByVariantId(Long variantId, Sort sort);
 
     @EntityGraph(attributePaths = {"product"})
-    List<Variant> findTop10ByVariantIdGreaterThanOrderByVariantIdAsc(Long lastId);
+    List<Variant> findTop10ByVariantIdLessThanOrderByVariantIdDesc(Long lastId);
 
     @EntityGraph(attributePaths = {"product"})
-    List<Variant> findTop10ByOrderByVariantIdAsc();
+    List<Variant> findTop10ByOrderByVariantIdDesc();
 
 
     @Query("SELECT v FROM Variant v JOIN FETCH v.product")
     List<Variant> findAllWithProduct();
 
 
+    @EntityGraph(attributePaths = {"product"})
+    @Query("SELECT v FROM Variant v WHERE v.variantId = :id")
+    Variant getVariantWithProductGraph(@Param("id") Long id);
 
 }

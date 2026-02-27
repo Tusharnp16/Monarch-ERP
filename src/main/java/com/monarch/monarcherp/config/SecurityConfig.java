@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/swagger-ui/**",
                                 "/inventory/**",
+                                "/ws-monarch/**",
                                 "/logo.png",
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
