@@ -60,7 +60,7 @@ public class VariantService {
     }
 
     @KafkaListener(topics = "variant-topic",groupId = "variant_info")
-    public void getNewVariantFromKafka(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
+    public void getNewVariantFromKafka(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception{
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
         System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
@@ -84,10 +84,12 @@ public class VariantService {
     }
 
     @KafkaListener(topics = "variant-topic",groupId = "variant_info")
-    public void getNewVariantFromKafkaParition(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
+    public void getNewVariantFromKafkaParition(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception{
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
         System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+
+
         if (payload.contains("FAIL_TRIGGER")) {
             System.err.println("!!! Simulating a Failure for DLQ Testing !!!");
             throw new RuntimeException("Manual Failure Triggered for Variant: " + payload);
@@ -113,17 +115,19 @@ public class VariantService {
 //    }
 
 
-    private void processAndBroadcast(String payload, int partition, String listenerName) {
-        try {
-            Variant incoming = objectMapper.readValue(payload, Variant.class);
-            Variant fullVariant = variantRepository.getVariantWithProductGraph(incoming.getVariantId());
+    private void processAndBroadcast(String payload, int partition, String listenerName) throws Exception {
 
-            if (fullVariant != null) {
-                System.out.println(listenerName + " on Partition " + partition + " broadcasting: " + fullVariant.getVariantName());
-                messagingTemplate.convertAndSend("/topic/variants", fullVariant);
-            }
-        } catch (Exception e) {
-            System.err.println(listenerName + " error: " + e.getMessage());
+            Variant incoming = objectMapper.readValue(payload, Variant.class);
+
+        if ("admin".equalsIgnoreCase(incoming.getVariantName())) {
+            System.err.println("!!! DETECTED ADMIN VARIANT - TRIGGERING FAILURE !!!");
+            throw new RuntimeException("CRITICAL: Variant validation failed for " + incoming.getVariantName());
+        }
+
+        Variant fullVariant = variantRepository.getVariantWithProductGraph(incoming.getVariantId());
+        if (fullVariant != null) {
+            System.out.println(listenerName + " on Partition " + partition + " broadcasting: " + fullVariant.getVariantName());
+            messagingTemplate.convertAndSend("/topic/variants", fullVariant);
         }
     }
 

@@ -14,7 +14,9 @@ public class KafkaConfig {
     @Bean
     public CommonErrorHandler errorHandler(KafkaOperations<Object, Object> template) {
 
-        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(template);
+//        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(template);
+        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(template,
+                (r, e) -> new org.apache.kafka.common.TopicPartition(r.topic() + ".DLQ", 0));
 
         FixedBackOff backOff = new FixedBackOff(2000L, 2);
 

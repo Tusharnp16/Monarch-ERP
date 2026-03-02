@@ -18,7 +18,7 @@ public class OutboxPublisher {
     private final OutboxRepository outboxRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 20000)
     @Transactional
     public void publish() {
 
