@@ -7,6 +7,7 @@ import com.monarch.monarcherp.model.Variant;
 import com.monarch.monarcherp.repository.OutboxRepository;
 import com.monarch.monarcherp.repository.VariantRepository;
 import com.monarch.monarcherp.repository.VariantRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -115,6 +116,7 @@ public class VariantService {
 //    }
 
 
+    @CircuitBreaker(name = "variantServiceBreaker", fallbackMethod = "fallbackForBroadcast")
     private void processAndBroadcast(String payload, int partition, String listenerName) throws Exception {
 
             Variant incoming = objectMapper.readValue(payload, Variant.class);
@@ -129,6 +131,11 @@ public class VariantService {
             System.out.println(listenerName + " on Partition " + partition + " broadcasting: " + fullVariant.getVariantName());
             messagingTemplate.convertAndSend("/topic/variants", fullVariant);
         }
+    }
+
+    public void fallbackForBroadcast(String payload, int partition, String listenerName, Throwable t) {
+        System.err.println("CIRCUIT BREAKER ACTIVE! Skipping broadcast for: " + payload);
+        System.err.println("Reason: " + t.getMessage());
     }
 
     @KafkaListener(topics = "variant-topic",groupId = "inventory_info")
