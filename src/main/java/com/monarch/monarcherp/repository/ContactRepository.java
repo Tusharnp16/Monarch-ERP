@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ContactRepository extends JpaRepository<Contact,Long> {
+public interface ContactRepository extends JpaRepository<Contact, Long> {
     Contact findByContactId(Long contactId);
 
     @Query(value = "SELECT contact_id, name, gst_in FROM contact", nativeQuery = true)

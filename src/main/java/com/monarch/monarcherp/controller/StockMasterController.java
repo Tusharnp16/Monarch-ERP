@@ -1,20 +1,13 @@
 package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.dto.ApiResponse;
-import com.monarch.monarcherp.model.Product;
-import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.model.StockMaster;
-import com.monarch.monarcherp.service.ProductService;
-import com.monarch.monarcherp.service.ReportService;
 import com.monarch.monarcherp.service.StockMasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 //@Controller
 //@RequestMapping("/stockmaster")
@@ -33,7 +26,7 @@ import java.util.Map;
 //    @GetMapping
 //    public String viewStockMaster(Model model) {
 //        model.addAttribute("stocks", stockMasterService.getAllStockMasters());
-////        model.addAttribute("parentProducts",productService.getAllAllProducts());
+/// /        model.addAttribute("parentProducts",productService.getAllAllProducts());
 //        return "stock-master";
 //    }
 //
@@ -45,6 +38,7 @@ import java.util.Map;
 //
 //    @PostMapping("/add")
 //    public String addStockMaster(@ModelAttribute StockMaster stockMaster) {
+
 ////        Product managedProduct = productService.getProduct(productId);
 ////        stockMaster.setProduct(managedProduct);
 //        stockMasterService.saveStockMaster(stockMaster);

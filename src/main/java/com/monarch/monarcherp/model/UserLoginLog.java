@@ -4,10 +4,11 @@ package com.monarch.monarcherp.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="user_login_logs")
+@Table(name = "user_login_logs")
 @Getter
 @Setter
 @NoArgsConstructor

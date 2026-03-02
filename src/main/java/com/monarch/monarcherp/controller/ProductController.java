@@ -25,13 +25,13 @@
 //        this.productService = productService;
 //    }
 //
-////    @GetMapping
-////    public String viewProducts(@RequestParam(defaultValue = "0") int page, Model model) {
-////        model.addAttribute("products", productService.getAllProducts(page,20));
-////        model.addAttribute("currentPage", page);
-////        model.addAttribute("activeCount",2);
-////        return "products";
-////    }
+/// /    @GetMapping
+/// /    public String viewProducts(@RequestParam(defaultValue = "0") int page, Model model) {
+/// /        model.addAttribute("products", productService.getAllProducts(page,20));
+/// /        model.addAttribute("currentPage", page);
+/// /        model.addAttribute("activeCount",2);
+/// /        return "products";
+/// /    }
 //
 ////    @GetMapping
 ////    public String viewProducts(
@@ -147,22 +147,22 @@ public class ProductController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
         Page<Product> productPage = productService.searchProducts(search, page, size, startDate, endDate);
-        return ResponseEntity.ok(ApiResponse.success(productPage,"Data fetched succesfully"));
+        return ResponseEntity.ok(ApiResponse.success(productPage, "Data fetched succesfully"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Long id) {
         Product product = productService.getProduct(id);
-      //  return (product != null) ? ResponseEntity.ok(product) : ResponseEntity.notFound().build();
+        //  return (product != null) ? ResponseEntity.ok(product) : ResponseEntity.notFound().build();
 
-        return (product != null) ? ResponseEntity.ok(ApiResponse.success(product,"Product Not Found")) : ResponseEntity.ok(ApiResponse.success(product,"Data fetched succesfully"));
+        return (product != null) ? ResponseEntity.ok(ApiResponse.success(product, "Product Not Found")) : ResponseEntity.ok(ApiResponse.success(product, "Data fetched succesfully"));
     }
 
     @GetMapping("/compact")
     @JsonView(VariantViews.forProducts.class)
     public ResponseEntity<ApiResponse<List<Product>>> getCompactProduct(@RequestParam(required = false) String name) {
         List<Product> product = productService.getAllCompactProducts(name);
-        return ResponseEntity.ok(ApiResponse.success(product,"Data fetched succesfully"));
+        return ResponseEntity.ok(ApiResponse.success(product, "Data fetched succesfully"));
     }
 
 
@@ -183,7 +183,7 @@ public class ProductController {
         product.setCreatedAt(existing.getCreatedAt());
 
         Product updatedProduct = productService.saveProduct(product);
-        return ResponseEntity.ok(ApiResponse.success(updatedProduct,"Product Updated"));
+        return ResponseEntity.ok(ApiResponse.success(updatedProduct, "Product Updated"));
     }
 
     @DeleteMapping("/{id}")

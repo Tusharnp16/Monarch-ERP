@@ -4,14 +4,11 @@ import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 import java.time.Duration;
-import java.time.LocalTime;
 
 @Service
 public class RedisBlacklistService {
@@ -22,11 +19,11 @@ public class RedisBlacklistService {
     @Autowired
     UserRepository userRepository;
 
-    public void blackListToken(String token, Long expireTime){
-        long ttl=expireTime-System.currentTimeMillis();
+    public void blackListToken(String token, Long expireTime) {
+        long ttl = expireTime - System.currentTimeMillis();
 
-        if(ttl>0){
-            stringRedisTemplate.opsForValue().set(token,"true", Duration.ofMillis(ttl));
+        if (ttl > 0) {
+            stringRedisTemplate.opsForValue().set(token, "true", Duration.ofMillis(ttl));
         }
     }
 
@@ -36,7 +33,7 @@ public class RedisBlacklistService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public Boolean isBlackListed(String token){
+    public Boolean isBlackListed(String token) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(token));
     }
 }

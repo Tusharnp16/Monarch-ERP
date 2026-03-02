@@ -17,8 +17,8 @@ public class DiscountConfig {
         this.maxDiscount = maxDiscount;
     }
 
-    public double getMaxDiscountValue(){
-        return Double.parseDouble(maxDiscount.replace("%",""))/100.0;
+    public double getMaxDiscountValue() {
+        return Double.parseDouble(maxDiscount.replace("%", "")) / 100.0;
 
     }
 }

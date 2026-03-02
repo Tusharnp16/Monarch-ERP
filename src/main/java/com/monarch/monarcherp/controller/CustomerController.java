@@ -51,10 +51,10 @@
 //
 //    @PostMapping("/update")
 //    public String updateCustomer(@ModelAttribute Customer customer) {
-////        Customer existing = customerService.getCustomer(customer.getCustomerId());
-////        if (existing != null) {
-////            customer.setCreatedAt(existing.getCreatedAt());
-////        }
+/// /        Customer existing = customerService.getCustomer(customer.getCustomerId());
+/// /        if (existing != null) {
+/// /            customer.setCreatedAt(existing.getCreatedAt());
+/// /        }
 //        customerService.saveCustomer(customer);
 //        return "redirect:/customer";
 //    }
@@ -78,10 +78,10 @@
 
 package com.monarch.monarcherp.controller;
 
+import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.Customer;
 import com.monarch.monarcherp.repository.CustomerRepository;
 import com.monarch.monarcherp.service.CustomerService;
-import com.monarch.monarcherp.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -131,7 +131,7 @@ public class CustomerController {
 
     @PutMapping("/update") // Changed from PostMapping to PutMapping
     public ResponseEntity<ApiResponse<Customer>> updateCustomer(@RequestBody Customer customer) {
-        if (customer.getId()== null) {
+        if (customer.getId() == null) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Customer ID is required for update"));
         }
 

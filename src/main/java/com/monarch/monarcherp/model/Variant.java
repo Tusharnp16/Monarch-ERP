@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,8 +26,8 @@ public class Variant {
     @JsonView(VariantViews.Compact.class)
     private Long variantId;
 
-    @Column(name="variant_name")
-    @JsonView({VariantViews.Compact.class,VariantViews.forInventory.class})
+    @Column(name = "variant_name")
+    @JsonView({VariantViews.Compact.class, VariantViews.forInventory.class})
     private String variantName;
 
     @JsonView(VariantViews.Compact.class)
@@ -43,7 +44,7 @@ public class Variant {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="selling_price"))
+            @AttributeOverride(name = "price", column = @Column(name = "selling_price"))
     })
     private Money sellingPrice;
 
@@ -56,6 +57,6 @@ public class Variant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonView({VariantViews.Compact.class,VariantViews.forInventory.class,VariantViews.forProducts.class})
+    @JsonView({VariantViews.Compact.class, VariantViews.forInventory.class, VariantViews.forProducts.class})
     private Product product;
 }

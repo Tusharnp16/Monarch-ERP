@@ -1,11 +1,13 @@
 package com.monarch.monarcherp.repository;
 
 import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDate;
 
 public interface PurchaseDetailProjection {
 
     Long getPurchaseItemId();
+
     Integer getQty();
 
     @Value("#{target.price.price}")

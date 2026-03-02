@@ -2,21 +2,14 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.repository.ProductRepository;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
@@ -32,13 +25,13 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-//    @CacheEvict(value = "product_page",allEntries = true)
+    //    @CacheEvict(value = "product_page",allEntries = true)
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
 
-//    @Cacheable(value = "products",key = "#id")
+    //    @Cacheable(value = "products",key = "#id")
     public Product getProduct(Long id) {
         return productRepository.findByProductId(id).orElse(null);
     }
@@ -46,11 +39,11 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
-       // return productRepository.findAll(pageable);
-        return productRepository.nativeProductSearch(null,null,null,pageable);
+        // return productRepository.findAll(pageable);
+        return productRepository.nativeProductSearch(null, null, null, pageable);
     }
 
-//    @Cacheable(value="product_page", key = "{#page,#size}")
+    //    @Cacheable(value="product_page", key = "{#page,#size}")
     public Page<Product> searchProducts(String search, int page, int size, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
 
@@ -59,16 +52,16 @@ public class ProductService {
 //                .findByProductNameContainingIgnoreCaseOrItemCodeContainingIgnoreCase(
 //                        search, search, pageable);
 
-        System.out.println("DEBUG: Service Layer STARTDATE: "+startDate);
-        System.out.println("DEBUG: Service Layer ENDDATE: "+endDate);
+        System.out.println("DEBUG: Service Layer STARTDATE: " + startDate);
+        System.out.println("DEBUG: Service Layer ENDDATE: " + endDate);
 
-        Page<Product> pgprd= productRepository.nativeProductSearch(search,startDate,endDate,pageable);
-       // System.out.println("Service Layer: "+pgprd.getTotalElements());
+        Page<Product> pgprd = productRepository.nativeProductSearch(search, startDate, endDate, pageable);
+        // System.out.println("Service Layer: "+pgprd.getTotalElements());
 
         return pgprd;
     }
 
-//    @Caching(evict = {
+    //    @Caching(evict = {
 //            @CacheEvict(value = "products", key = "#id"),
 //            @CacheEvict(value = "product_page", allEntries = true)
 //    })
@@ -85,16 +78,16 @@ public class ProductService {
     }
 
     @Transactional
-    @Retryable(retryFor = {SQLException.class}, maxAttempts = 5,backoff = @Backoff(delay = 5000))
+    @Retryable(retryFor = {SQLException.class}, maxAttempts = 5, backoff = @Backoff(delay = 5000))
 //    @CachePut(value = "products", key = "#id")
     public Product updateProductName(Long id, String newName) {
-        Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         product.setProductName(newName);
         return productRepository.save(product);
     }
 
     @Recover
-    public Product recover(SQLException e,Long id,String newName){
+    public Product recover(SQLException e, Long id, String newName) {
         System.err.println("Database down");
         throw new RuntimeException("Cant updatted right now server is down");
     }

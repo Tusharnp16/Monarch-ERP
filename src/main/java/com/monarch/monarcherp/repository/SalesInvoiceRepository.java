@@ -1,14 +1,12 @@
 package com.monarch.monarcherp.repository;
 
 import com.monarch.monarcherp.model.SalesInvoice;
-
+import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.hibernate.jpa.HibernateHints;
-import org.springframework.data.repository.query.Param;
-import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.stream.Stream;

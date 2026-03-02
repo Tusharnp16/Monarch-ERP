@@ -42,9 +42,9 @@ public class ContactService {
     }
 
     public Contact updateContactName(Long id, String newName) {
-        Contact contact= contactRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
+        Contact contact = contactRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         contact.setName(newName);
-        return  contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
     public List<Contact> getPartialContacts() {

@@ -2,7 +2,6 @@ package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.config.DiscountConfig;
 import com.monarch.monarcherp.dto.ApiResponse;
-import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.UserLoginLog;
 import com.monarch.monarcherp.repository.UserLoginLogRepository;
 import com.monarch.monarcherp.service.CustomerService;
@@ -18,10 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tools.jackson.core.util.RecyclerPool;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping
@@ -43,12 +40,12 @@ class TestingController {
     private DiscountConfig discountConfig;
 
     @GetMapping("/")
-    public String getDefaultPage(){
+    public String getDefaultPage() {
         return "403";
     }
 
     @GetMapping("userlogs")
-    public String getServerLog(ServletRequest servletRequest){
+    public String getServerLog(ServletRequest servletRequest) {
         return "serverlog";
     }
 
@@ -60,9 +57,9 @@ class TestingController {
 
         System.out.println("DEBUG : " + currentUsername);
 
-        List<UserLoginLog> userLog=userLoginLogRepository.findByUsernameOrderByLoginTimeDesc(currentUsername);
+        List<UserLoginLog> userLog = userLoginLogRepository.findByUsernameOrderByLoginTimeDesc(currentUsername);
 
-        return ResponseEntity.ok(ApiResponse.success(userLog,"User Log Fetched"));
+        return ResponseEntity.ok(ApiResponse.success(userLog, "User Log Fetched"));
     }
 
     @GetMapping("/contacts")
@@ -81,17 +78,17 @@ class TestingController {
     }
 
     @GetMapping("/inventory")
-    public String viewInventory(){
+    public String viewInventory() {
         return "inventory";
     }
 
     @GetMapping("/stockmaster")
-    public String viewStockMaster(){
+    public String viewStockMaster() {
         return "stock-master";
     }
 
     @GetMapping("/salesitem/recentitems")
-    public String viewRecentItem(){
+    public String viewRecentItem() {
         return "recentsalesitems";
     }
 

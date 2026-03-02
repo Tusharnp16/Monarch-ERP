@@ -1,4 +1,5 @@
 package com.monarch.monarcherp.config;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TokenBucket {

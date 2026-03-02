@@ -114,7 +114,7 @@ class SalesItemController {
             salesInvoiceService.exportMonthlySalesToStream(month, year, response.getOutputStream());
             response.flushBuffer();
         } catch (IOException e) {
-            response.sendError(500,"Internet Issues");
+            response.sendError(500, "Internet Issues");
         }
     }
 }

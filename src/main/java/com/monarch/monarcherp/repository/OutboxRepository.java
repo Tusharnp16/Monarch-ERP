@@ -8,8 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface OutboxRepository extends JpaRepository<OutboxEvent,Long>
-{
+public interface OutboxRepository extends JpaRepository<OutboxEvent, Long> {
     List<OutboxEvent> findByProcessedFalse();
 
     @Modifying

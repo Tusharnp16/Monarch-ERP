@@ -1,17 +1,14 @@
 package com.monarch.monarcherp.service;
 
-import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class UserService {
 

@@ -1,15 +1,11 @@
 package com.monarch.monarcherp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.monarch.monarcherp.model.OutboxEvent;
-import com.monarch.monarcherp.model.Variant;
 import com.monarch.monarcherp.model.Variant;
 import com.monarch.monarcherp.repository.OutboxRepository;
 import com.monarch.monarcherp.repository.VariantRepository;
-import com.monarch.monarcherp.repository.VariantRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -18,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
-import java.sql.SQLOutput;
 import java.util.List;
 
 @Service
@@ -38,7 +33,7 @@ public class VariantService {
 
     public Variant saveVariant(Variant variant) {
 
-        Variant savedVariant =  variantRepository.save(variant);
+        Variant savedVariant = variantRepository.save(variant);
 
         try {
             String payload = objectMapper.writeValueAsString(savedVariant);
@@ -60,11 +55,11 @@ public class VariantService {
         return variantRepository.getVariantByVariantId(id);
     }
 
-    @KafkaListener(topics = "variant-topic",groupId = "variant_info")
-    public void getNewVariantFromKafka(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception{
+    @KafkaListener(topics = "variant-topic", groupId = "variant_info")
+    public void getNewVariantFromKafka(String payload, @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
-        System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+        System.out.println(timestamp + threadName + "Kafka-Variant new variant received from " + partition + " : " + payload);
         processAndBroadcast(payload, partition, "Listener-1");
 
 //        try {
@@ -84,11 +79,11 @@ public class VariantService {
 //    }
     }
 
-    @KafkaListener(topics = "variant-topic",groupId = "variant_info")
-    public void getNewVariantFromKafkaParition(String payload,@Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception{
+    @KafkaListener(topics = "variant-topic", groupId = "variant_info")
+    public void getNewVariantFromKafkaParition(String payload, @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws Exception {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
-        System.out.println(timestamp+threadName+"Kafka-Variant new variant received from " + partition + " : " + payload);
+        System.out.println(timestamp + threadName + "Kafka-Variant new variant received from " + partition + " : " + payload);
 
 
         if (payload.contains("FAIL_TRIGGER")) {
@@ -118,8 +113,7 @@ public class VariantService {
 
     @CircuitBreaker(name = "variantServiceBreaker", fallbackMethod = "fallbackForBroadcast")
     private void processAndBroadcast(String payload, int partition, String listenerName) throws Exception {
-
-            Variant incoming = objectMapper.readValue(payload, Variant.class);
+        Variant incoming = objectMapper.readValue(payload, Variant.class);
 
         if ("admin".equalsIgnoreCase(incoming.getVariantName())) {
             System.err.println("!!! DETECTED ADMIN VARIANT - TRIGGERING FAILURE !!!");
@@ -138,14 +132,14 @@ public class VariantService {
         System.err.println("Reason: " + t.getMessage());
     }
 
-    @KafkaListener(topics = "variant-topic",groupId = "inventory_info")
+    @KafkaListener(topics = "variant-topic", groupId = "inventory_info")
     public void getNewVariantFromKafkaInventory(String payload) {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String threadName = Thread.currentThread().getName();
-        System.out.println(timestamp+threadName+"Kafka-inventory new variant received : " + payload);
+        System.out.println(timestamp + threadName + "Kafka-inventory new variant received : " + payload);
     }
 
-    public List<Variant> getVariantByProductId(Long id){
+    public List<Variant> getVariantByProductId(Long id) {
         return variantRepository.findByProduct_ProductId(id);
     }
 
@@ -155,9 +149,9 @@ public class VariantService {
 
 
     @Transactional(readOnly = true)
-    public List<Variant> getPaginatedVariant(Long lastId){
+    public List<Variant> getPaginatedVariant(Long lastId) {
 
-        if(lastId==0 ||  lastId==null){
+        if (lastId == 0 || lastId == null) {
             return variantRepository.findTop10ByOrderByVariantIdDesc();
         }
         return variantRepository.findTop10ByVariantIdLessThanOrderByVariantIdDesc(lastId);
@@ -172,8 +166,8 @@ public class VariantService {
     }
 
     public Variant updateVariant(Long id, Variant updatedData) {
-        variantRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
-        return  variantRepository.save(updatedData);
+        variantRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        return variantRepository.save(updatedData);
     }
 
     public List<Variant> getPrVariant() {

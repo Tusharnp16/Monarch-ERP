@@ -1,13 +1,11 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.SalesInvoice;
-import com.monarch.monarcherp.model.SalesItem;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -32,10 +30,10 @@ public class NotificationService {
     }
 
     @Async("mailExecutor")
-    public CompletableFuture<Void> sendInvoiceEmail(SalesInvoice invoice){
+    public CompletableFuture<Void> sendInvoiceEmail(SalesInvoice invoice) {
 
-        try{
-            if (invoice.getCustomer().getEmail() == null || !invoice.getCustomer().getEmail() .contains("@")) {
+        try {
+            if (invoice.getCustomer().getEmail() == null || !invoice.getCustomer().getEmail().contains("@")) {
                 throw new RuntimeException("Invalid email address provided!");
             }
 
@@ -101,7 +99,7 @@ public class NotificationService {
             mailSender.send(message);
             log.debug("Email successfully sent to {}", invoice.getCustomer().getEmail());
             return CompletableFuture.completedFuture(null);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("FAILED to send email for Invoice {}: {}", invoice.getInvoiceNumber(), e.getMessage());
             return CompletableFuture.failedFuture(e);
         }

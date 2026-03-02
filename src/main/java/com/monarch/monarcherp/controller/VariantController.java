@@ -20,12 +20,12 @@
 //    @Autowired
 //    private ProductService productService;
 //
-////    @GetMapping
-////    public String viewVariant(Model model) {
-////        model.addAttribute("variants", variantService.getAllVariants());
-////        model.addAttribute("parentProducts",productService.getAllProducts(2500,20));
-////        return "variants";
-////    }
+/// /    @GetMapping
+/// /    public String viewVariant(Model model) {
+/// /        model.addAttribute("variants", variantService.getAllVariants());
+/// /        model.addAttribute("parentProducts",productService.getAllProducts(2500,20));
+/// /        return "variants";
+/// /    }
 //
 //
 ////    @GetMapping("/contact")

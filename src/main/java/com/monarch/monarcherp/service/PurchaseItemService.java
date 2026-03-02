@@ -16,11 +16,9 @@ import java.util.List;
 public class PurchaseItemService {
 
     @Autowired
-    private PurchaseItemRepository purchaseItemRepository;
-
-    @Autowired
     TaxFactoryService taxFactoryService;
-
+    @Autowired
+    private PurchaseItemRepository purchaseItemRepository;
     @Autowired
     private InventoryRepository inventoryRepository;
 
@@ -38,9 +36,9 @@ public class PurchaseItemService {
     private EntityManager entityManager;
 
     @Transactional
-    public void savePurchaseItems(PurchaseItem request,int gstIn) {
+    public void savePurchaseItems(PurchaseItem request, int gstIn) {
 
-        Boolean isInterState= gstIn==24 ? false : true;
+        Boolean isInterState = gstIn == 24 ? false : true;
 
         System.out.println("DEBUG: Received Price: " + request.getPrice().getPrice());
         System.out.println("DEBUG: Received Qty: " + request.getQty());
@@ -55,7 +53,7 @@ public class PurchaseItemService {
         BigDecimal totalNet = unitLanding.multiply(new BigDecimal(request.getQty()));
         request.setNetAmount(new Money(totalNet));
 
-        Purchase purchase= purchaseRepository.findPurchaseByPurchaseId(request.getPurchase().getPurchaseId());
+        Purchase purchase = purchaseRepository.findPurchaseByPurchaseId(request.getPurchase().getPurchaseId());
 
         purchase.setTotalAmount(new Money(totalNet));
 
@@ -119,7 +117,7 @@ public class PurchaseItemService {
     }
 
     public PurchaseItem updatePurchaseItem(Long id, PurchaseItem updatedData) {
-        purchaseItemRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
+        purchaseItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         return purchaseItemRepository.save(updatedData);
     }
 

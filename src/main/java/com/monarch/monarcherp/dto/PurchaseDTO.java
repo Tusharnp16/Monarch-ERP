@@ -1,6 +1,8 @@
 package com.monarch.monarcherp.dto;
-import com.monarch.monarcherp.model.Money;
-import lombok.*;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +18,7 @@ public class PurchaseDTO {
     private Integer itemCount;
     private Double totalAmount;
 
-    public PurchaseDTO(Long purchaseId, String billNo, String supplierName,String supplierNumber, LocalDateTime date, Integer itemCount, Object totalAmount) {
+    public PurchaseDTO(Long purchaseId, String billNo, String supplierName, String supplierNumber, LocalDateTime date, Integer itemCount, Object totalAmount) {
         this.purchaseId = purchaseId;
         this.billNo = billNo;
         this.supplierName = supplierName;

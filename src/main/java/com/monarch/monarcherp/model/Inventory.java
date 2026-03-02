@@ -19,6 +19,7 @@ public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inventory_id")
+    @JsonView(VariantViews.forInventory.class)
     private Long inventoryId;
 
     @OneToOne
@@ -31,14 +32,14 @@ public class Inventory {
     @Version
     private Integer version;
 
-    @Column(name="available_quantity")
+    @Column(name = "available_quantity")
     @JsonView(VariantViews.forInventory.class)
     private int availableQuantity;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="average_cost"))
+            @AttributeOverride(name = "price", column = @Column(name = "average_cost"))
     })
-    private  Money averageCost;
+    private Money averageCost;
 
 }

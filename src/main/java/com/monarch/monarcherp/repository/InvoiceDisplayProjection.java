@@ -3,14 +3,17 @@ package com.monarch.monarcherp.repository;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface InvoiceDisplayProjection {
 
     Long getId();
+
     String getInvoiceNumber();
+
     LocalDate getInvoiceDate();
+
     Double getTotalAmount();
+
     Double getDiscountAmount();
 
     @Value("#{target.customer.name}")

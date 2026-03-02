@@ -92,10 +92,10 @@
 //
 //    @PostMapping("/update")
 //    public String updateSalesInvoice(@ModelAttribute SalesInvoice salesInvoice) {
-////        SalesInvoice existing = salesInvoiceService.getSalesInvoice(salesInvoice.getSalesInvoiceId());
-////        if (existing != null) {
-////            salesInvoice.setCreatedAt(existing.getCreatedAt());
-////        }
+/// /        SalesInvoice existing = salesInvoiceService.getSalesInvoice(salesInvoice.getSalesInvoiceId());
+/// /        if (existing != null) {
+/// /            salesInvoice.setCreatedAt(existing.getCreatedAt());
+/// /        }
 //        salesInvoiceService.saveSalesInvoice(salesInvoice);
 //        return "redirect:/salesinvoice";
 //    }
@@ -127,6 +127,7 @@ import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.repository.SalesInvoiceRepository;
 import com.monarch.monarcherp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -150,11 +151,11 @@ public class SalesInvoiceController {
     private SalesInvoiceRepository salesInvoiceRepository;
 
     public SalesInvoiceController(SalesInvoiceService salesInvoiceService,
-                                      CustomerService customerService,
-                                      InventoryService inventoryService,
-                                      SalesItemService salesItemService,
-                                      DiscountConfig discountConfig,
-                                      NotificationService notificationService) {
+                                  CustomerService customerService,
+                                  InventoryService inventoryService,
+                                  SalesItemService salesItemService,
+                                  DiscountConfig discountConfig,
+                                  NotificationService notificationService) {
         this.salesInvoiceService = salesInvoiceService;
         this.customerService = customerService;
         this.inventoryService = inventoryService;
@@ -187,7 +188,7 @@ public class SalesInvoiceController {
 
     @GetMapping("/top-seller")
     public ResponseEntity<ApiResponse<List<Object[]>>> getTopSeller() {
-        List<Object[]> invoice =  salesItemService.getWeeklySales();
+        List<Object[]> invoice = salesItemService.getWeeklySales();
         return ResponseEntity.ok(ApiResponse.success(invoice, "Invoice retrieved successfully"));
     }
 
@@ -209,7 +210,7 @@ public class SalesInvoiceController {
         // Ensure the ID from the path is set in the object
         salesInvoice.setId(id);
         SalesInvoice updatedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice);
-        return ResponseEntity.ok(ApiResponse.success(updatedInvoice, "Invoice updated successfully"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(updatedInvoice, "Invoice updated successfully"));
     }
 
 

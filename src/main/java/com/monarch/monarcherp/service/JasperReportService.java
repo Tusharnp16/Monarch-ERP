@@ -3,6 +3,7 @@ package com.monarch.monarcherp.service;
 import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.sql.DataSource;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -27,7 +28,7 @@ public class JasperReportService {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("INVOICE_ID", invoiceId);
-        parameters.put("logo","static/logo.png");
+        parameters.put("logo", "static/logo.png");
 
         try (Connection connection = dataSource.getConnection()) {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);

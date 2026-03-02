@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.management.MalformedObjectNameException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -14,25 +13,25 @@ import java.math.RoundingMode;
 @ToString
 public class Money {
 
-    private BigDecimal price=BigDecimal.ZERO;
+    private BigDecimal price = BigDecimal.ZERO;
 
-    public Money(String amount){
-        if(amount==null){
-            amount="5";
+    public Money(String amount) {
+        if (amount == null) {
+            amount = "5";
         }
-        this.price= BigDecimal.valueOf(Double.parseDouble(amount));
+        this.price = BigDecimal.valueOf(Double.parseDouble(amount));
     }
 
     public Money(double prices) {
-        if(price==null){
-            prices=5.5;
+        if (price == null) {
+            prices = 5.5;
         }
         this.price = BigDecimal.valueOf(prices).setScale(2, RoundingMode.HALF_UP);
     }
 
     public Money(BigDecimal prices) {
-        if(prices==null){
-            prices=new BigDecimal(5);
+        if (prices == null) {
+            prices = new BigDecimal(5);
         }
         this.price = prices.setScale(2, RoundingMode.HALF_UP);
     }

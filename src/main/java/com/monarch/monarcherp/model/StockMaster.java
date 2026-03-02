@@ -2,15 +2,14 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stock_master", indexes = {
-        @Index(name="idx_stock_batch", columnList ="batch_no" ),
-        @Index(name="idx_stock_variant", columnList ="variant_id")
+        @Index(name = "idx_stock_batch", columnList = "batch_no"),
+        @Index(name = "idx_stock_variant", columnList = "variant_id")
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class StockMaster {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="stock_master_id")
+    @Column(name = "stock_master_id")
     private Long stockMasterId;
 
     @ManyToOne
@@ -32,7 +31,7 @@ public class StockMaster {
     @Column(nullable = true)
     private int quantity;
 
-    @Column(name="available_quantity")
+    @Column(name = "available_quantity")
     private int availableQuantity;
 
     @Embedded
@@ -82,7 +81,7 @@ public class StockMaster {
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
         this.modifiedDate = LocalDateTime.now();
-        this.batchNo=getBatchNo();
+        this.batchNo = getBatchNo();
     }
 
     @PreUpdate

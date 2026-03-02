@@ -2,7 +2,6 @@ package com.monarch.monarcherp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.servlet.jsp.tagext.VariableInfo;
 import lombok.*;
 
 @Entity
@@ -30,6 +29,6 @@ public class SalesItem {
     private Integer quantity;
     private Double unitPrice;
 
-    private Double discountAmount=0.0;
+    private Double discountAmount = 0.0;
     private Double lineTotal;
 }

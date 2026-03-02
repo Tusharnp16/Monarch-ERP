@@ -2,7 +2,6 @@ package com.monarch.monarcherp.controller;
 
 import com.monarch.monarcherp.config.JwtUtils;
 import com.monarch.monarcherp.dto.LoginRequest;
-import com.monarch.monarcherp.model.BlacklistedToken;
 import com.monarch.monarcherp.model.RefreshToken;
 import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.model.UserLoginLog;
@@ -25,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 
@@ -61,18 +59,18 @@ public class AuthController {
     RedisBlacklistService redisBlacklistService;
 
     @GetMapping("/login")
-    public String getLoginPage(){
+    public String getLoginPage() {
         return "login";
     }
 
     @GetMapping("/register")
-    public String getRegisterPage(){
+    public String getRegisterPage() {
         return "register";
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        if(!userService.userExists(user.getUserName()).isEmpty()){
+        if (!userService.userExists(user.getUserName()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already taken");
         }
         userService.saveUser(user);
@@ -82,7 +80,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> login(@RequestBody LoginRequest request,HttpServletRequest httpRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -103,7 +101,7 @@ public class AuthController {
 
         System.out.println(userDetails.getAuthorities());
 
-        UserLoginLog log=UserLoginLog.builder()
+        UserLoginLog log = UserLoginLog.builder()
                 .username(userDetails.getUsername())
                 .loginIp(clientIp)
                 .build();
@@ -173,9 +171,9 @@ public class AuthController {
 //            blacklistRepo.save(new BlacklistedToken(null, token, jwtUtils.getExpiration(token)));
 
             long expiry = jwtUtils.getExpiration(token).getTime();
-            redisBlacklistService.blackListToken(token,expiry);
+            redisBlacklistService.blackListToken(token, expiry);
 
-            Cookie cookie = new Cookie("accessToken",null);
+            Cookie cookie = new Cookie("accessToken", null);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
             cookie.setMaxAge(0);

@@ -24,7 +24,7 @@ public class PurchaseService {
     }
 
     @Transactional
-    public Purchase savePurchase(Purchase purchase,int gstIn) {
+    public Purchase savePurchase(Purchase purchase, int gstIn) {
 
         System.out.println("DEBUG : " + purchase.getTotalAmount());
         System.out.println("DEBUG : " + purchase.getBillNo());
@@ -34,12 +34,12 @@ public class PurchaseService {
 
         System.out.println("DEBUG : " + purchase.getItems().get(0).getNetAmount());
 
-        Purchase savedPurchase= purchaseRepository.save(purchase);
+        Purchase savedPurchase = purchaseRepository.save(purchase);
 
-        if(purchase.getItems() !=null){
-            for(PurchaseItem item: purchase.getItems()){
+        if (purchase.getItems() != null) {
+            for (PurchaseItem item : purchase.getItems()) {
                 item.setPurchase(savedPurchase);
-                purchaseItemService.savePurchaseItems(item,gstIn);
+                purchaseItemService.savePurchaseItems(item, gstIn);
             }
         }
         return savedPurchase;
@@ -66,8 +66,8 @@ public class PurchaseService {
     }
 
     public Purchase updatePurchaseName(Long id, String newName) {
-        Purchase purchase= purchaseRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
-        return  purchaseRepository.save(purchase);
+        Purchase purchase = purchaseRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        return purchaseRepository.save(purchase);
     }
 
 
@@ -83,10 +83,9 @@ public class PurchaseService {
         }
     }
 
-    public List<PurchaseDTO> purchaseSummary(){
-       return purchaseRepository.findAllPurchaseSummaries();
+    public List<PurchaseDTO> purchaseSummary() {
+        return purchaseRepository.findAllPurchaseSummaries();
     }
-
 
 
 }

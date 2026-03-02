@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.VariantViews;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.SoftDelete;
 
 import java.io.Serializable;
@@ -35,7 +33,7 @@ public class Product implements Serializable {
     private Long productId;
 
     @Column(nullable = false)
-    @JsonView({VariantViews.Compact.class,VariantViews.forProducts.class})
+    @JsonView({VariantViews.Compact.class, VariantViews.forProducts.class})
     private String productName;
 
     @Column(unique = true, nullable = false)
@@ -48,7 +46,7 @@ public class Product implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Variant> variants = new ArrayList<>();
 

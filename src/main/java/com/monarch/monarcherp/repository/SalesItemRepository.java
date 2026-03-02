@@ -2,10 +2,8 @@ package com.monarch.monarcherp.repository;
 
 import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.SalesItem;
-import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
@@ -20,7 +18,7 @@ public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
             "WHERE s.invoiceDate >= :startDate " +
             "GROUP BY v.product.productName,v.variantName,v.colour,v.size " +
             "ORDER BY totalSales DESC")
-    List<Object[]> findTopSellingProducts(@Param("startDate")LocalDate date);
+    List<Object[]> findTopSellingProducts(@Param("startDate") LocalDate date);
 
 
 //    @Query(value = "SELECT \n" +
@@ -48,7 +46,6 @@ public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
             "JOIN v.product p " +
             "WHERE si.salesInvoice.id = :id")
     List<SalesItemDTO> salesItems(@Param("id") Long id);
-
 
 
 }

@@ -182,65 +182,75 @@
     <nav class="sidebar">
         <div class="brand-container">
             <div class="brand-box">
-                <img src="/logo.png" alt="Monarch Logo" class="sidebar-logo">
+                <img alt="Monarch Logo" class="sidebar-logo" src="/logo.png">
                 <span class="brand-text">MONARCH ERP</span>
             </div>
         </div>
 
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="/products" class="nav-link">
+                <a class="nav-link" href="/products">
                     <i class="fas fa-box"></i> Products
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/variants" class="nav-link ${pageContext.request.requestURI.contains('variants') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('variants') ? 'active' : ''}"
+                   href="/variants">
                     <i class="fas fa-tags"></i> Variants
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/inventory" class="nav-link ${pageContext.request.requestURI.contains('inventory') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('inventory') ? 'active' : ''}"
+                   href="/inventory">
                     <i class="fas fa-warehouse"></i> Inventory
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/stockmaster" class="nav-link ${pageContext.request.requestURI.contains('stockmaster') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('stockmaster') ? 'active' : ''}"
+                   href="/stockmaster">
                     <i class="fas fa-chart-line"></i> Stock Master
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/purchase" class="nav-link ${pageContext.request.requestURI.endsWith('/purchase') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.endsWith('/purchase') ? 'active' : ''}"
+                   href="/purchase">
                     <i class="fas fa-shopping-cart"></i> Purchase
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/contacts" class="nav-link ${pageContext.request.requestURI.contains('contact') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('contact') ? 'active' : ''}"
+                   href="/contacts">
                     <i class="fas fa-address-book"></i> Contact
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/purchase/report" class="nav-link ${pageContext.request.requestURI.contains('report') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('report') ? 'active' : ''}"
+                   href="/purchase/report">
                     <i class="fas fa-file-alt"></i> Report
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/customers" class="nav-link ${pageContext.request.requestURI.contains('customer') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('customer') ? 'active' : ''}"
+                   href="/customers">
                     <i class="fas fa-user-friends"></i> Customer
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/salesinvoice" class="nav-link ${pageContext.request.requestURI.contains('sales') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('sales') ? 'active' : ''}"
+                   href="/salesinvoice">
                     <i class="fas fa-file-invoice-dollar"></i> Sales
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/salesitem/recentitems" class="nav-link ${pageContext.request.requestURI.contains('recentitems') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('recentitems') ? 'active' : ''}"
+                   href="/salesitem/recentitems">
                     <i class="fas fa-history"></i> Recent Sales
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="/userlogs" class="nav-link ${pageContext.request.requestURI.contains('userlogs') ? 'active' : ''}">
+                <a class="nav-link ${pageContext.request.requestURI.contains('userlogs') ? 'active' : ''}"
+                   href="/userlogs">
                     <i class="fa-solid fa-display me-1"></i> System Logs
                 </a>
             </li>
@@ -249,7 +259,7 @@
             <hr class="divider">
 
             <li class="nav-item">
-                <a href="javascript:void(0)" onclick="logout()" class="nav-link logout-btn">
+                <a class="nav-link logout-btn" href="javascript:void(0)" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </li>

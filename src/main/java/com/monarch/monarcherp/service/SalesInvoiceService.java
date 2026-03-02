@@ -214,7 +214,7 @@ public class SalesInvoiceService {
     @Transactional(readOnly = true)
     public void exportMonthlySalesToStream(int month, int year, OutputStream outputStream) throws IOException {
 
-            try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
             SXSSFSheet sheet = workbook.createSheet("Monthly Sales");
 
             createHeader(sheet);
@@ -223,7 +223,7 @@ public class SalesInvoiceService {
                 AtomicInteger rowIdx = new AtomicInteger(1);
 
                 salesStream.forEach(invoice -> {
-                    Row row =sheet.createRow(rowIdx.getAndIncrement());
+                    Row row = sheet.createRow(rowIdx.getAndIncrement());
                     row.createCell(0).setCellValue(invoice.getInvoiceDate().toString());
                     row.createCell(1).setCellValue(invoice.getInvoiceNumber());
                     row.createCell(2).setCellValue(invoice.getCustomer().getName());

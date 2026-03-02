@@ -1,5 +1,6 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
-<jasperReport name="MonarchERP" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6bb1945-b50b-4e16-841b-446769f8e2e2">
+<jasperReport name="MonarchERP" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6bb1945-b50b-4e16-841b-446769f8e2e2">
     <parameter name="INVOICE_ID" class="java.lang.Long"/>
     <parameter name="logo" class="java.lang.String"/>
     <query language="sql"><![CDATA[
@@ -36,89 +37,112 @@
         <expression><![CDATA[$F{line_total}]]></expression>
     </variable>
     <title height="231">
-        <element kind="rectangle" uuid="451b8135-0e4e-43ba-a5ae-1f59f51a8faa" x="0" y="110" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
+        <element kind="rectangle" uuid="451b8135-0e4e-43ba-a5ae-1f59f51a8faa" x="0" y="110" width="555" height="4"
+                 forecolor="#007BFF" backcolor="#007BFF">
             <pen lineWidth="0.0"/>
         </element>
-        <element kind="rectangle" uuid="c2567a83-1000-4f29-9a90-b974f5c2b1f6" x="0" y="0" width="6" height="230" backcolor="#007BFF">
+        <element kind="rectangle" uuid="c2567a83-1000-4f29-9a90-b974f5c2b1f6" x="0" y="0" width="6" height="230"
+                 backcolor="#007BFF">
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
             <property name="com.jaspersoft.studio.unit.y" value="px"/>
             <pen lineWidth="0.0"/>
         </element>
-        <element kind="staticText" uuid="734bc377-9835-46ec-9d28-6a31099a0488" x="20" y="70" width="370" height="34" forecolor="#666666" fontSize="27.0" bold="true" italic="true" vTextAlign="Bottom">
+        <element kind="staticText" uuid="734bc377-9835-46ec-9d28-6a31099a0488" x="20" y="70" width="370" height="34"
+                 forecolor="#666666" fontSize="27.0" bold="true" italic="true" vTextAlign="Bottom">
             <text><![CDATA[ERP SOLUTIONS]]></text>
         </element>
-        <element kind="textField" uuid="47035643-bd1a-42e3-bc77-db0320bbc20a" x="294" y="20" width="250" height="15" forecolor="#6C757D" fontSize="9.0" hTextAlign="Right">
+        <element kind="textField" uuid="47035643-bd1a-42e3-bc77-db0320bbc20a" x="294" y="20" width="250" height="15"
+                 forecolor="#6C757D" fontSize="9.0" hTextAlign="Right">
             <expression><![CDATA[
             new java.text.SimpleDateFormat("dd MMM yyyy | hh:mm a")
             .format(new java.util.Date())
         ]]></expression>
         </element>
-        <element kind="image" uuid="f36ea59e-d9ea-41f0-87a5-8d13ea413794" x="470" y="39" width="75" height="65" scaleImage="RetainShape" usingCache="true">
+        <element kind="image" uuid="f36ea59e-d9ea-41f0-87a5-8d13ea413794" x="470" y="39" width="75" height="65"
+                 scaleImage="RetainShape" usingCache="true">
             <expression><![CDATA[$P{logo}]]></expression>
         </element>
         <element kind="frame" uuid="90e28375-d6a7-4a02-84b2-d8d3d782bbf0" x="20" y="130" width="515" height="85">
-            <element kind="staticText" uuid="39684e1c-f22e-4d35-a756-d821857dc55d" x="0" y="0" width="200" height="12" forecolor="#6C757D" fontSize="9.0" bold="true">
+            <element kind="staticText" uuid="39684e1c-f22e-4d35-a756-d821857dc55d" x="0" y="0" width="200" height="12"
+                     forecolor="#6C757D" fontSize="9.0" bold="true">
                 <text><![CDATA[BILLED TO]]></text>
             </element>
-            <element kind="textField" uuid="818d31d2-2f9d-42c3-b9d2-725ae368b183" x="0" y="15" width="250" height="18" fontSize="14.0" bold="true">
+            <element kind="textField" uuid="818d31d2-2f9d-42c3-b9d2-725ae368b183" x="0" y="15" width="250" height="18"
+                     fontSize="14.0" bold="true">
                 <expression><![CDATA[$F{name}]]></expression>
             </element>
-            <element kind="textField" uuid="56db484a-796c-4b3f-9453-445ea41abd6a" x="0" y="35" width="250" height="15" forecolor="#495057" fontSize="10.0">
+            <element kind="textField" uuid="56db484a-796c-4b3f-9453-445ea41abd6a" x="0" y="35" width="250" height="15"
+                     forecolor="#495057" fontSize="10.0">
                 <expression><![CDATA[$F{email}]]></expression>
             </element>
-            <element kind="textField" uuid="239d6e90-d1cd-4ac2-9e90-cadda13d65b5" x="0" y="50" width="250" height="15" forecolor="#495057" fontSize="10.0">
+            <element kind="textField" uuid="239d6e90-d1cd-4ac2-9e90-cadda13d65b5" x="0" y="50" width="250" height="15"
+                     forecolor="#495057" fontSize="10.0">
                 <expression><![CDATA[$F{mobile}]]></expression>
             </element>
-            <element kind="staticText" uuid="3b416b7e-5d82-4d23-a239-43336dd3ce29" x="340" y="0" width="175" height="12" forecolor="#6C757D" fontSize="9.0" bold="true" hTextAlign="Right">
+            <element kind="staticText" uuid="3b416b7e-5d82-4d23-a239-43336dd3ce29" x="340" y="0" width="175" height="12"
+                     forecolor="#6C757D" fontSize="9.0" bold="true" hTextAlign="Right">
                 <text><![CDATA[INVOICE DETAILS]]></text>
             </element>
-            <element kind="textField" uuid="345cc5b2-0064-43ee-9ded-47d25cdaeca8" x="340" y="15" width="175" height="20" forecolor="#007BFF" fontSize="14.0" bold="true" hTextAlign="Right">
+            <element kind="textField" uuid="345cc5b2-0064-43ee-9ded-47d25cdaeca8" x="340" y="15" width="175" height="20"
+                     forecolor="#007BFF" fontSize="14.0" bold="true" hTextAlign="Right">
                 <expression><![CDATA[$F{invoice_number}]]></expression>
             </element>
-            <element kind="textField" uuid="b38beb94-ee60-430e-b1c7-6da7da3a956a" x="340" y="35" width="175" height="15" fontSize="10.0" hTextAlign="Right">
+            <element kind="textField" uuid="b38beb94-ee60-430e-b1c7-6da7da3a956a" x="340" y="35" width="175" height="15"
+                     fontSize="10.0" hTextAlign="Right">
                 <expression><![CDATA[
                 "Date: " +
                 new java.text.SimpleDateFormat("dd MMM yyyy")
                 .format($F{invoice_date})
             ]]></expression>
             </element>
-            <element kind="rectangle" uuid="7a2d931c-bc7b-4d3c-bc16-968c06986ea6" x="390" y="55" width="125" height="18" backcolor="#28A745">
+            <element kind="rectangle" uuid="7a2d931c-bc7b-4d3c-bc16-968c06986ea6" x="390" y="55" width="125" height="18"
+                     backcolor="#28A745">
                 <pen lineWidth="0.0"/>
             </element>
-            <element kind="staticText" uuid="b256d5ea-08c2-461f-936e-904f76418125" x="390" y="57" width="125" height="14" forecolor="#FFFFFF" fontSize="10.0" bold="true" hTextAlign="Center">
+            <element kind="staticText" uuid="b256d5ea-08c2-461f-936e-904f76418125" x="390" y="57" width="125"
+                     height="14" forecolor="#FFFFFF" fontSize="10.0" bold="true" hTextAlign="Center">
                 <text><![CDATA[PAID]]></text>
             </element>
-            <element kind="staticText" uuid="121ccb67-55e3-4e24-b882-7ab2c27b59ec" mode="Transparent" x="0" y="-100" width="339" height="50" forecolor="#007BFF" fontSize="35.0" bold="true" vTextAlign="Bottom">
+            <element kind="staticText" uuid="121ccb67-55e3-4e24-b882-7ab2c27b59ec" mode="Transparent" x="0" y="-100"
+                     width="339" height="50" forecolor="#007BFF" fontSize="35.0" bold="true" vTextAlign="Bottom">
                 <text><![CDATA[MONARCH]]></text>
             </element>
         </element>
-        <element kind="rectangle" uuid="8ee73bd1-5010-4622-8e37-48140060e93a" x="549" y="0" width="6" height="230" backcolor="#007BFF">
+        <element kind="rectangle" uuid="8ee73bd1-5010-4622-8e37-48140060e93a" x="549" y="0" width="6" height="230"
+                 backcolor="#007BFF">
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
             <property name="com.jaspersoft.studio.unit.y" value="px"/>
             <pen lineWidth="0.0"/>
         </element>
     </title>
     <pageHeader height="30">
-        <element kind="rectangle" uuid="81577c4e-1394-4d6d-9f36-296f7d31afc6" x="0" y="-1" width="555" height="4" forecolor="#007BFF" backcolor="#007BFF">
+        <element kind="rectangle" uuid="81577c4e-1394-4d6d-9f36-296f7d31afc6" x="0" y="-1" width="555" height="4"
+                 forecolor="#007BFF" backcolor="#007BFF">
             <pen lineWidth="0.0"/>
         </element>
-        <element kind="rectangle" uuid="012ab2ab-e45c-4ce3-aea0-364fc9eb2fba" x="3" y="-231" width="550" height="4" forecolor="#007BFF" backcolor="#007BFF">
+        <element kind="rectangle" uuid="012ab2ab-e45c-4ce3-aea0-364fc9eb2fba" x="3" y="-231" width="550" height="4"
+                 forecolor="#007BFF" backcolor="#007BFF">
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
             <pen lineWidth="0.0"/>
         </element>
     </pageHeader>
     <columnHeader height="25">
-        <element kind="frame" uuid="bd67f378-48e5-41eb-82c8-f813217b8db7" x="0" y="0" width="555" height="25" backcolor="#E6F7FF">
-            <element kind="staticText" uuid="3a37c830-66b1-4e02-a757-0da406d211ae" x="10" y="5" width="230" height="15" bold="true">
+        <element kind="frame" uuid="bd67f378-48e5-41eb-82c8-f813217b8db7" x="0" y="0" width="555" height="25"
+                 backcolor="#E6F7FF">
+            <element kind="staticText" uuid="3a37c830-66b1-4e02-a757-0da406d211ae" x="10" y="5" width="230" height="15"
+                     bold="true">
                 <text><![CDATA[Product]]></text>
             </element>
-            <element kind="staticText" uuid="48366769-a518-4ba3-8558-23fe0783ec71" x="250" y="5" width="70" height="15" bold="true" hTextAlign="Center">
+            <element kind="staticText" uuid="48366769-a518-4ba3-8558-23fe0783ec71" x="250" y="5" width="70" height="15"
+                     bold="true" hTextAlign="Center">
                 <text><![CDATA[Qty]]></text>
             </element>
-            <element kind="staticText" uuid="d5d6f596-144e-47ff-a7c2-59c8681aa9ea" x="330" y="5" width="100" height="15" bold="true" hTextAlign="Right">
+            <element kind="staticText" uuid="d5d6f596-144e-47ff-a7c2-59c8681aa9ea" x="330" y="5" width="100" height="15"
+                     bold="true" hTextAlign="Right">
                 <text><![CDATA[Price]]></text>
             </element>
-            <element kind="staticText" uuid="c1aff803-9fbe-44e2-9922-fa97bd59c21d" x="445" y="5" width="100" height="15" bold="true" hTextAlign="Right">
+            <element kind="staticText" uuid="c1aff803-9fbe-44e2-9922-fa97bd59c21d" x="445" y="5" width="100" height="15"
+                     bold="true" hTextAlign="Right">
                 <text><![CDATA[Total]]></text>
             </element>
             <box>
@@ -128,22 +152,28 @@
     </columnHeader>
     <detail>
         <band height="35">
-            <element kind="textField" uuid="3bfd50dd-1dc0-44df-8468-516eba4caf7d" x="10" y="5" width="230" height="15" bold="true">
+            <element kind="textField" uuid="3bfd50dd-1dc0-44df-8468-516eba4caf7d" x="10" y="5" width="230" height="15"
+                     bold="true">
                 <expression><![CDATA[$F{product_name} + " (" + $F{variant_name} + ")"]]></expression>
             </element>
-            <element kind="textField" uuid="48bfe37c-9437-4bb4-b459-44aba460dc7d" x="10" y="20" width="230" height="12" forecolor="#666666" fontSize="9.0">
+            <element kind="textField" uuid="48bfe37c-9437-4bb4-b459-44aba460dc7d" x="10" y="20" width="230" height="12"
+                     forecolor="#666666" fontSize="9.0">
                 <expression><![CDATA[$F{product_details}]]></expression>
             </element>
-            <element kind="textField" uuid="e8a9a4b2-1277-439a-bd22-3bfe38a47ca8" x="250" y="10" width="70" height="15" hTextAlign="Center">
+            <element kind="textField" uuid="e8a9a4b2-1277-439a-bd22-3bfe38a47ca8" x="250" y="10" width="70" height="15"
+                     hTextAlign="Center">
                 <expression><![CDATA[$F{quantity}]]></expression>
             </element>
-            <element kind="textField" uuid="e561af2b-871b-4b8e-b51c-30c72cec3466" x="330" y="10" width="100" height="15" pattern="₹ #,##0.00" hTextAlign="Right">
+            <element kind="textField" uuid="e561af2b-871b-4b8e-b51c-30c72cec3466" x="330" y="10" width="100" height="15"
+                     pattern="₹ #,##0.00" hTextAlign="Right">
                 <expression><![CDATA[$F{unit_price}]]></expression>
             </element>
-            <element kind="textField" uuid="70d9aba9-ad77-4b21-9be2-aeb0be7d77e3" x="445" y="10" width="100" height="15" pattern="₹ #,##0.00" bold="true" hTextAlign="Right">
+            <element kind="textField" uuid="70d9aba9-ad77-4b21-9be2-aeb0be7d77e3" x="445" y="10" width="100" height="15"
+                     pattern="₹ #,##0.00" bold="true" hTextAlign="Right">
                 <expression><![CDATA[$F{line_total}]]></expression>
             </element>
-            <element kind="line" uuid="c6141c9d-f87f-45a3-9dd8-344c5f2842cb" x="0" y="34" width="555" height="1" forecolor="#DDDDDD"/>
+            <element kind="line" uuid="c6141c9d-f87f-45a3-9dd8-344c5f2842cb" x="0" y="34" width="555" height="1"
+                     forecolor="#DDDDDD"/>
         </band>
     </detail>
     <summary height="120">
@@ -151,24 +181,32 @@
             <element kind="staticText" uuid="d9ab0046-ffb9-4d60-9906-7c3e7d1b4833" x="10" y="5" width="100" height="20">
                 <text><![CDATA[Subtotal]]></text>
             </element>
-            <element kind="textField" uuid="26162f95-9f60-4174-a9fd-023d43b4f7b3" x="110" y="5" width="105" height="20" pattern="₹ #,##0.00" hTextAlign="Right">
+            <element kind="textField" uuid="26162f95-9f60-4174-a9fd-023d43b4f7b3" x="110" y="5" width="105" height="20"
+                     pattern="₹ #,##0.00" hTextAlign="Right">
                 <expression><![CDATA[$V{SubtotalVar}]]></expression>
             </element>
-            <element kind="staticText" uuid="7cc02b7f-4142-4e81-a727-f70ea6b8631e" x="10" y="25" width="100" height="20">
+            <element kind="staticText" uuid="7cc02b7f-4142-4e81-a727-f70ea6b8631e" x="10" y="25" width="100"
+                     height="20">
                 <text><![CDATA[Discount]]></text>
             </element>
-            <element kind="textField" uuid="01104144-6f49-4d2c-bdac-fb743edfecb9" x="110" y="25" width="105" height="20" forecolor="#CC0000" pattern="- ₹ #,##0.00" hTextAlign="Right">
+            <element kind="textField" uuid="01104144-6f49-4d2c-bdac-fb743edfecb9" x="110" y="25" width="105" height="20"
+                     forecolor="#CC0000" pattern="- ₹ #,##0.00" hTextAlign="Right">
                 <expression><![CDATA[$F{discount_amount}]]></expression>
             </element>
-            <element kind="line" uuid="81f6bf12-96fd-485f-b36c-a67810ee8504" x="10" y="50" width="205" height="1" forecolor="#007BFF"/>
-            <element kind="staticText" uuid="f942bf64-b260-4fd1-9d33-799eab69f090" x="10" y="55" width="100" height="25" bold="true">
+            <element kind="line" uuid="81f6bf12-96fd-485f-b36c-a67810ee8504" x="10" y="50" width="205" height="1"
+                     forecolor="#007BFF"/>
+            <element kind="staticText" uuid="f942bf64-b260-4fd1-9d33-799eab69f090" x="10" y="55" width="100" height="25"
+                     bold="true">
                 <text><![CDATA[Grand Total]]></text>
             </element>
-            <element kind="textField" uuid="40cc50c6-37ca-4f34-b9d4-a3a3b3e00d2a" x="110" y="55" width="105" height="25" forecolor="#007BFF" pattern="₹ #,##0.00" bold="true" hTextAlign="Right">
-                <expression><![CDATA[$V{SubtotalVar} - ($F{discount_amount} != null ? $F{discount_amount} : 0.0)]]></expression>
+            <element kind="textField" uuid="40cc50c6-37ca-4f34-b9d4-a3a3b3e00d2a" x="110" y="55" width="105" height="25"
+                     forecolor="#007BFF" pattern="₹ #,##0.00" bold="true" hTextAlign="Right">
+                <expression>
+                    <![CDATA[$V{SubtotalVar} - ($F{discount_amount} != null ? $F{discount_amount} : 0.0)]]></expression>
             </element>
         </element>
-        <element kind="staticText" uuid="1435967b-7258-4c93-ad4a-13f7495dc5cf" x="0" y="100" width="555" height="20" forecolor="#999999" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+        <element kind="staticText" uuid="1435967b-7258-4c93-ad4a-13f7495dc5cf" x="0" y="100" width="555" height="20"
+                 forecolor="#999999" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
             <text><![CDATA[Thank you for choosing Monarch ERP! This is a computer-generated invoice.]]></text>
         </element>
     </summary>

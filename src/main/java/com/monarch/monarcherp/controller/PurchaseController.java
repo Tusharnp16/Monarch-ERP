@@ -5,19 +5,11 @@ import com.monarch.monarcherp.dto.PurchaseDTO;
 import com.monarch.monarcherp.model.Purchase;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.repository.PurchaseRepository;
-import com.monarch.monarcherp.service.ContactService;
 import com.monarch.monarcherp.service.PurchaseService;
 import com.monarch.monarcherp.service.ReportService;
-import com.monarch.monarcherp.service.VariantService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +33,7 @@ public class PurchaseController {
         List<Purchase> purchases = purchaseService.getAllPurchases();
         return ResponseEntity.ok(ApiResponse.success(purchases, "Purchases retrieved successfully"));
     }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<PurchaseDTO>>> getAllPurchasesDTO() {
         List<PurchaseDTO> purchases = purchaseService.purchaseSummary();

@@ -2,7 +2,8 @@ package com.monarch.monarcherp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -31,19 +32,19 @@ public class PurchaseItem {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="price"))
+            @AttributeOverride(name = "price", column = @Column(name = "price"))
     })
     private Money price;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="tax_rate"))
+            @AttributeOverride(name = "price", column = @Column(name = "tax_rate"))
     })
     private Money taxRate;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="tax_amount"))
+            @AttributeOverride(name = "price", column = @Column(name = "tax_amount"))
     })
     private Money taxAmount;
     private Integer qty;
@@ -51,13 +52,13 @@ public class PurchaseItem {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="landing_cost"))
+            @AttributeOverride(name = "price", column = @Column(name = "landing_cost"))
     })
     private Money landingCost;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name= "price", column = @Column(name="net_amount"))
+            @AttributeOverride(name = "price", column = @Column(name = "net_amount"))
     })
     private Money netAmount;
 }

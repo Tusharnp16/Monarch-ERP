@@ -4,13 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Inventory;
-import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.service.InventoryService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +20,9 @@ class InventoryController {
 
     @GetMapping
     @JsonView(VariantViews.forInventory.class)
-    public ResponseEntity<ApiResponse<List<Inventory>>> viewInventory(){
-        List<Inventory> inventory=inventoryService.getInventoryWithVariant();
-        return ResponseEntity.ok(ApiResponse.success(inventory,"Inventory fetched"));
+    public ResponseEntity<ApiResponse<List<Inventory>>> viewInventory() {
+        List<Inventory> inventory = inventoryService.getInventoryWithVariant();
+        return ResponseEntity.ok(ApiResponse.success(inventory, "Inventory fetched"));
     }
 
 //    @GetMapping("/history")
@@ -40,23 +36,23 @@ class InventoryController {
             @RequestParam("quantity") int qty,
             @RequestParam("adjustmentType") String type) {
 
-        System.out.println( "DEBUG : "+type);
+        System.out.println("DEBUG : " + type);
 
-        Inventory inventory = inventoryService.updateInventory(id, qty,type);
+        Inventory inventory = inventoryService.updateInventory(id, qty, type);
         return ResponseEntity.ok(ApiResponse.success(inventory, "Inventory Updated"));
     }
 
     @GetMapping("/history")
-    public ResponseEntity<ApiResponse<List<Inventory>>> getInventoryHistory(){
-        List<Inventory> inventoryHistory=inventoryService.getInventoryHistory();
-        return ResponseEntity.ok(ApiResponse.success(inventoryHistory,"Inventory History fetched"));
+    public ResponseEntity<ApiResponse<List<Inventory>>> getInventoryHistory(@RequestParam Long id) {
+        List<Inventory> inventoryHistory = inventoryService.getInventoryHistory(id);
+        return ResponseEntity.ok(ApiResponse.success(inventoryHistory, "Inventory History fetched"));
     }
 
     @GetMapping("/search")
 
     public ResponseEntity<ApiResponse<List<Inventory>>> getCompactProduct(@RequestParam(required = false) String name) {
         List<Inventory> inventoryList = inventoryService.getInventoryforSales(name);
-        return ResponseEntity.ok(ApiResponse.success(inventoryList,"Data fetched succesfully"));
+        return ResponseEntity.ok(ApiResponse.success(inventoryList, "Data fetched succesfully"));
     }
 
 }

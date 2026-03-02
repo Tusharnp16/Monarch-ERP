@@ -50,9 +50,9 @@ class ProductAPIService {
     }
 
     public Product updateProductName(Long id, String newName) {
-        Product product= productRepository.findById(id).orElseThrow(()-> new RuntimeException("Not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         product.setProductName(newName);
-        return  productRepository.save(product);
+        return productRepository.save(product);
     }
 
 }
