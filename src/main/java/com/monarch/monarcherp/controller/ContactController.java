@@ -69,6 +69,7 @@ import java.util.List;
 @RequestMapping("/api/contacts")
 public class ContactController {
 
+    // .\mvnw.cmd test -Dtest=FullFlowIT
     private final ContactService contactService;
 
     public ContactController(ContactService contactService) {

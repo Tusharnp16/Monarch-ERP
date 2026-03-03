@@ -24,21 +24,20 @@ public class SalesInvoiceService {
 
 
     private final CustomerRepository customerRepository;
-    @Autowired
-    NotificationService notificationService;
-    private SalesInvoiceRepository salesInvoiceRepository;
-    @Autowired
-    private VariantRepository variantRepository;
-    @Autowired
-    private InventoryRepository inventoryRepository;
-    @Autowired
-    private SalesItemRepository salesItemRepository;
+    private final NotificationService notificationService;
+    private final SalesInvoiceRepository salesInvoiceRepository;
+    private final VariantRepository variantRepository;
+    private final InventoryRepository inventoryRepository;
+    private final SalesItemRepository salesItemRepository;
 
 
-    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository) {
+    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.customerRepository = customerRepository;
-
+        this.notificationService = notificationService;
+        this.variantRepository = variantRepository;
+        this.inventoryRepository = inventoryRepository;
+        this.salesItemRepository = salesItemRepository;
     }
 
 //    @Transactional

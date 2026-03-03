@@ -39,7 +39,7 @@ public class InventoryService {
             newQunatity = quantity;
         }
 
-        inventory.setQuantity(newQunatity);
+        inventory.setAvailableQuantity(newQunatity);
 
         return inventoryRepository.save(inventory);
     }

@@ -3,8 +3,10 @@ package com.monarch.monarcherp.service;
 import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +16,12 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, KafkaTemplate<String, String> kafkaTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public User saveUser(User user) {
@@ -51,6 +55,19 @@ public class UserService {
             return userRepository.save(updateUser);
         }
         return null;
+    }
+
+
+    @Transactional
+    public User saveAndNotify(String name, String email) {
+        User user = new User();
+        user.setUserName(name);
+        user.setEmail(email);
+        User savedUser = userRepository.save(user);
+
+        kafkaTemplate.send("user-topic", "Created user: " + email);
+
+        return savedUser;
     }
 
 }
