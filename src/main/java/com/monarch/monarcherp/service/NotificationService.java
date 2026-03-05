@@ -29,6 +29,19 @@ public class NotificationService {
         this.jasperReportService = jasperReportService;
     }
 
+    /*
+    A Dockerfile is a set of instructions used to build a Docker image.
+     */
+
+    /*
+    Each instruction in a Dockerfile creates a cached, reusable filesystem layer.
+     */
+
+    /*
+    A technique where multiple build stages are used so only the final artifact is
+    included in the final image, reducing size.
+     */
+
     @Async("mailExecutor")
     public CompletableFuture<Void> sendInvoiceEmail(SalesInvoice invoice) {
 

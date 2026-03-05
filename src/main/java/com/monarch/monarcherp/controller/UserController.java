@@ -23,11 +23,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody Map<String, String> userData) {
-        User user = userService.saveAndNotify(userData.get("name"), userData.get("email"));
+    @PostMapping("/api/users")
+    public ResponseEntity<User> createUser(@RequestBody User userRequest) {
+        User user = userService.saveAndNotify(userRequest.getUserName(), userRequest.getEmail());
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
+
+
 
 
 }
