@@ -191,9 +191,10 @@ public class ProductController {
 
         product.setProductId(id);
         product.setCreatedAt(existing.getCreatedAt());
-
-        Product updatedProduct = productService.saveProduct(product);
-        return ResponseEntity.ok(ApiResponse.success(updatedProduct, "Product Updated"));
+//
+//        Product updatedProduct = productService.saveProduct(product);
+        Product updateProduct=productService.updateProductName(id,product.getProductName());
+        return ResponseEntity.ok(ApiResponse.success(updateProduct, "Product Updated"));
     }
 
     @DeleteMapping("/{id}")

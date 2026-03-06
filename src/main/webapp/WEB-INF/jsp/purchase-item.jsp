@@ -22,7 +22,7 @@
         .table thead { background-color: #f1f3f5; }
         .table th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: #495057; }
         .supplier-cell { font-weight: 600; color: #0d6efd; }
-        .money-cell { font-family: 'Courier New', Courier, monospace; font-weight: 600; }
+docker build -t monarch-erp:latest .        .money-cell { font-family: 'Courier New', Courier, monospace; font-weight: 600; }
         .text-muted-small { color: #6c757d; font-size: .875rem; }
     </style>
 </head>
@@ -122,7 +122,6 @@
 </div>
 
 <script>
-    // Live Search Logic
     document.getElementById('itemSearch').addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase();
         document.querySelectorAll('#itemTableBody tr').forEach(row => {

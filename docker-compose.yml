@@ -1,0 +1,52 @@
+services:
+  app:
+    image: monarch-erp:latest
+    container_name: monarch-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/monarch_db
+      - SPRING_DATASOURCE_USERNAME=Tushar
+      - SPRING_DATASOURCE_PASSWORD=Tushar
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_REDIS_HOST=redis
+      - MY_APP_MAIL_USER=tusharparmaroff16@gmail.com
+      - MY_APP_MAIL_PASSWORD=nnoufftfgsghuwhg
+    depends_on:
+      - db
+      - redis
+      - kafka
+
+  # Database
+  db:
+    image: postgres:15-alpine
+    container_name: monarch-db
+    environment:
+      POSTGRES_DB: monarch_db
+      POSTGRES_USER: Tushar
+      POSTGRES_PASSWORD: Tushar
+
+  # Cache
+  redis:
+    image: redis:7-alpine
+    container_name: monarch-redis
+    ports:
+      - "6379:6379"
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: monarch-kafka
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+    ports:
+      - "9092:9092"

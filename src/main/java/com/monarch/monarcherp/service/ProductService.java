@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -77,17 +78,21 @@ public class ProductService {
         return productRepository.existsById(id);
     }
 
+
+
+    @Retryable(retryFor = {ObjectOptimisticLockingFailureException.class}, maxAttempts = 5, backoff = @Backoff(delay = 1000))
+//     @CachePut(value = "products", key = "#id")
     @Transactional
-    @Retryable(retryFor = {SQLException.class}, maxAttempts = 5, backoff = @Backoff(delay = 5000))
-//    @CachePut(value = "products", key = "#id")
     public Product updateProductName(Long id, String newName) {
+        System.out.println("Retry attempt running...");
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         product.setProductName(newName);
         return productRepository.save(product);
     }
 
+    //SQLException
     @Recover
-    public Product recover(SQLException e, Long id, String newName) {
+    public Product recover(ObjectOptimisticLockingFailureException e, Long id, String newName) {
         System.err.println("Database down");
         throw new RuntimeException("Cant updatted right now server is down");
     }

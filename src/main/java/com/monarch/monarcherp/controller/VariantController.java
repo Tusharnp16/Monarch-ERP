@@ -100,13 +100,16 @@ import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.Variant;
+import com.monarch.monarcherp.service.ProductImportService;
 import com.monarch.monarcherp.service.ProductService;
 import com.monarch.monarcherp.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +123,9 @@ public class VariantController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    ProductImportService productImportService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<Map<String, Object>>> getPaginatedVariants(
@@ -217,5 +223,11 @@ public class VariantController {
     public ResponseEntity<ApiResponse<Void>> deleteVariant(@PathVariable Long id) {
         variantService.deleteVariant(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Variant deleted successfully"));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ApiResponse<String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        productImportService.importExcelData(file);
+        return ResponseEntity.ok(ApiResponse.success(null,"Import Success"));
     }
 }
