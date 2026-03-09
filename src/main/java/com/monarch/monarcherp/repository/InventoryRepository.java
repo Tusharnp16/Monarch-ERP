@@ -2,6 +2,7 @@ package com.monarch.monarcherp.repository;
 
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.Variant;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,12 +12,16 @@ import java.util.Optional;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
+    @EntityGraph(attributePaths = {"variant.product"})
     Optional<Inventory> findByVariant(Variant variant);
 
+    @EntityGraph(attributePaths = {"variant.product"})
     Optional<Inventory> findByVariant_VariantId(Long variantId);
 
 
-    @Query("SELECT i FROM Inventory i JOIN FETCH i.variant")
+    @Query("SELECT i FROM Inventory i " +
+            "JOIN FETCH i.variant v " +
+            "JOIN FETCH v.product ")
     List<Inventory> findAllWithVariant();
 
     @Query("SELECT i FROM Inventory i WHERE i.inventoryId=:id")

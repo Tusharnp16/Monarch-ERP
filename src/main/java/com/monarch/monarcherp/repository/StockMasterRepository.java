@@ -3,6 +3,7 @@ package com.monarch.monarcherp.repository;
 import com.monarch.monarcherp.model.Money;
 import com.monarch.monarcherp.model.StockMaster;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,6 +26,7 @@ public interface StockMasterRepository extends JpaRepository<StockMaster, Long> 
 
     List<StockMaster> findByBatchNoContainingIgnoreCase(String term);
 
+    @EntityGraph(attributePaths = {"variant","variant.product","inventory"})
     List<StockMaster> findAllByOrderByStockMasterIdDesc();
 
     List<StockMaster> findByVariant_VariantId(Long id);
