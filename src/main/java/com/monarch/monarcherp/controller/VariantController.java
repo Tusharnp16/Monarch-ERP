@@ -97,6 +97,7 @@ package com.monarch.monarcherp.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.ApiResponse;
+import com.monarch.monarcherp.dto.ImportResponse;
 import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.Variant;
@@ -229,5 +230,15 @@ public class VariantController {
     public ResponseEntity<ApiResponse<String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         productImportService.importExcelData(file);
         return ResponseEntity.ok(ApiResponse.success(null,"Import Success"));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<ImportResponse.ValidationResponse> verifyFile(@RequestParam("file") MultipartFile file) {
+        try {
+            ImportResponse.ValidationResponse response = productImportService.validateExcel(file);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.monarch.monarcherp.config;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TokenBucket {
-    private final long capacity = 50;
+    private final long capacity = 5000;
     private final long refillRatePerMs = 1;
     private final AtomicLong tokens;
     private long lastRefillTimestamp;
