@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
@@ -68,7 +71,14 @@ public class SecurityConfig {
                                 "/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
-                ).exceptionHandling(exception -> exception
+
+                ).securityContext((securityContext) -> securityContext
+                        .securityContextRepository(new DelegatingSecurityContextRepository(
+                                new RequestAttributeSecurityContextRepository(),
+                                new HttpSessionSecurityContextRepository()
+                        ))
+                ).
+                exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String acceptHeader = request.getHeader("Accept");
                             if (acceptHeader != null && acceptHeader.contains("text/html")) {

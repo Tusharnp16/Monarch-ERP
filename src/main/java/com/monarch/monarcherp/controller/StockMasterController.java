@@ -6,8 +6,10 @@ import com.monarch.monarcherp.service.StockMasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 //@Controller
 //@RequestMapping("/stockmaster")
@@ -74,12 +76,61 @@ public class StockMasterController {
     @Autowired
     private StockMasterService stockMasterService;
 
+    private static final Long POLLING_TIMEOUT = 300000L;
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<StockMaster>>> getAllStocks() {
         List<StockMaster> stocks = stockMasterService.getAllStockMasters();
         return ResponseEntity.ok(ApiResponse.success(stocks, "All stocks retrieved"));
     }
 
+    @GetMapping("/poll")
+    public DeferredResult<ResponseEntity<ApiResponse<List<StockMaster>>>> pollStocks() {
+
+        DeferredResult<ResponseEntity<ApiResponse<List<StockMaster>>>> output =
+                new DeferredResult<>(POLLING_TIMEOUT);
+
+        ForkJoinPool.commonPool().submit(() -> {
+
+            try {
+
+                List<StockMaster> oldData = stockMasterService.getAllStockMasters();
+
+                long start = System.currentTimeMillis();
+
+                while (System.currentTimeMillis() - start < POLLING_TIMEOUT) {
+
+                    Thread.sleep(10000);
+
+                    List<StockMaster> newData = stockMasterService.getAllStockMasters();
+
+                    if (!newData.equals(oldData)) {
+
+                        output.setResult(
+                                ResponseEntity.ok(
+                                        ApiResponse.success(newData, "Stocks updated")
+                                )
+                        );
+
+                        return;
+                    }
+                }
+
+            } catch (Exception e) {
+
+                output.setErrorResult(
+                        ResponseEntity.status(500)
+                                .body(ApiResponse.error("Polling failed"))
+                );
+            }
+        });
+
+        output.onTimeout(() -> {
+            output.setResult(ResponseEntity.status(204).build());
+        });
+
+        return output;
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StockMaster>> getStockById(@PathVariable Long id) {
         StockMaster stock = stockMasterService.getStockMaster(id);
