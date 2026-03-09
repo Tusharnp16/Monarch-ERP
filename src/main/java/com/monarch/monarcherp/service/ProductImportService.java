@@ -14,8 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
+
+
 @Service
 public class ProductImportService {
+
+    private record ExcelRowData(int rowNum, String key, Row row) {}
 
     @Autowired
     private ProductRepository productRepository;
@@ -25,47 +29,56 @@ public class ProductImportService {
 
     public ImportResponse.ValidationResponse validateExcel(MultipartFile file) throws IOException {
         List<ImportResponse.RowError> errors = new ArrayList<>();
-        Set<String> seenVariants = new HashSet<>();
+        Set<String> keysInFile = new LinkedHashSet<>();
+        List<ExcelRowData> rowDataList = new ArrayList<>();
 
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
+
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
-                int rowNum = row.getRowNum() + 1;
 
-                // 1. Null/Empty Checks
-                String pName = getCellValueAsString(row.getCell(0));
                 String vName = getCellValueAsString(row.getCell(1));
                 String colour = getCellValueAsString(row.getCell(2));
                 String size = getCellValueAsString(row.getCell(3));
 
-                if (pName.isBlank() || vName.isBlank() || colour.isBlank() || size.isBlank()) {
-                    errors.add(new ImportResponse.RowError(rowNum, "Missing required fields (Product, Variant, Color, or Size)"));
+                if (!vName.isBlank() && !colour.isBlank() && !size.isBlank()) {
+                    String key = (vName + "-" + colour + "-" + size).toLowerCase();
+                    keysInFile.add(key);
+                    rowDataList.add(new ExcelRowData(row.getRowNum() + 1, key, row));
+                } else {
+                    errors.add(new ImportResponse.RowError(row.getRowNum() + 1, "Required fields are missing"));
+                }
+            }
+
+            Set<String> existingInDb = variantRepository.findExistingVariantKeys(keysInFile);
+
+            Set<String> duplicatesInFileCheck = new HashSet<>();
+            for (ExcelRowData data : rowDataList) {
+
+                if (duplicatesInFileCheck.contains(data.key())) {
+                    errors.add(new ImportResponse.RowError(data.rowNum(), "Duplicate SKU found within this Excel file"));
                     continue;
                 }
+                duplicatesInFileCheck.add(data.key());
 
-                // 2. Price Validation (MRP > Selling Price)
-                try {
-                    double mrp = row.getCell(4).getNumericCellValue();
-                    double selling = row.getCell(5).getNumericCellValue();
-                    if (mrp <= selling) {
-                        errors.add(new ImportResponse.RowError(rowNum, "MRP (" + mrp + ") must be greater than Selling Price (" + selling + ")"));
-                    }
-                } catch (Exception e) {
-                    errors.add(new ImportResponse.RowError(rowNum, "Invalid numeric format in Price columns"));
+                if (existingInDb.contains(data.key())) {
+                    errors.add(new ImportResponse.RowError(data.rowNum(), "This combination already exists in the database"));
                 }
 
-                // 3. Duplicate Variant Check (Same Name + Colour + Size)
-                String uniqueKey = (vName + "-" + colour + "-" + size).toLowerCase();
-                if (seenVariants.contains(uniqueKey)) {
-                    errors.add(new ImportResponse.RowError(rowNum, "Duplicate variant entry (Same Name, Colour, and Size) found in file"));
-                } else {
-                    seenVariants.add(uniqueKey);
+                Cell mrpCell = data.row().getCell(4);
+                Cell sellingCell = data.row().getCell(5);
+
+                if (mrpCell == null || mrpCell.getCellType() != CellType.NUMERIC ||
+                        sellingCell == null || sellingCell.getCellType() != CellType.NUMERIC) {
+                    errors.add(new ImportResponse.RowError(data.rowNum(), "MRP or Selling Price is missing or invalid"));
+                } else if (mrpCell.getNumericCellValue() <= sellingCell.getNumericCellValue()) {
+                    errors.add(new ImportResponse.RowError(data.rowNum(), "MRP must be greater than Selling Price"));
                 }
             }
         }
         return new ImportResponse.ValidationResponse(errors.isEmpty(), errors);
-    }
+}
 
 
     @Transactional

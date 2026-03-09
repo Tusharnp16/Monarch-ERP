@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface VariantRepository extends JpaRepository<Variant, Long> {
     Variant getVariantByVariantId(Long variantId);
@@ -29,5 +30,14 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
     @EntityGraph(attributePaths = {"product"})
     @Query("SELECT v FROM Variant v WHERE v.variantId = :id")
     Variant getVariantWithProductGraph(@Param("id") Long id);
+
+    boolean existsByVariantNameAndColourAndSize(String variantName, String colour, String size);
+
+    @Query("SELECT LOWER(CONCAT(v.variantName, '-', v.colour, '-', v.size)) " +
+            "FROM Variant v " +
+            "WHERE LOWER(CONCAT(v.variantName, '-', v.colour, '-', v.size)) IN :keys")
+    Set<String> findExistingVariantKeys(@Param("keys") Set<String> keys);
+
+
 
 }
