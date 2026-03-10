@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.monarch.monarcherp.dto.VariantViews;
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class Variant {
 
     @Column(name = "image_url")
     @JsonView(VariantViews.Compact.class)
+    @JsonProperty("imageUrl")
     private String imageUrl;
 
     @Embedded

@@ -191,7 +191,7 @@ public class VariantController {
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<Variant>> addVariant(
             @RequestPart Variant variant,
-            @RequestPart("file") MultipartFile file,
+            @RequestPart(value="file", required = false) MultipartFile file,
             @RequestParam Long productId) {
 
         Product managedProduct = productService.getProduct(productId);
@@ -199,9 +199,12 @@ public class VariantController {
             return ResponseEntity.ok(ApiResponse.error("Invalid Product ID: association failed"));
         }
 
-        String imageUrl = cloudinaryService.uploadFile(file);
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(file);
+            variant.setImageUrl(imageUrl);
+        }
+
         variant.setProduct(managedProduct);
-        variant.setImageUrl(imageUrl);
         Variant savedVariant = variantService.saveVariant(variant);
         return new ResponseEntity<>(ApiResponse.success(savedVariant, "Variant created successfully"), HttpStatus.CREATED);
     }
@@ -210,7 +213,8 @@ public class VariantController {
     public ResponseEntity<ApiResponse<Variant>> updateVariant(
             @PathVariable Long id,
             @RequestPart  Variant variant,
-            @RequestPart("file") MultipartFile file,
+            @RequestPart(value = "file" ,required = false) MultipartFile file,
+            @RequestParam(value = "removeImage", defaultValue = "false") boolean removeImage,
             @RequestParam Long productId) {
 
         Variant existing = variantService.getVariant(id);
@@ -223,11 +227,19 @@ public class VariantController {
             return ResponseEntity.ok(ApiResponse.error("Cannot update: Product ID not found"));
         }
 
-        String imageUrl=cloudinaryService.uploadFile(file);
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(file);
+            variant.setImageUrl(imageUrl);
+        }else if (removeImage) {
+            variant.setImageUrl(null);
+        }
+        else {
+            variant.setImageUrl(existing.getImageUrl());
+        }
 
         variant.setVariantId(id);
         variant.setProduct(product);
-        variant.setImageUrl(imageUrl);
+
         variant.setCreatedAt(existing.getCreatedAt());
 
         Variant updatedVariant = variantService.saveVariant(variant);
