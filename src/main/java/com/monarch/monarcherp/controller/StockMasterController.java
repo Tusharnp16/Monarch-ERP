@@ -41,8 +41,8 @@ import java.util.concurrent.ForkJoinPool;
 //    @PostMapping("/add")
 //    public String addStockMaster(@ModelAttribute StockMaster stockMaster) {
 
-////        Product managedProduct = productService.getProduct(productId);
-////        stockMaster.setProduct(managedProduct);
+/// /        Product managedProduct = productService.getProduct(productId);
+/// /        stockMaster.setProduct(managedProduct);
 //        stockMasterService.saveStockMaster(stockMaster);
 //        return "redirect:/stockmaster";
 //    }
@@ -73,10 +73,9 @@ import java.util.concurrent.ForkJoinPool;
 @RequestMapping("/api/stockmaster")
 public class StockMasterController {
 
+    private static final Long POLLING_TIMEOUT = 300000L;
     @Autowired
     private StockMasterService stockMasterService;
-
-    private static final Long POLLING_TIMEOUT = 300000L;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StockMaster>>> getAllStocks() {
@@ -131,6 +130,7 @@ public class StockMasterController {
 
         return output;
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StockMaster>> getStockById(@PathVariable Long id) {
         StockMaster stock = stockMasterService.getStockMaster(id);

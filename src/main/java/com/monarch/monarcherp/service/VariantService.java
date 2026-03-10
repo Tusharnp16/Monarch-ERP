@@ -41,13 +41,10 @@ public class VariantService {
             event.setAggregateId(savedVariant.getVariantId().toString());
             event.setType("VARIANT_CREATED");
             event.setPayload(payload);
-
             outboxRepository.save(event);
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize variant", e);
         }
-
-
         return variant;
     }
 

@@ -36,6 +36,10 @@ public class Variant {
     @JsonView(VariantViews.Compact.class)
     private String size;
 
+    @Column(name = "image_url")
+    @JsonView(VariantViews.Compact.class)
+    private String imageUrl;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "price", column = @Column(name = "mrp"))

@@ -101,11 +101,13 @@ import com.monarch.monarcherp.dto.ImportResponse;
 import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.Variant;
+import com.monarch.monarcherp.service.CloudinaryService;
 import com.monarch.monarcherp.service.ProductImportService;
 import com.monarch.monarcherp.service.ProductService;
 import com.monarch.monarcherp.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -128,12 +130,17 @@ public class VariantController {
     @Autowired
     ProductImportService productImportService;
 
+    @Autowired
+    CloudinaryService cloudinaryService;
+
     @GetMapping
     public ResponseEntity<ApiResponse<Map<String, Object>>> getPaginatedVariants(
             @RequestParam(value = "lastId", required = false) Long lastId) {
 
         Long finalId = (lastId == null) ? 0L : lastId;
         List<Variant> variants = variantService.getPaginatedVariant(finalId);
+
+        System.out.println(variants.get(0));
 
         Long nextCursor = null;
         boolean hasNext = false;
@@ -181,9 +188,10 @@ public class VariantController {
 //        return ResponseEntity.ok(ApiResponse.success(variant, "Variant data retrieved"));
 //    }
 
-    @PostMapping
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<Variant>> addVariant(
-            @RequestBody Variant variant,
+            @RequestPart Variant variant,
+            @RequestPart("file") MultipartFile file,
             @RequestParam Long productId) {
 
         Product managedProduct = productService.getProduct(productId);
@@ -191,15 +199,18 @@ public class VariantController {
             return ResponseEntity.ok(ApiResponse.error("Invalid Product ID: association failed"));
         }
 
+        String imageUrl = cloudinaryService.uploadFile(file);
         variant.setProduct(managedProduct);
+        variant.setImageUrl(imageUrl);
         Variant savedVariant = variantService.saveVariant(variant);
         return new ResponseEntity<>(ApiResponse.success(savedVariant, "Variant created successfully"), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<Variant>> updateVariant(
             @PathVariable Long id,
-            @RequestBody Variant variant,
+            @RequestPart  Variant variant,
+            @RequestPart("file") MultipartFile file,
             @RequestParam Long productId) {
 
         Variant existing = variantService.getVariant(id);
@@ -212,8 +223,11 @@ public class VariantController {
             return ResponseEntity.ok(ApiResponse.error("Cannot update: Product ID not found"));
         }
 
+        String imageUrl=cloudinaryService.uploadFile(file);
+
         variant.setVariantId(id);
         variant.setProduct(product);
+        variant.setImageUrl(imageUrl);
         variant.setCreatedAt(existing.getCreatedAt());
 
         Variant updatedVariant = variantService.saveVariant(variant);
