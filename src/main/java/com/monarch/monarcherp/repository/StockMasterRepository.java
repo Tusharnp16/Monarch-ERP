@@ -9,13 +9,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StockMasterRepository extends JpaRepository<StockMaster, Long> {
     StockMaster getStockMasterByStockMasterId(Long stockMasterId);
 
     @Modifying
-    @Transactional
+//    @Transactional
     @Query("UPDATE StockMaster s set s.sellingPrice=:sellingPrice, s.mrp =:mrp WHERE s.stockMasterId=:id")
     void updateSellingPriceByStockMasterId(@Param("id") Long id, @Param("sellingPrice") Money sellingPrice, Money mrp);
 
@@ -30,5 +31,8 @@ public interface StockMasterRepository extends JpaRepository<StockMaster, Long> 
     List<StockMaster> findAllByOrderByStockMasterIdDesc();
 
     List<StockMaster> findByVariant_VariantId(Long id);
+
+    @Query("SELECT MAX(s.modifiedDate) FROM StockMaster s")
+    LocalDateTime getLastModified();
 
 }

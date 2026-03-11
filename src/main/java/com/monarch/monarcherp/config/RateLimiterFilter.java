@@ -47,7 +47,6 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         TokenBucket bucket = limiters.computeIfAbsent(key, k -> new TokenBucket());
 
         System.out.println(limiters);
-        log.info("Rate Limiting Filter Working");
 
         if (bucket.allowRequest()) {
             chain.doFilter(request, response);

@@ -2,6 +2,9 @@ package com.monarch.monarcherp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -83,8 +86,10 @@ public class StockMaster {
         this.modifiedDate = LocalDateTime.now();
         this.batchNo = getBatchNo();
     }
-
+//
     @PreUpdate
+//    @UpdateTimestamp
+//    @LastModifiedDate
     protected void onUpdate() {
         this.modifiedDate = LocalDateTime.now();
     }

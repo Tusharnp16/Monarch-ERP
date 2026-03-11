@@ -6,6 +6,7 @@ import com.monarch.monarcherp.repository.StockMasterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -66,8 +67,15 @@ public class StockMasterService {
     }
 
     public StockMaster updateStockMaster(Long id, Double sellingPrice, Double mrp) {
-        stockMasterRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
-        stockMasterRepository.updateSellingPriceByStockMasterId(id, new Money(sellingPrice), new Money(mrp));
-        return stockMasterRepository.findByStockMasterId(id);
+      StockMaster updateStockMaster=stockMasterRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        updateStockMaster.setSellingPrice(new Money(sellingPrice));
+        updateStockMaster.setMrp(new Money(mrp));
+//        stockMasterRepository.updateSellingPriceByStockMasterId(id, new Money(sellingPrice), new Money(mrp));
+//        return stockMasterRepository.findByStockMasterId(id);
+        return stockMasterRepository.save(updateStockMaster);
+    }
+
+    public LocalDateTime getLastModifiedTime() {
+        return stockMasterRepository.getLastModified();
     }
 }

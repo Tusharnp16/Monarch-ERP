@@ -42,10 +42,20 @@ public class CloudinaryService {
         }
     }
 
+    public void deleteFile(String publicId) {
+        try {
+            Map result = cloudinary.uploader().destroy("monarch_erp/variants/" + publicId, ObjectUtils.emptyMap());
+            System.out.println("Cloudinary delete result: " + result.get("result"));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete image from Cloudinary", e);
+        }
+    }
+
     private String calculateHash(byte[] data) throws Exception {
         byte[] hash = MessageDigest.getInstance("SHA-256").digest(data);
         return HexFormat.of().formatHex(hash);
     }
+
 
 
 }

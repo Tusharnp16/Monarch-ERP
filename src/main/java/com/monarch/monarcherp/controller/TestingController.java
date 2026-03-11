@@ -55,6 +55,8 @@ class TestingController {
         String currentUsername = SecurityContextHolder
                 .getContext().getAuthentication().getName();
 
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+
         System.out.println("DEBUG : " + currentUsername);
 
         List<UserLoginLog> userLog = userLoginLogRepository.findByUsernameOrderByLoginTimeDesc(currentUsername);

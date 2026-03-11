@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
 
 //@Controller
@@ -73,7 +75,7 @@ import java.util.concurrent.ForkJoinPool;
 @RequestMapping("/api/stockmaster")
 public class StockMasterController {
 
-    private static final Long POLLING_TIMEOUT = 300000L;
+    private static final Long POLLING_TIMEOUT = 20000L;
     @Autowired
     private StockMasterService stockMasterService;
 
@@ -85,42 +87,28 @@ public class StockMasterController {
 
     @GetMapping("/poll")
     public DeferredResult<ResponseEntity<ApiResponse<List<StockMaster>>>> pollStocks() {
-
         DeferredResult<ResponseEntity<ApiResponse<List<StockMaster>>>> output =
                 new DeferredResult<>(POLLING_TIMEOUT);
-
         ForkJoinPool.commonPool().submit(() -> {
-
             try {
-
-                List<StockMaster> oldData = stockMasterService.getAllStockMasters();
+                LocalDateTime oldTime = stockMasterService.getLastModifiedTime();
 
                 long start = System.currentTimeMillis();
 
                 while (System.currentTimeMillis() - start < POLLING_TIMEOUT) {
 
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
 
-                    List<StockMaster> newData = stockMasterService.getAllStockMasters();
+                    LocalDateTime newTime = stockMasterService.getLastModifiedTime();
 
-                    if (!newData.equals(oldData)) {
-
-                        output.setResult(
-                                ResponseEntity.ok(
-                                        ApiResponse.success(newData, "Stocks updated")
-                                )
-                        );
-
+                    if (!Objects.equals(oldTime, newTime)) {
+                        List<StockMaster> data = stockMasterService.getAllStockMasters();
+                        output.setResult(ResponseEntity.ok(ApiResponse.success(data, "Stocks updated") ));
                         return;
                     }
                 }
-
             } catch (Exception e) {
-
-                output.setErrorResult(
-                        ResponseEntity.status(500)
-                                .body(ApiResponse.error("Polling failed"))
-                );
+                output.setErrorResult(ResponseEntity.status(500).body(ApiResponse.error("Polling failed")));
             }
         });
 
