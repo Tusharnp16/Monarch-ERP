@@ -6,6 +6,8 @@ import com.monarch.monarcherp.model.Product;
 import com.monarch.monarcherp.model.Variant;
 import com.monarch.monarcherp.repository.ProductRepository;
 import com.monarch.monarcherp.repository.VariantRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -27,6 +29,9 @@ public class ProductImportService {
     @Autowired
     private VariantRepository variantRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public ImportResponse.ValidationResponse validateExcel(MultipartFile file) throws IOException {
         List<ImportResponse.RowError> errors = new ArrayList<>();
         Set<String> keysInFile = new LinkedHashSet<>();
@@ -38,12 +43,13 @@ public class ProductImportService {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
 
+                String pName = getCellValueAsString(row.getCell(0));
                 String vName = getCellValueAsString(row.getCell(1));
                 String colour = getCellValueAsString(row.getCell(2));
                 String size = getCellValueAsString(row.getCell(3));
 
-                if (!vName.isBlank() && !colour.isBlank() && !size.isBlank()) {
-                    String key = (vName + "-" + colour + "-" + size).toLowerCase();
+                if (!pName.isBlank() && !vName.isBlank() && !colour.isBlank() && !size.isBlank()) {
+                    String key = (pName + "|" + vName + "-" + colour + "-" + size).toLowerCase();
                     keysInFile.add(key);
                     rowDataList.add(new ExcelRowData(row.getRowNum() + 1, key, row));
                 } else {
@@ -80,44 +86,129 @@ public class ProductImportService {
         return new ImportResponse.ValidationResponse(errors.isEmpty(), errors);
 }
 
+//
+//    @Transactional
+//    public void importExcelData(MultipartFile file) throws IOException {
+//
+//        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+//            Sheet sheet = workbook.getSheetAt(0);
+//
+//            Map<String, Product> productCache = new HashMap<>();
+//
+//            for (Row row : sheet) {
+//                if (row.getRowNum() == 0) continue;
+//
+//                String parentProductName = getCellValueAsString(row.getCell(0));
+//
+//                Product parentProduct = productCache.computeIfAbsent(parentProductName, name ->
+//                        productRepository.findByProductName(name)
+//                                .orElseGet(() -> {
+//                                    Product newP = new Product();
+//                                    newP.setProductName(name);
+//                                    return productRepository.save(newP);
+//                                })
+//                );
+//
+//                double mrpFromExcel = row.getCell(4).getNumericCellValue();
+//                double sellingPriceFromExcel = row.getCell(5).getNumericCellValue();
+//
+//                Variant variant = new Variant();
+//                variant.setProduct(parentProduct);
+//                variant.setVariantName(getCellValueAsString(row.getCell(1)));
+//                variant.setColour(getCellValueAsString(row.getCell(2)));
+//                variant.setSize(getCellValueAsString(row.getCell(3)));
+//                variant.setMrp(new Money(mrpFromExcel));
+//                variant.setSellingPrice(new Money(sellingPriceFromExcel));
+//
+//                variantRepository.save(variant);
+//            }
+//        }
+//    }
+
+    // identity error
 
     @Transactional
     public void importExcelData(MultipartFile file) throws IOException {
-
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            Map<String, Product> productCache = new HashMap<>();
+            Set<String> excelProductNames = new HashSet<>();
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue;
+                excelProductNames.add(getCellValueAsString(row.getCell(0)));
+            }
+
+            List<Product> existingProducts = productRepository.findByProductNameIn(excelProductNames);
+            Map<String, Product> productCache = existingProducts.stream()
+                    .collect(Collectors.toMap(Product::getProductName, p -> p));
+
+            List<Variant> batchList = new ArrayList<>();
+            int batchSize = 50;
 
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
 
-                String parentProductName = getCellValueAsString(row.getCell(0));
+                String pName = getCellValueAsString(row.getCell(0));
 
-                Product parentProduct = productCache.computeIfAbsent(parentProductName, name ->
-                        productRepository.findByProductName(name)
-                                .orElseGet(() -> {
-                                    Product newP = new Product();
-                                    newP.setProductName(name);
-                                    return productRepository.save(newP);
-                                })
-                );
-
-                double mrpFromExcel = row.getCell(4).getNumericCellValue();
-                double sellingPriceFromExcel = row.getCell(5).getNumericCellValue();
+                Product parentProduct = productCache.computeIfAbsent(pName, name -> {
+                    Product newP = new Product();
+                    newP.setProductName(name);
+                    entityManager.persist(newP);
+                    return newP;
+                });
 
                 Variant variant = new Variant();
                 variant.setProduct(parentProduct);
                 variant.setVariantName(getCellValueAsString(row.getCell(1)));
                 variant.setColour(getCellValueAsString(row.getCell(2)));
                 variant.setSize(getCellValueAsString(row.getCell(3)));
-                variant.setMrp(new Money(mrpFromExcel));
-                variant.setSellingPrice(new Money(sellingPriceFromExcel));
+                variant.setMrp(new Money(row.getCell(4).getNumericCellValue()));
+                variant.setSellingPrice(new Money(row.getCell(5).getNumericCellValue()));
+                variant.setImageUrl(null);
 
-                variantRepository.save(variant);
+                batchList.add(variant);
+
+                if (batchList.size() >= batchSize) {
+                    processBatch(batchList);
+                }
+            }
+
+            if (!batchList.isEmpty()) {
+                processBatch(batchList);
             }
         }
     }
+//
+//    private void processBatch(List<Variant> batchList) {
+//        variantRepository.saveAll(batchList);
+//        entityManager.flush();
+//        entityManager.clear();
+//        batchList.clear();
+//    }
+
+
+    @Transactional
+    public void processBatch(List<Variant> batchList) {
+        for (Variant v : batchList) {
+            entityManager.persist(v);
+        }
+        entityManager.flush();
+        entityManager.clear();
+        batchList.clear();
+    }
+
+//    private void processBatch(List<Variant> batchList) {
+//        int i = 0;
+//        for (Variant v : batchList) {
+//            entityManager.persist(v);
+//            if (i % 50 == 0) {
+//                entityManager.flush();
+//                entityManager.clear();
+//            }
+//            i++;
+//        }
+//        batchList.clear();
+//    }
 
     private String getCellValueAsString(Cell cell) {
         if (cell == null) return "";

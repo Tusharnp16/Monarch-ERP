@@ -33,9 +33,8 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
 
     boolean existsByVariantNameAndColourAndSize(String variantName, String colour, String size);
 
-    @Query("SELECT LOWER(CONCAT(v.variantName, '-', v.colour, '-', v.size)) " +
-            "FROM Variant v " +
-            "WHERE LOWER(CONCAT(v.variantName, '-', v.colour, '-', v.size)) IN :keys")
+    @Query("SELECT LOWER(CONCAT(v.product.productName, '|', v.variantName, '|', v.colour, '|', v.size)) " +
+            "FROM Variant v WHERE LOWER(CONCAT(v.product.productName, '|', v.variantName, '|', v.colour, '|', v.size)) IN :keys")
     Set<String> findExistingVariantKeys(@Param("keys") Set<String> keys);
 
 

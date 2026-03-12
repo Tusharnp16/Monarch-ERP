@@ -23,7 +23,12 @@ import java.time.LocalDateTime;
 public class Variant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "variant_seq_gen")
+    @SequenceGenerator(
+            name = "variant_seq_gen",
+            sequenceName = "variants_seq",
+            allocationSize = 50
+    )
     @JsonView(VariantViews.Compact.class)
     private Long variantId;
 
