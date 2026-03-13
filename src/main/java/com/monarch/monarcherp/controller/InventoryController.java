@@ -6,8 +6,10 @@ import com.monarch.monarcherp.dto.VariantViews;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -17,6 +19,9 @@ class InventoryController {
 
     @Autowired
     InventoryService inventoryService;
+
+//    @Autowired
+//    InventoryNotifyListener inventoryNotifyListener;
 
     @GetMapping
     @JsonView(VariantViews.forInventory.class)
@@ -54,6 +59,11 @@ class InventoryController {
         List<Inventory> inventoryList = inventoryService.getInventoryforSales(name);
         return ResponseEntity.ok(ApiResponse.success(inventoryList, "Data fetched succesfully"));
     }
+//
+//    @GetMapping(value = "/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+//    public Flux<String> streamInventoryAlerts() {
+//        return inventoryNotifyListener.getNotificationStream();
+//    }
 
 }
 
