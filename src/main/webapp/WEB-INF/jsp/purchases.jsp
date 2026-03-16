@@ -266,7 +266,7 @@
         if (!isOpen && itemsBody.getAttribute('data-loaded') !== 'true') {
             try {
 
-                const res = await fetch(`/purchaseitem/pr/${purchaseId}`);
+                const res = await fetch(`/api/purchaseitem/pr/${purchaseId}`);
                 const response = await res.json();
 
                 if (response.success && response.data) {
