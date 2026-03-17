@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.dto.PurchaseDTO;
+import com.monarch.monarcherp.model.Money;
 import com.monarch.monarcherp.model.Purchase;
 import com.monarch.monarcherp.model.PurchaseItem;
 import com.monarch.monarcherp.repository.PurchaseItemRepository;
@@ -36,12 +37,16 @@ public class PurchaseService {
 
         Purchase savedPurchase = purchaseRepository.save(purchase);
 
+        Double finalAmount = 0.0;
+
         if (purchase.getItems() != null) {
             for (PurchaseItem item : purchase.getItems()) {
                 item.setPurchase(savedPurchase);
                 purchaseItemService.savePurchaseItems(item, gstIn);
+                finalAmount+=item.getNetAmount().toBigDecimal().doubleValue();
             }
         }
+        purchase.setTotalAmount(new Money(finalAmount));
         return savedPurchase;
     }
 
