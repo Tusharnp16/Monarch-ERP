@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.config;
 
+import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.BlacklistRepository;
 import com.monarch.monarcherp.service.CustomUserDetailsService;
 import com.monarch.monarcherp.service.RedisBlacklistService;
@@ -105,4 +106,5 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

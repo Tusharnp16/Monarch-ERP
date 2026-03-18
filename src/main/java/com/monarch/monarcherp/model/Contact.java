@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @JsonIgnoreProperties({"purchases"})
-public class Contact {
+public class Contact extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

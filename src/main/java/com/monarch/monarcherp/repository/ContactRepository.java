@@ -9,7 +9,8 @@ import java.util.List;
 public interface ContactRepository extends JpaRepository<Contact, Long> {
     Contact findByContactId(Long contactId);
 
-    @Query(value = "SELECT contact_id, name, gst_in FROM contact", nativeQuery = true)
+//    @Query(value = "SELECT contact_id, name, gst_in FROM contact", nativeQuery = true)
+    @Query("SELECT c.contactId, c.name, c.gstIn FROM Contact c")
     List<Object[]> findPartialContactRaw();
 }
 

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -64,20 +65,32 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //        nativeQuery = true)
 
 
-    @Query(value = "SELECT * FROM products p WHERE " +
-            "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
-            "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
-            "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp)) " +
-            "AND deleted_prod='false'",
-            countQuery = "SELECT count(*) FROM products p WHERE " +
-                    "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
-                    "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
-                    "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp))",
-            nativeQuery = true)
+//    @Query(value = "SELECT * FROM products p WHERE " +
+//            "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
+//            "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
+//            "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp)) " +
+//            "AND deleted_prod='false'",
+//            countQuery = "SELECT count(*) FROM products p WHERE " +
+//                    "(:search IS NULL OR :search = '' OR p.product_name ILIKE CONCAT('%', :search, '%') OR p.item_code ILIKE CONCAT('%', :search, '%')) " +
+//                    "AND (CAST(:startDate AS timestamp) IS NULL OR p.created_at >= CAST(:startDate AS timestamp)) " +
+//                    "AND (CAST(:endDate AS timestamp) IS NULL OR p.created_at <= CAST(:endDate AS timestamp))",
+//            nativeQuery = true)
+//    Page<Product> nativeProductSearch(
+//            @Param("search") String search,
+//            @Param("startDate") LocalDate startDate,
+//            @Param("endDate") LocalDate endDate,
+//            Pageable pageable
+//    );
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:search IS NULL OR :search = '' OR p.productName ILIKE CONCAT('%', :search, '%') OR p.itemCode ILIKE CONCAT('%', :search, '%')) " +
+            // Add CAST to the parameters so Postgres knows they are Timestamps
+            "AND (CAST(:startDate AS timestamp) IS NULL OR p.createdAt >= :startDate) " +
+            "AND (CAST(:endDate AS timestamp) IS NULL OR p.createdAt <= :endDate)")
     Page<Product> nativeProductSearch(
             @Param("search") String search,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
             Pageable pageable
     );
 

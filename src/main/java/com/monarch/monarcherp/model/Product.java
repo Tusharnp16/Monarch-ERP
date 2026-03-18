@@ -23,7 +23,7 @@ import java.util.UUID;
 @Builder
 @ToString(exclude = "variants")
 @SoftDelete(columnName = "deleted_prod")
-public class Product implements Serializable {
+public class Product extends AbstractStoreEntity implements Serializable {
 
 //    private static final long serialVersionUID = 1L;
 

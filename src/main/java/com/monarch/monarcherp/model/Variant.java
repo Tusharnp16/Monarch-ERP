@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString(exclude = {"product", "batches"})
 @SoftDelete(columnName = "deleted_variant")
-public class Variant {
+public class Variant extends AbstractStoreEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "variant_seq_gen")

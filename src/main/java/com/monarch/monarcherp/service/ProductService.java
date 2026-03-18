@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -46,7 +48,7 @@ public class ProductService {
 
     //    @Cacheable(value="product_page", key = "{#page,#size}")
     public Page<Product> searchProducts(String search, int page, int size, LocalDate startDate, LocalDate endDate) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("product_id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("productId").descending());
 
 
 //        return productRepository
@@ -56,7 +58,10 @@ public class ProductService {
         System.out.println("DEBUG: Service Layer STARTDATE: " + startDate);
         System.out.println("DEBUG: Service Layer ENDDATE: " + endDate);
 
-        Page<Product> pgprd = productRepository.nativeProductSearch(search, startDate, endDate, pageable);
+
+        LocalDateTime start = (startDate != null) ? startDate.atStartOfDay() : null;
+        LocalDateTime end = (endDate != null) ? endDate.atTime(LocalTime.MAX) : null;
+        Page<Product> pgprd = productRepository.nativeProductSearch(search, start, end, pageable);
         // System.out.println("Service Layer: "+pgprd.getTotalElements());
 
         return pgprd;

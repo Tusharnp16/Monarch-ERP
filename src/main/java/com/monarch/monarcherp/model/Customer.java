@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class Customer {
+public class Customer extends AbstractStoreEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
