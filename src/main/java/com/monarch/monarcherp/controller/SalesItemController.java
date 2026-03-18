@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/salesitem")
+@RequestMapping("/api/salesitem")
 class SalesItemController {
 
     private final SalesItemService salesItemService;
@@ -74,21 +74,21 @@ class SalesItemController {
 //        return ResponseEntity.ok(ApiResponse.success(salesInvoices,"Data fetched succesfully"));
 //    }
 
-    @GetMapping("/api/recentitems")
+    @GetMapping("/recentitems")
     @ResponseBody
     public ResponseEntity<ApiResponse<List<InvoiceDisplayProjection>>> viewProjectionSales() {
         List<InvoiceDisplayProjection> projectionSalesInvoices = salesInvoiceService.getAllProjectionSalesInvoices();
         return ResponseEntity.ok(ApiResponse.success(projectionSalesInvoices, "Data fetched succesfully"));
     }
 
-    @GetMapping("/api/invoice-items/{invoiceId}")
+    @GetMapping("/invoice-items/{invoiceId}")
     @ResponseBody
     public ResponseEntity<ApiResponse<List<SalesItemDTO>>> getInvoiceItems(@PathVariable Long invoiceId) {
         List<SalesItemDTO> items = salesInvoiceService.getSaleItemById(invoiceId);
         return ResponseEntity.ok(ApiResponse.success(items, "Items fetched"));
     }
 
-    @GetMapping("/api/invoice/print/{id}")
+    @GetMapping("/invoice/print/{id}")
     public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
         try {
             byte[] pdfContent = jasperReportService.generateInvoice(id);
@@ -104,7 +104,7 @@ class SalesItemController {
         }
     }
 
-    @GetMapping("/api/export/monthly")
+    @GetMapping("/export/monthly")
     public void exportSales(@RequestParam int month, @RequestParam int year, HttpServletResponse response) throws IOException {
 
         try {

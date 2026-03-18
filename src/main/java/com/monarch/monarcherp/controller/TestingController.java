@@ -108,4 +108,9 @@ class TestingController {
     public String salesInvoice() {
         return "sales";
     }
+
+    @GetMapping("/purchase/report")
+    public String purchaseReport(){
+        return "purchase-expiry-report";
+    }
 }

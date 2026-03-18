@@ -149,7 +149,7 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<Customer>> findByMobile(@RequestParam String mobile) {
         return customerRepository.findByMobile(mobile)
                 .map(customer -> ResponseEntity.ok(ApiResponse.success(customer, "Customer found")))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .orElse(ResponseEntity.status(HttpStatus.OK)
                         .body(ApiResponse.error("No customer found with mobile: " + mobile)));
     }
 

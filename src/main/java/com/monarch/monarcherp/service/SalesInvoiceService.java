@@ -29,15 +29,17 @@ public class SalesInvoiceService {
     private final VariantRepository variantRepository;
     private final InventoryRepository inventoryRepository;
     private final SalesItemRepository salesItemRepository;
+    private final CustomerService customerService;
 
 
-    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository) {
+    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.customerRepository = customerRepository;
         this.notificationService = notificationService;
         this.variantRepository = variantRepository;
         this.inventoryRepository = inventoryRepository;
         this.salesItemRepository = salesItemRepository;
+        this.customerService = customerService;
     }
 
 //    @Transactional
@@ -107,7 +109,9 @@ public class SalesInvoiceService {
         if (existingCustomer.isPresent()) {
             salesInvoice.setCustomer(existingCustomer.get());
         } else {
-            salesInvoice.getCustomer().setId(null);
+//            salesInvoice.getCustomer().setId(null);
+            Customer savedCustomer = customerService.saveCustomer(salesInvoice.getCustomer());
+            salesInvoice.setCustomer(savedCustomer);
         }
 
         // 2. Prepare Invoice Numbering

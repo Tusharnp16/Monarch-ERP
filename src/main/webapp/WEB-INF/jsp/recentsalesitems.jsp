@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function fetchRecentInvoices() {
-    fetch('/salesitem/api/recentitems')
+    fetch('/api/salesitem/recentitems')
         .then(res => res.json())
         .then(response => {
             const container = document.getElementById('invoiceContainer');
@@ -298,7 +298,7 @@ const loadedInvoices = new Set();
 function loadItems(invoiceId) {
     if (loadedInvoices.has(invoiceId)) return;
 
-    fetch(`/salesitem/api/invoice-items/${invoiceId}`)
+    fetch(`/api/salesitem/invoice-items/${invoiceId}`)
         .then(res => res.json())
         .then(response => {
             const detailContainer = document.getElementById(`details-${invoiceId}`);
@@ -320,7 +320,7 @@ function renderItemsTable(container, items, invoiceId) {
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold m-0">Items</h6>
            <button class="btn btn-sm btn-outline-danger d-print-none"
-                   onclick="window.open('/salesitem/api/invoice/print/${invoiceId}', '_blank')">
+                   onclick="window.open('/api/salesitem/invoice/print/${invoiceId}', '_blank')">
                <i class="fa-solid fa-file-pdf me-1"></i> Print Bill
            </button>
         </div>
@@ -480,7 +480,7 @@ function confirmExport() {
     modalInstance.hide();
 
     // Trigger Download
-    window.location.href = `/salesitem/api/export/monthly?month=${month}&year=${year}`;
+    window.location.href = `/api/salesitem/export/monthly?month=${month}&year=${year}`;
 }
 </script>
 </body>
