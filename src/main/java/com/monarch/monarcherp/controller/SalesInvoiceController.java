@@ -126,6 +126,7 @@ import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.SalesInvoice;
 import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.SalesInvoiceRepository;
+import com.monarch.monarcherp.repository.UserRepository;
 import com.monarch.monarcherp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -148,6 +149,7 @@ public class SalesInvoiceController {
     private final InventoryService inventoryService;
     private final DiscountConfig discountConfig;
     private final NotificationService notificationService;
+    private final UserRepository userRepository;
 
     @Autowired
     private SalesInvoiceRepository salesInvoiceRepository;
@@ -157,13 +159,14 @@ public class SalesInvoiceController {
                                   InventoryService inventoryService,
                                   SalesItemService salesItemService,
                                   DiscountConfig discountConfig,
-                                  NotificationService notificationService) {
+                                  NotificationService notificationService, UserRepository userRepository) {
         this.salesInvoiceService = salesInvoiceService;
         this.customerService = customerService;
         this.inventoryService = inventoryService;
         this.salesItemService = salesItemService;
         this.discountConfig = discountConfig;
         this.notificationService = notificationService;
+        this.userRepository = userRepository;
     }
 
 
@@ -196,8 +199,11 @@ public class SalesInvoiceController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice, Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
+    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice, Authentication auth) {
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Long userId = currentUser.getUserId();
         SalesInvoice savedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice,userId);

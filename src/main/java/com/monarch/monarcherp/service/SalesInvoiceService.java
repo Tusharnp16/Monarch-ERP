@@ -175,7 +175,7 @@ public class SalesInvoiceService {
     }
 
     public List<InvoiceDisplayProjection> getAllProjectionSalesInvoices() {
-        return salesInvoiceRepository.findAllProjectedBy();
+        return salesInvoiceRepository.findAllProjectedByOrderByIdDesc();
     }
 
     // salesInvoiceService

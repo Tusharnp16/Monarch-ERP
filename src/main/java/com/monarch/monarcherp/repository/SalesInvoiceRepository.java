@@ -22,7 +22,7 @@ public interface SalesInvoiceRepository extends JpaRepository<SalesInvoice, Long
             "items.variant",
             "items.variant.product"
     })
-    List<InvoiceDisplayProjection> findAllProjectedBy();
+    List<InvoiceDisplayProjection> findAllProjectedByOrderByIdDesc();
 
     @QueryHints(value = {
             @QueryHint(name = "org.hibernate.fetchSize", value = "100"),

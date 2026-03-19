@@ -88,6 +88,7 @@ import com.monarch.monarcherp.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,15 +111,19 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers(Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
+    public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers(Authentication auth) {
 
-        Long userId = currentUser.getUserId();
-        boolean isAdmin=true;
-        if( currentUser.getRole().equals(Account.Role.ADMIN) && userId>5){
-            isAdmin=false;
-        }
-
+//        String username = auth.getName();
+//
+//        User currentUser = userRepository.findByUserName(username)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        Long userId = currentUser.getUserId();
+//
+//        boolean isAdmin = currentUser.getRole().equals(Account.Role.ADMIN);
+//        if (isAdmin && userId > 5) {
+//            isAdmin = false;
+//        }
         List<Customer> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(ApiResponse.success(customers, "Customers retrieved successfully"));
     }
@@ -166,10 +171,18 @@ public class CustomerController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Customer>> findByMobile(@RequestParam String mobile,Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
+    public ResponseEntity<ApiResponse<Customer>> findByMobile(@RequestParam String mobile,Authentication auth) {
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Long userId = currentUser.getUserId();
+
+//        boolean isAdmin = currentUser.getRole().equals(Account.Role.ADMIN);
+//        if (isAdmin && userId > 5) {
+//            isAdmin = false;
+//        }
         return customerRepository.findByMobileAndUserUserId(mobile,userId)
                 .map(customer -> ResponseEntity.ok(ApiResponse.success(customer, "Customer found")))
                 .orElse(ResponseEntity.status(HttpStatus.OK)
