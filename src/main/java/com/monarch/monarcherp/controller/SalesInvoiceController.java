@@ -124,11 +124,13 @@ import com.monarch.monarcherp.config.DiscountConfig;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.SalesInvoice;
+import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.SalesInvoiceRepository;
 import com.monarch.monarcherp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -194,8 +196,11 @@ public class SalesInvoiceController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice) {
-        SalesInvoice savedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice);
+    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        Long userId = currentUser.getUserId();
+        SalesInvoice savedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice,userId);
 
         if (savedInvoice.getCustomer() != null && savedInvoice.getCustomer().getEmail() != null) {
             notificationService.sendInvoiceEmail(savedInvoice);
@@ -206,10 +211,12 @@ public class SalesInvoiceController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<SalesInvoice>> updateSalesInvoice(@PathVariable Long id, @RequestBody SalesInvoice salesInvoice) {
-        // Ensure the ID from the path is set in the object
+    public ResponseEntity<ApiResponse<SalesInvoice>> updateSalesInvoice(@PathVariable Long id, @RequestBody SalesInvoice salesInvoice,Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        Long userId = currentUser.getUserId();
         salesInvoice.setId(id);
-        SalesInvoice updatedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice);
+        SalesInvoice updatedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice,userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(updatedInvoice, "Invoice updated successfully"));
     }
 

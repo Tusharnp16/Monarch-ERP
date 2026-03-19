@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Purchase {
+public class Purchase extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -19,8 +19,17 @@ public class CustomerService {
 
 //    @CachePut(value = "customers",key = "'all'")
 
-    @CacheEvict(value = "customers", key = "'all'")
+//    @CacheEvict(value = "customers", key = "#customer.userId")
+//    public Customer saveCustomer(Customer customer) {
+//        return customerRepository.save(customer);
+//    }
+
+
+//    @CacheEvict(value = "customers", key = "#customer.user.userId")
     public Customer saveCustomer(Customer customer) {
+        if (customerRepository.existsByEmailAndUserUserId(customer.getEmail(), customer.getUser().getUserId())) {
+            throw new RuntimeException("Customer with this email already exists in your shop");
+        }
         return customerRepository.save(customer);
     }
 
@@ -28,12 +37,16 @@ public class CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
-    @Cacheable(value = "customers", key = "'all'")
+//    @Cacheable(
+//            value = "customers",
+//            key = "#userId",
+//            condition = "!#isAdmin"
+//    )
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
-    @CacheEvict(value = "customers", key = "'all'")
+//    @CacheEvict(value = "customers", key = "#userId")
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
     }

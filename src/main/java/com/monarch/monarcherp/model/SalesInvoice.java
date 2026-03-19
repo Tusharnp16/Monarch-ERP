@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
-public class SalesInvoice {
+public class SalesInvoice extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

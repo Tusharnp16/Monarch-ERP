@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "purchase_item")
 @Getter
 @Setter
-public class PurchaseItem {
+public class PurchaseItem extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class SalesItem {
+public class SalesItem extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,7 +11,6 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 //
@@ -63,7 +62,7 @@ public class TenantAspect {
     @Before("execution(* com.monarch.monarcherp.service.*Service.*(..)) " +
             "&& !execution(* com.monarch.monarcherp.service.RedisBlacklistService.*(..))")
     @Transactional
-    public void beforeExecution(JoinPoint joinPoint) { // Added JoinPoint
+    public void beforeExecution(JoinPoint joinPoint) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null && auth.isAuthenticated()) {
@@ -72,13 +71,11 @@ public class TenantAspect {
             userRepository.findByUserName(username).ifPresent(user -> {
                 Long currentUserId = user.getUserId();
 
-                // 1. Enable Filter for Reading
                 if (currentUserId > 5) {
                     Session session = entityManager.unwrap(Session.class);
                     session.enableFilter("tenantFilter").setParameter("userId", currentUserId);
                 }
 
-                // 2. Inject User for Writing (The Fix for the NULL issue)
                 Object[] args = joinPoint.getArgs();
                 for (Object arg : args) {
                     if (arg instanceof AbstractStoreEntity entity) {

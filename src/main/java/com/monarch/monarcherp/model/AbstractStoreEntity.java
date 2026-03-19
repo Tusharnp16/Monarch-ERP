@@ -14,15 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @MappedSuperclass
 @Getter @Setter
 @FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "userId", type = Long.class))
-// {alias} ensures Hibernate adds the filter to the correct table during joins
 @Filter(name = "tenantFilter", condition = "user_id = :userId")
 public abstract class AbstractStoreEntity {
-    @JsonIgnore // Prevent the LazyLoading/Proxy error we saw earlier
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-
 
     @PrePersist
     public void handleBeforeSave() {
@@ -33,10 +30,12 @@ public abstract class AbstractStoreEntity {
                 if (principal instanceof User currentUser) {
                     this.user = currentUser;
                 }
-                // Fallback: if principal is a string or different object,
-                // you might need a small helper to fetch the User entity.
             }
         }
+    }
+
+    public Long getUserId() {
+        return user != null ? user.getUserId() : null;
     }
 
 

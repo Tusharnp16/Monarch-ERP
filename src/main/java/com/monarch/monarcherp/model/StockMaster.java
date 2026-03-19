@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class StockMaster {
+public class StockMaster extends AbstractStoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

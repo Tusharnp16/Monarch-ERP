@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class Inventory {
+public class Inventory extends AbstractStoreEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

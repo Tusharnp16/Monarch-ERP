@@ -8,7 +8,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customers", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_customer_email_per_shop",columnNames = {"user_id", "email"}),
+        @UniqueConstraint(name = "uk_customer_mobile_per_shop",columnNames = {"user_id", "mobile"})
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -23,10 +26,8 @@ public class Customer extends AbstractStoreEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
     private String mobile;
 
-    @Column(unique = true)
     private String email;
 
     @Column(nullable = true)

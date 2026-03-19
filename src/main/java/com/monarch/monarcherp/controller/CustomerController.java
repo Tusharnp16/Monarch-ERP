@@ -78,12 +78,17 @@
 
 package com.monarch.monarcherp.controller;
 
+import com.cloudinary.provisioning.Account;
 import com.monarch.monarcherp.dto.ApiResponse;
 import com.monarch.monarcherp.model.Customer;
+import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.CustomerRepository;
+import com.monarch.monarcherp.repository.UserRepository;
 import com.monarch.monarcherp.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -94,14 +99,26 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
-    public CustomerController(CustomerService customerService, CustomerRepository customerRepository) {
+    public CustomerController(CustomerService customerService, CustomerRepository customerRepository, UserRepository userRepository,UserDetailsService userDetailsService) {
         this.customerService = customerService;
         this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
+        this.userDetailsService=userDetailsService;
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers() {
+    public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        Long userId = currentUser.getUserId();
+        boolean isAdmin=true;
+        if( currentUser.getRole().equals(Account.Role.ADMIN) && userId>5){
+            isAdmin=false;
+        }
+
         List<Customer> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(ApiResponse.success(customers, "Customers retrieved successfully"));
     }
@@ -113,13 +130,16 @@ public class CustomerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<Customer>> addCustomer(@RequestBody Customer customer) {
-        if (customerRepository.existsByMobile(customer.getMobile())) {
+    public ResponseEntity<ApiResponse<Customer>> addCustomer(@RequestBody Customer customer,Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        Long userId = currentUser.getUserId();
+        if (customerRepository.existsByMobileAndUserUserId(customer.getMobile(),userId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("Mobile number already exists"));
         }
 
-        if (customerRepository.existsByEmail(customer.getEmail())) {
+        if (customerRepository.existsByEmailAndUserUserId(customer.getEmail(),userId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("Email already exists"));
         }
@@ -146,8 +166,11 @@ public class CustomerController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Customer>> findByMobile(@RequestParam String mobile) {
-        return customerRepository.findByMobile(mobile)
+    public ResponseEntity<ApiResponse<Customer>> findByMobile(@RequestParam String mobile,Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        Long userId = currentUser.getUserId();
+        return customerRepository.findByMobileAndUserUserId(mobile,userId)
                 .map(customer -> ResponseEntity.ok(ApiResponse.success(customer, "Customer found")))
                 .orElse(ResponseEntity.status(HttpStatus.OK)
                         .body(ApiResponse.error("No customer found with mobile: " + mobile)));
