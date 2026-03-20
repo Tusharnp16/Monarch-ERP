@@ -1,7 +1,6 @@
 package com.monarch.monarcherp.config;
 
 import com.monarch.monarcherp.model.AbstractStoreEntity;
-import com.monarch.monarcherp.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.aspectj.lang.JoinPoint;

@@ -136,9 +136,12 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<Customer>> addCustomer(@RequestBody Customer customer,Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Long userId = currentUser.getUserId();
+
         if (customerRepository.existsByMobileAndUserUserId(customer.getMobile(),userId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("Mobile number already exists"));
