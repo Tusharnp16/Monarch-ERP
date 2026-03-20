@@ -140,7 +140,7 @@ public class VariantController {
         Long finalId = (lastId == null) ? 0L : lastId;
         List<Variant> variants = variantService.getPaginatedVariant(finalId);
 
-        System.out.println(variants.get(0));
+
 
         Long nextCursor = null;
         boolean hasNext = false;

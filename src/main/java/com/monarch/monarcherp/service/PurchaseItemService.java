@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,8 +37,20 @@ public class PurchaseItemService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Transactional
     public void savePurchaseItems(PurchaseItem request, int gstIn) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
 
         Boolean isInterState = gstIn == 24 ? false : true;
 
@@ -73,6 +87,7 @@ public class PurchaseItemService {
         inventory.setAvailableQuantity(inventory.getQuantity());
         inventory.setAverageCost(request.getLandingCost());
         inventory.setVariant(fullVariant);
+        inventory.setUser(currentUser);
 
         inventory = inventoryRepository.save(inventory);
 
