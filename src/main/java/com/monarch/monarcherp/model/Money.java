@@ -22,8 +22,9 @@ public class Money {
         this.price = BigDecimal.valueOf(Double.parseDouble(amount));
     }
 
-    public Money(double prices) {
-        if (price == null) {
+    //double
+    public Money(Double prices) {
+        if (prices == null) {
             prices = 5.5;
         }
         this.price = BigDecimal.valueOf(prices).setScale(2, RoundingMode.HALF_UP);

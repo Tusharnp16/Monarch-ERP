@@ -39,4 +39,12 @@ public class User {
     @UpdateTimestamp
     private LocalDate modifiedAt;
 
+
+    @PrePersist
+    public void setDefaultRole() {
+        if (this.role == null) {
+            this.role = "ADMIN";
+        }
+    }
+
 }
