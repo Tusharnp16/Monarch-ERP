@@ -65,7 +65,6 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/favicon.ico",
                                 "/swagger-ui/**",
-                                "/inventory/**",
                                 "/ws-monarch/**",
                                 "/logo.png",
                                 "/health").permitAll()

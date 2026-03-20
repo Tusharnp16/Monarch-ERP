@@ -31,10 +31,6 @@ public class PurchaseService {
         System.out.println("DEBUG : " + purchase.getBillNo());
         System.out.println("DEBUG : " + gstIn);
 
-        purchase.setTotalAmount(purchase.getItems().get(0).getNetAmount());
-
-        System.out.println("DEBUG : " + purchase.getItems().get(0).getNetAmount());
-
         Purchase savedPurchase = purchaseRepository.save(purchase);
 
         Double finalAmount = 0.0;

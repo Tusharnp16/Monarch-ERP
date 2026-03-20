@@ -61,11 +61,13 @@ public class PurchaseController {
         return ResponseEntity.ok(ApiResponse.success(updatedPurchase, "Purchase updated successfully"));
     }
 
+    @GetMapping("/delete")
     public ResponseEntity<ApiResponse<Void>> deletePurchase(@PathVariable Long id) {
         purchaseService.deletePurchase(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Purchase deleted successfully"));
     }
 
+    @GetMapping("/expire")
     public ResponseEntity<ApiResponse<Map<String, List<PurchaseItem>>>> getExpiryReport() {
         Map<String, List<PurchaseItem>> report = reportService.getPurchaseItemByExpire();
         return ResponseEntity.ok(ApiResponse.success(report, "Expiry report generated"));

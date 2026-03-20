@@ -155,7 +155,7 @@ public class ProductController {
         Product product = productService.getProduct(id);
         //  return (product != null) ? ResponseEntity.ok(product) : ResponseEntity.notFound().build();
 
-        return (product != null) ? ResponseEntity.ok(ApiResponse.success(product, "Product Not Found")) : ResponseEntity.ok(ApiResponse.success(product, "Data fetched succesfully"));
+        return (product != null) ? ResponseEntity.ok(ApiResponse.success(product, "Data fetched succesfully")) : ResponseEntity.ok(ApiResponse.success(product, "Product Not Found"));
     }
 
 
