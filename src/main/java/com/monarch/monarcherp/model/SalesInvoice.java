@@ -40,15 +40,15 @@ public class SalesInvoice extends AbstractStoreEntity{
     @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL)
     private List<SalesItem> items;
 
-    @PrePersist
-    @PreUpdate
-    public void syncUserToItems() {
-        if (this.getUser() != null && this.getItems() != null) {
-            for (SalesItem item : this.getItems()) {
-                item.setUser(this.getUser());
-            }
-            System.out.println("LOG: Synchronized UserID " + this.getUser().getUserId() + " to all SalesItems.");
-        }
-    }
+//    @PrePersist
+//    @PreUpdate
+//    public void syncUserToItems() {
+//        if (this.getUser() != null && this.getItems() != null) {
+//            for (SalesItem item : this.getItems()) {
+//                item.setUser(this.getUser());
+//            }
+//            System.out.println("LOG: Synchronized UserID " + this.getUser().getUserId() + " to all SalesItems.");
+//        }
+//    }
 
 }

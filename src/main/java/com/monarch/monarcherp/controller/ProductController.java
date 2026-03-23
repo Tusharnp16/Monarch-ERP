@@ -157,17 +157,7 @@ public class ProductController {
 
         return (product != null) ? ResponseEntity.ok(ApiResponse.success(product, "Data fetched succesfully")) : ResponseEntity.ok(ApiResponse.success(product, "Product Not Found"));
     }
-
-
-    /*
-
-    Mockito is a popular open-source mocking framework for Java (and Dart/Flutter) designed to simplify unit
-    testing by enabling developers to create, stub, and verify mock objects.
-    It allows testing code in isolation by replacing real, complex dependencies with controlled, simulated objects.
-    Key features include clean, intuitive syntax, behavior verification (e.g., verify(mock).method()),
-    and seamless integration with JUnit
-     */
-
+    
     @GetMapping("/compact")
     @JsonView(VariantViews.forProducts.class)
     public ResponseEntity<ApiResponse<List<Product>>> getCompactProduct(@RequestParam(required = false) String name) {

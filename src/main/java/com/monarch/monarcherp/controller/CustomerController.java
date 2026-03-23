@@ -157,13 +157,13 @@ public class CustomerController {
                 .body(ApiResponse.success(savedCustomer, "Customer created successfully"));
     }
 
-    @PutMapping("/update") // Changed from PostMapping to PutMapping
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse<Customer>> updateCustomer(@RequestBody Customer customer) {
         if (customer.getId() == null) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Customer ID is required for update"));
         }
 
-        Customer updatedCustomer = customerService.saveCustomer(customer);
+        Customer updatedCustomer = customerService.updateCustomer(customer);
         return ResponseEntity.ok(ApiResponse.success(updatedCustomer, "Customer updated successfully"));
     }
 

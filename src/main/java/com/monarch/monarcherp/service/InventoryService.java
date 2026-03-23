@@ -28,7 +28,6 @@ public class InventoryService {
 
         Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Resource Not Found"));
 
-        inventory.setVariant(inventory.getVariant());
         int newQunatity = inventory.getAvailableQuantity();
 
         if (type.equals("ADD")) {

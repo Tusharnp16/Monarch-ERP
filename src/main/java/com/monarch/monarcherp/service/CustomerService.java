@@ -33,6 +33,14 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
+
+    public Customer updateCustomer(Customer customer) {
+        if (!customerRepository.existsByEmailAndUserUserId(customer.getEmail(), customer.getUser().getUserId())) {
+            throw new RuntimeException("Customer with this email not exists in your shop");
+        }
+        return customerRepository.save(customer);
+    }
+
     public Customer getCustomer(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
@@ -43,7 +51,7 @@ public class CustomerService {
 //            condition = "!#isAdmin"
 //    )
     public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+        return customerRepository.findAllByOrderByIdDesc();
     }
 
 //    @CacheEvict(value = "customers", key = "#userId")
