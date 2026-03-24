@@ -113,18 +113,18 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<Customer>>> getAllCustomers(Authentication auth) {
 
-//        String username = auth.getName();
-//
-//        User currentUser = userRepository.findByUserName(username)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        Long userId = currentUser.getUserId();
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Long userId = currentUser.getUserId();
 //
 //        boolean isAdmin = currentUser.getRole().equals(Account.Role.ADMIN);
 //        if (isAdmin && userId > 5) {
 //            isAdmin = false;
 //        }
-        List<Customer> customers = customerService.getAllCustomers();
+        List<Customer> customers = customerService.getAllCustomers(userId);
         return ResponseEntity.ok(ApiResponse.success(customers, "Customers retrieved successfully"));
     }
 
@@ -168,8 +168,13 @@ public class CustomerController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id,Authentication authentication) {
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Long userId = currentUser.getUserId();
+        customerService.deleteCustomer(id,userId);
         return ResponseEntity.ok(ApiResponse.success(null, "Customer deleted successfully"));
     }
 

@@ -3,6 +3,7 @@ package com.monarch.monarcherp.service;
 import com.monarch.monarcherp.model.Customer;
 import com.monarch.monarcherp.repository.CustomerRepository;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class CustomerService {
 //    }
 
 
-//    @CacheEvict(value = "customers", key = "#customer.user.userId")
+    @CacheEvict(value = "customers", key = "#customer.user.userId")
     public Customer saveCustomer(Customer customer) {
         if (customerRepository.existsByEmailAndUserUserId(customer.getEmail(), customer.getUser().getUserId())) {
             throw new RuntimeException("Customer with this email already exists in your shop");
@@ -33,7 +34,7 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-
+    @CacheEvict(value = "customers", key = "#customer.user.userId" , allEntries = true)
     public Customer updateCustomer(Customer customer) {
         if (!customerRepository.existsByEmailAndUserUserId(customer.getEmail(), customer.getUser().getUserId())) {
             throw new RuntimeException("Customer with this email not exists in your shop");
@@ -45,17 +46,17 @@ public class CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
-//    @Cacheable(
-//            value = "customers",
-//            key = "#userId",
-//            condition = "!#isAdmin"
-//    )
-    public List<Customer> getAllCustomers() {
+    @Cacheable(
+            value = "customers",
+            key = "#userId",
+            condition = "#userId > 5"
+    )
+    public List<Customer> getAllCustomers(Long userId) {
         return customerRepository.findAllByOrderByIdDesc();
     }
 
-//    @CacheEvict(value = "customers", key = "#userId")
-    public void deleteCustomer(Long id) {
+    @CacheEvict(value = "customers", key = "#userId",allEntries = true)
+    public void deleteCustomer(Long id,Long userId) {
         customerRepository.deleteById(id);
     }
 
