@@ -25,7 +25,7 @@ public class PurchaseItem {
     @ManyToOne
     private Variant variant;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "stock_master_id", nullable = false)
     @JsonIgnore
     private StockMaster stockMaster;

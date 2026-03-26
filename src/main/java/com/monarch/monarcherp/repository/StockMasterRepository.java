@@ -2,6 +2,7 @@ package com.monarch.monarcherp.repository;
 
 import com.monarch.monarcherp.model.Money;
 import com.monarch.monarcherp.model.StockMaster;
+import com.monarch.monarcherp.model.Variant;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,8 +10,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface StockMasterRepository extends JpaRepository<StockMaster, Long> {
     StockMaster getStockMasterByStockMasterId(Long stockMasterId);
@@ -34,5 +37,11 @@ public interface StockMasterRepository extends JpaRepository<StockMaster, Long> 
 
     @Query("SELECT MAX(s.modifiedDate) FROM StockMaster s")
     LocalDateTime getLastModified();
+
+    Optional<StockMaster> findByVariantAndPurchasePriceAndExpiryDate(
+            Variant variant,
+            Money purchasePrice,
+            LocalDate expiryDate
+    );
 
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PurchaseItemService {
@@ -91,22 +92,62 @@ public class PurchaseItemService {
 
         inventory = inventoryRepository.save(inventory);
 
-        StockMaster newStock = new StockMaster();
-        newStock.setExpiryDate(request.getExpireDate());
-        newStock.setVariant(fullVariant);
-        newStock.setQuantity(request.getQty());
-        newStock.setPurchasePrice(request.getPrice());
-        newStock.setLandingCost(request.getLandingCost());
-        newStock.setInventory(inventory);
-        newStock.setMrp(fullVariant.getMrp());
-        newStock.setSellingPrice(fullVariant.getSellingPrice());
+        Optional<StockMaster> existingStock = stockMasterRepository
+                .findByVariantAndPurchasePriceAndExpiryDate(
+                        fullVariant,
+                        request.getPrice(),
+                        request.getExpireDate()
+                );
 
-        newStock = stockMasterRepository.save(newStock);
+        StockMaster stockToUpdate;
 
-        newStock.setBatchNo(stockMasterService.generateBatch(newStock));
-        newStock = stockMasterRepository.save(newStock);
+        if (existingStock.isPresent()) {
 
-        request.setStockMaster(newStock);
+            stockToUpdate = existingStock.get();
+            int newQty = stockToUpdate.getQuantity() + request.getQty();
+            stockToUpdate.setQuantity(newQty);
+            System.out.println("Updating existing batch: " + stockToUpdate.getBatchNo());
+        } else {
+            stockToUpdate = new StockMaster();
+            stockToUpdate.setVariant(fullVariant);
+            stockToUpdate.setPurchasePrice(request.getPrice());
+            stockToUpdate.setExpiryDate(request.getExpireDate());
+            stockToUpdate.setQuantity(request.getQty());
+            stockToUpdate.setLandingCost(request.getLandingCost());
+            stockToUpdate.setInventory(inventory);
+            stockToUpdate.setMrp(fullVariant.getMrp());
+            stockToUpdate.setSellingPrice(fullVariant.getSellingPrice());
+
+            stockToUpdate = stockMasterRepository.save(stockToUpdate);
+            stockToUpdate.setBatchNo(stockMasterService.generateBatch(stockToUpdate));
+        }
+
+        stockToUpdate = stockMasterRepository.save(stockToUpdate);
+
+        request.setStockMaster(stockToUpdate);
+
+//        stockMasterTransactionService.recordTransaction(
+//                request.getQty(), 0, TransactionType.PURCHASE, "PUR-", refId, currentUser, inventory
+//        );
+//
+//        purchaseItemRepository.save(request);
+
+//        StockMaster newStock = new StockMaster();
+//        newStock.setExpiryDate(request.getExpireDate());
+//        newStock.setVariant(fullVariant);
+//        newStock.setQuantity(request.getQty());
+//        newStock.setPurchasePrice(request.getPrice());
+//        newStock.setLandingCost(request.getLandingCost());
+//        newStock.setInventory(inventory);
+//        newStock.setMrp(fullVariant.getMrp());
+//        newStock.setSellingPrice(fullVariant.getSellingPrice());
+//
+//        newStock = stockMasterRepository.save(newStock);
+//
+//        newStock.setBatchNo(stockMasterService.generateBatch(newStock));
+//        newStock = stockMasterRepository.save(newStock);
+
+//        request.setStockMaster(newStock);
 
         stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser,inventory);
 
