@@ -21,9 +21,9 @@ public class StockTransaction extends AbstractStoreEntity {
     @Column(name = "stock_transaction_id")
     private Long stockTransactionId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "stock_master_id", nullable = false)
-//    private StockMaster stockMaster;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventory_id", nullable = false)
+    private Inventory inventory;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
@@ -34,6 +34,9 @@ public class StockTransaction extends AbstractStoreEntity {
 
     @Column(nullable = false)
     private int outQuantity;
+
+    @Column(nullable = false)
+    private int totalQuantity;
 
     @Column(name = "reference_id")
     private String referenceId;

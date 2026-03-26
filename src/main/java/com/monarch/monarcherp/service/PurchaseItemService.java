@@ -110,7 +110,7 @@ public class PurchaseItemService {
 
         request.setStockMaster(newStock);
 
-        stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser);
+        stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser,inventory);
 
         purchaseItemRepository.save(request);
     }

@@ -168,7 +168,7 @@ public class SalesInvoiceService {
             inventoriesToUpdate.add(inventory);
 
             stockMasterTransactionService.recordTransaction(0,
-                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser);
+                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);
         }
 
         // 3. Batch Save Inventory (Faster than saving inside the loop)
