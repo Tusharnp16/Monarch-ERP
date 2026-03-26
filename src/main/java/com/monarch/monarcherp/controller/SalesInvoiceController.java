@@ -199,14 +199,8 @@ public class SalesInvoiceController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice, Authentication auth) {
-        String username = auth.getName();
-
-        User currentUser = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Long userId = currentUser.getUserId();
-        SalesInvoice savedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice,userId);
+    public ResponseEntity<ApiResponse<SalesInvoice>> createSalesInvoice(@RequestBody SalesInvoice salesInvoice) {
+        SalesInvoice savedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice);
 
         if (savedInvoice.getCustomer() != null && savedInvoice.getCustomer().getEmail() != null) {
             notificationService.sendInvoiceEmail(savedInvoice);
@@ -217,12 +211,8 @@ public class SalesInvoiceController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<SalesInvoice>> updateSalesInvoice(@PathVariable Long id, @RequestBody SalesInvoice salesInvoice,Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
-
-        Long userId = currentUser.getUserId();
-        salesInvoice.setId(id);
-        SalesInvoice updatedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice,userId);
+    public ResponseEntity<ApiResponse<SalesInvoice>> updateSalesInvoice(@PathVariable Long id, @RequestBody SalesInvoice salesInvoice) {
+        SalesInvoice updatedInvoice = salesInvoiceService.saveSalesInvoice(salesInvoice);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(updatedInvoice, "Invoice updated successfully"));
     }
 

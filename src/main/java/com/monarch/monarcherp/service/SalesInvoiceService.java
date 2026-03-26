@@ -35,9 +35,10 @@ public class SalesInvoiceService {
     private final CustomerService customerService;
     private final StockMasterTransactionService stockMasterTransactionService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
 
-    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService, StockMasterTransactionService stockMasterTransactionService, UserRepository userRepository) {
+    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService, StockMasterTransactionService stockMasterTransactionService, UserRepository userRepository, UserService userService) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.customerRepository = customerRepository;
         this.notificationService = notificationService;
@@ -47,6 +48,7 @@ public class SalesInvoiceService {
         this.customerService = customerService;
         this.stockMasterTransactionService = stockMasterTransactionService;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
 //    @Transactional
@@ -110,7 +112,10 @@ public class SalesInvoiceService {
 //    }
 
     @Transactional
-    public SalesInvoice saveSalesInvoice(SalesInvoice salesInvoice,Long userId) {
+    public SalesInvoice saveSalesInvoice(SalesInvoice salesInvoice) {
+
+        Long userId=userService.getAuthnicatedUserId();
+
         // 1. Efficient Customer Check
         Optional<Customer> existingCustomer = customerRepository.findByMobileAndUserUserId(salesInvoice.getCustomer().getMobile(),userId);
         if (existingCustomer.isPresent()) {
@@ -129,12 +134,6 @@ public class SalesInvoiceService {
 
         double subtotal = 0;
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = auth.getName();
-
-        User currentUser = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Create a list to batch update inventory at the end
         List<Inventory> inventoriesToUpdate = new ArrayList<>();
@@ -166,6 +165,8 @@ public class SalesInvoiceService {
 
             // COLLECT: Add to list for batch saving later
             inventoriesToUpdate.add(inventory);
+
+            User currentUser=userService.getAuthnicatedUser();
 
             stockMasterTransactionService.recordTransaction(0,
                     item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);

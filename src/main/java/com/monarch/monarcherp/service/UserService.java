@@ -4,6 +4,8 @@ import com.monarch.monarcherp.model.User;
 import com.monarch.monarcherp.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.kafkaTemplate = kafkaTemplate;
     }
+
 
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -68,6 +71,19 @@ public class UserService {
         kafkaTemplate.send("user-topic", "Created user: " + email);
 
         return savedUser;
+    }
+
+    public User getAuthnicatedUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public Long getAuthnicatedUserId(){
+       return getAuthnicatedUser().getUserId();
     }
 
 }

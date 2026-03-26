@@ -44,15 +44,13 @@ public class PurchaseItemService {
     @Autowired
     StockMasterTransactionService stockMasterTransactionService;
 
+    @Autowired
+    UserService userService;
+
     @Transactional
     public void savePurchaseItems(PurchaseItem request, int gstIn,String refId) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = auth.getName();
-
-        User currentUser = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User currentUser = userService.getAuthnicatedUser();
 
         Boolean isInterState = gstIn == 24 ? false : true;
 
