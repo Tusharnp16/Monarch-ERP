@@ -19,6 +19,7 @@ public class PurchaseService {
     private final PurchaseItemService purchaseItemService;
     private PurchaseRepository purchaseRepository;
 
+
     PurchaseService(PurchaseRepository purchaseRepository, PurchaseItemRepository purchaseItemRepository, PurchaseItemService purchaseItemService) {
         this.purchaseRepository = purchaseRepository;
         this.purchaseItemService = purchaseItemService;
@@ -38,7 +39,7 @@ public class PurchaseService {
         if (purchase.getItems() != null) {
             for (PurchaseItem item : purchase.getItems()) {
                 item.setPurchase(savedPurchase);
-                purchaseItemService.savePurchaseItems(item, gstIn);
+                purchaseItemService.savePurchaseItems(item, gstIn,purchase.getBillNo());
                 finalAmount+=item.getNetAmount().toBigDecimal().doubleValue();
             }
         }

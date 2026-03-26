@@ -2,11 +2,14 @@ package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.dto.SalesItemDTO;
 import com.monarch.monarcherp.model.*;
+import com.monarch.monarcherp.model.enums.TransactionType;
 import com.monarch.monarcherp.repository.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +33,11 @@ public class SalesInvoiceService {
     private final InventoryRepository inventoryRepository;
     private final SalesItemRepository salesItemRepository;
     private final CustomerService customerService;
+    private final StockMasterTransactionService stockMasterTransactionService;
+    private final UserRepository userRepository;
 
 
-    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService) {
+    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService, StockMasterTransactionService stockMasterTransactionService, UserRepository userRepository) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.customerRepository = customerRepository;
         this.notificationService = notificationService;
@@ -40,6 +45,8 @@ public class SalesInvoiceService {
         this.inventoryRepository = inventoryRepository;
         this.salesItemRepository = salesItemRepository;
         this.customerService = customerService;
+        this.stockMasterTransactionService = stockMasterTransactionService;
+        this.userRepository = userRepository;
     }
 
 //    @Transactional
@@ -122,6 +129,13 @@ public class SalesInvoiceService {
 
         double subtotal = 0;
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         // Create a list to batch update inventory at the end
         List<Inventory> inventoriesToUpdate = new ArrayList<>();
 
@@ -152,6 +166,9 @@ public class SalesInvoiceService {
 
             // COLLECT: Add to list for batch saving later
             inventoriesToUpdate.add(inventory);
+
+            stockMasterTransactionService.recordTransaction(0,
+                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser);
         }
 
         // 3. Batch Save Inventory (Faster than saving inside the loop)

@@ -1,6 +1,7 @@
 package com.monarch.monarcherp.service;
 
 import com.monarch.monarcherp.model.*;
+import com.monarch.monarcherp.model.enums.TransactionType;
 import com.monarch.monarcherp.repository.*;
 import com.monarch.monarcherp.service.tax.TaxStrategy;
 import jakarta.persistence.EntityManager;
@@ -40,8 +41,11 @@ public class PurchaseItemService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    StockMasterTransactionService stockMasterTransactionService;
+
     @Transactional
-    public void savePurchaseItems(PurchaseItem request, int gstIn) {
+    public void savePurchaseItems(PurchaseItem request, int gstIn,String refId) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -49,8 +53,6 @@ public class PurchaseItemService {
 
         User currentUser = userRepository.findByUserName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-
 
         Boolean isInterState = gstIn == 24 ? false : true;
 
@@ -107,6 +109,9 @@ public class PurchaseItemService {
         newStock = stockMasterRepository.save(newStock);
 
         request.setStockMaster(newStock);
+
+        stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser);
+
         purchaseItemRepository.save(request);
     }
 

@@ -46,7 +46,7 @@ public class PurchaseItemController {
     public String addPurchaseItem(@ModelAttribute PurchaseItem purchaseItem, @RequestParam("gstIn") int gstIn) {
 //        Product managedProduct = productService.getProduct(productId);
 //        purchaseItem.setProduct(managedProduct);
-        purchaseItemService.savePurchaseItems(purchaseItem, gstIn);
+        purchaseItemService.savePurchaseItems(purchaseItem, gstIn,"101");
         return "redirect:/purchase-item";
     }
 
@@ -59,7 +59,7 @@ public class PurchaseItemController {
 //        if (existing != null) {
 //            purchaseItem.setCreatedAt(existing.getCreatedAt());
 //        }
-        purchaseItemService.savePurchaseItems(existing, gstIn);
+        purchaseItemService.savePurchaseItems(existing, gstIn,"101");
         return "redirect:/purchase-item";
     }
 
