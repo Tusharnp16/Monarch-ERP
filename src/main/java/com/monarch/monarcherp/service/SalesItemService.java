@@ -10,10 +10,12 @@ import java.util.List;
 @Service
 public class SalesItemService {
 
-    private SalesItemRepository salesItemRepository;
+    private final SalesItemRepository salesItemRepository;
+    private final UserService userService;
 
-    SalesItemService(SalesItemRepository salesItemRepository) {
+    SalesItemService(SalesItemRepository salesItemRepository, UserService userService) {
         this.salesItemRepository = salesItemRepository;
+        this.userService = userService;
     }
 
     public SalesItem saveSalesItem(SalesItem salesItem) {
@@ -38,7 +40,7 @@ public class SalesItemService {
 
     public List<Object[]> getWeeklySales() {
         LocalDate date = LocalDate.now().minusDays(7);
-        return salesItemRepository.findTopSellingProducts(date);
+        return salesItemRepository.findTopSellingProducts(date, userService.getAuthnicatedUserId());
     }
 
     public boolean salesItemExists(Long id) {

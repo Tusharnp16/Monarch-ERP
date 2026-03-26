@@ -1,5 +1,6 @@
 package com.monarch.monarcherp.service;
 
+import com.monarch.monarcherp.dto.StockLedgerDTO;
 import com.monarch.monarcherp.model.Contact;
 import com.monarch.monarcherp.model.Inventory;
 import com.monarch.monarcherp.model.StockTransaction;
@@ -46,7 +47,7 @@ public class StockMasterTransactionService {
         stockTransactionRepository.save(transaction);
     }
 
-    public List<StockTransaction> getAllStockTransactions() {
-        return stockTransactionRepository.findAllByOrderByStockTransactionIdDesc();
+    public List<StockLedgerDTO> getAllStockTransactions() {
+        return stockTransactionRepository.findAllStockLedger();
     }
 }

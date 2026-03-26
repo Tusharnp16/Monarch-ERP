@@ -11,14 +11,28 @@ import java.util.List;
 
 public interface SalesItemRepository extends JpaRepository<SalesItem, Long> {
 
-    @Query("SELECT v.product.productName, v.variantName,v.size,v.colour, SUM(si.quantity) as totalSales, SUM(si.lineTotal) as lineTotal " +
+//    @Query("SELECT v.product.productName, v.variantName,v.size,v.colour, SUM(si.quantity) as totalSales, SUM(si.lineTotal) as lineTotal " +
+//            "FROM SalesItem si " +
+//            "JOIN si.variant v " +
+//            "JOIN si.salesInvoice s " +
+//            "WHERE s.invoiceDate >= :startDate " +
+//            "GROUP BY v.product.productName,v.variantName,v.colour,v.size " +
+//            "ORDER BY totalSales DESC")
+//    List<Object[]> findTopSellingProducts(@Param("startDate") LocalDate date);
+
+    @Query("SELECT v.product.productName, v.variantName, v.size, v.colour, " +
+            "SUM(si.quantity) as totalSales, SUM(si.lineTotal) as lineTotal " +
             "FROM SalesItem si " +
             "JOIN si.variant v " +
             "JOIN si.salesInvoice s " +
             "WHERE s.invoiceDate >= :startDate " +
-            "GROUP BY v.product.productName,v.variantName,v.colour,v.size " +
+            "AND s.user.userId = :userId " +
+            "GROUP BY v.product.productName, v.variantName, v.colour, v.size " +
             "ORDER BY totalSales DESC")
-    List<Object[]> findTopSellingProducts(@Param("startDate") LocalDate date);
+    List<Object[]> findTopSellingProducts(
+            @Param("startDate") LocalDate date,
+            @Param("userId") Long userId
+    );
 
 
 //    @Query(value = "SELECT \n" +
