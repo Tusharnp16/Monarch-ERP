@@ -61,6 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
+        System.out.print(token);
+
+
 //        if (blacklistRepository.existsByToken(token)) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
 //
 
@@ -101,6 +104,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            System.out.println("userdetailes printing this username : "+userDetails.getUsername());
         }
         log.info("JWT Limiting Filter Working");
 

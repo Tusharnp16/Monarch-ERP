@@ -90,7 +90,7 @@ public class AuthController {
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
         String accessToken = jwtUtils.generateAccessToken(userDetails.getUsername(), role);
-        String refreshToken = jwtUtils.generateRefreshToken(userDetails.getUsername());
+        String refreshToken = jwtUtils.generateRefreshToken(userDetails.getUsername(),role);
 
 //        tokenService.deleteTokensByUsername(userDetails.getUsername());
 

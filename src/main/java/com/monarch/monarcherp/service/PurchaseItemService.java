@@ -102,11 +102,9 @@ public class PurchaseItemService {
         StockMaster stockToUpdate;
 
         if (existingStock.isPresent()) {
-
             stockToUpdate = existingStock.get();
             int newQty = stockToUpdate.getQuantity() + request.getQty();
             stockToUpdate.setQuantity(newQty);
-            System.out.println("Updating existing batch: " + stockToUpdate.getBatchNo());
         } else {
             stockToUpdate = new StockMaster();
             stockToUpdate.setVariant(fullVariant);
@@ -149,7 +147,7 @@ public class PurchaseItemService {
 
 //        request.setStockMaster(newStock);
 
-        stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser,inventory);
+//        stockMasterTransactionService.recordTransaction(request.getQty(),0, TransactionType.PURCHASE,"PUR-",refId,currentUser,inventory);
 
         purchaseItemRepository.save(request);
     }

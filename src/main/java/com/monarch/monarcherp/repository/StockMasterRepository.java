@@ -44,4 +44,6 @@ public interface StockMasterRepository extends JpaRepository<StockMaster, Long> 
             LocalDate expiryDate
     );
 
+
+
 }

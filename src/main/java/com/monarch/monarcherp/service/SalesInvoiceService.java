@@ -7,6 +7,7 @@ import com.monarch.monarcherp.repository.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,7 +113,7 @@ public class SalesInvoiceService {
 //    }
 
     @Transactional
-    public SalesInvoice saveSalesInvoice(SalesInvoice salesInvoice) {
+    public SalesInvoice saveSalesInvoice(@NonNull SalesInvoice salesInvoice) {
 
         Long userId=userService.getAuthnicatedUserId();
 
@@ -168,8 +169,8 @@ public class SalesInvoiceService {
 
             User currentUser=userService.getAuthnicatedUser();
 
-            stockMasterTransactionService.recordTransaction(0,
-                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);
+//            stockMasterTransactionService.recordTransaction(0,
+//                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);
         }
 
         // 3. Batch Save Inventory (Faster than saving inside the loop)
