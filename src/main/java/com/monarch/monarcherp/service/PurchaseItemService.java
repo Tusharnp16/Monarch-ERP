@@ -85,7 +85,7 @@ public class PurchaseItemService {
 
         int currentQty = (inventory.getQuantity() != 0) ? inventory.getQuantity() : 0;
         inventory.setQuantity(currentQty + request.getQty());
-        inventory.setAvailableQuantity(inventory.getQuantity());
+        inventory.setAvailableQuantity(currentQty + request.getQty());
         inventory.setAverageCost(request.getLandingCost());
         inventory.setVariant(fullVariant);
         inventory.setUser(currentUser);

@@ -44,6 +44,8 @@ public interface StockMasterRepository extends JpaRepository<StockMaster, Long> 
             LocalDate expiryDate
     );
 
-
+    @Query("SELECT s FROM StockMaster s WHERE s.variant.variantId = :variantId " +
+            "AND s.quantity > 0 ORDER BY s.expiryDate ASC")
+    List<StockMaster> findAvailableBatchesFEFO(@Param("variantId") Long variantId);
 
 }

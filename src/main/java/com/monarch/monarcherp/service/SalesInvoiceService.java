@@ -37,9 +37,10 @@ public class SalesInvoiceService {
     private final StockMasterTransactionService stockMasterTransactionService;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final StockMasterRepository stockMasterRepository;
 
 
-    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService, StockMasterTransactionService stockMasterTransactionService, UserRepository userRepository, UserService userService) {
+    SalesInvoiceService(SalesInvoiceRepository salesInvoiceRepository, CustomerRepository customerRepository, NotificationService notificationService, VariantRepository variantRepository, InventoryRepository inventoryRepository, SalesItemRepository salesItemRepository, CustomerService customerService, StockMasterTransactionService stockMasterTransactionService, UserRepository userRepository, UserService userService, StockMasterRepository stockMasterRepository) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.customerRepository = customerRepository;
         this.notificationService = notificationService;
@@ -50,6 +51,7 @@ public class SalesInvoiceService {
         this.stockMasterTransactionService = stockMasterTransactionService;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.stockMasterRepository = stockMasterRepository;
     }
 
 //    @Transactional
@@ -117,17 +119,14 @@ public class SalesInvoiceService {
 
         Long userId=userService.getAuthnicatedUserId();
 
-        // 1. Efficient Customer Check
         Optional<Customer> existingCustomer = customerRepository.findByMobileAndUserUserId(salesInvoice.getCustomer().getMobile(),userId);
         if (existingCustomer.isPresent()) {
             salesInvoice.setCustomer(existingCustomer.get());
         } else {
-//            salesInvoice.getCustomer().setId(null);
             Customer savedCustomer = customerService.saveCustomer(salesInvoice.getCustomer());
             salesInvoice.setCustomer(savedCustomer);
         }
 
-        // 2. Prepare Invoice Numbering
         String financialYear = getFinancialYear();
         String prefix = "INV/" + financialYear + "/";
         long count = salesInvoiceRepository.countByFinancialYearPrefix(prefix) + 1;
@@ -135,53 +134,81 @@ public class SalesInvoiceService {
 
         double subtotal = 0;
 
+        List<StockMaster> stockUpdates = new ArrayList<>();
 
-        // Create a list to batch update inventory at the end
+
         List<Inventory> inventoriesToUpdate = new ArrayList<>();
 
         for (SalesItem item : salesInvoice.getItems()) {
+
             long variantId = item.getVariant().getVariantId();
 
-            // FETCH: Get Variant and Inventory
-            Variant variant = variantRepository.findById(variantId)
-                    .orElseThrow(() -> new RuntimeException("Variant not found"));
+            int remainingToDeduct = item.getQuantity();
 
-            Inventory inventory = inventoryRepository.findByVariant_VariantId(variantId)
-                    .orElseThrow(() -> new RuntimeException("Inventory not found"));
+            System.out.println("Variant ID ffor batches: " + variantId);
 
-            // VALIDATE: Check Stock
-            if (inventory.getAvailableQuantity() < item.getQuantity()) {
-                throw new RuntimeException("Not enough stock for " + variant.getVariantName());
+            List<StockMaster> batches = stockMasterRepository.findAvailableBatchesFEFO(variantId);
+            System.out.println("Avialble Bches : " + batches);
+
+            int totalAvailable = (int) batches.stream().mapToDouble(StockMaster::getQuantity).sum();
+
+            if (totalAvailable < remainingToDeduct) {
+                throw new RuntimeException("Insufficient stock for variant ID: " + variantId);
             }
 
-            // CALCULATE: Line Totals
+            for (StockMaster batch : batches) {
+                if (remainingToDeduct <= 0) break;
+
+                int batchQty = batch.getQuantity();
+                int takeAmount;
+
+                if (batchQty >= remainingToDeduct) {
+                    takeAmount = remainingToDeduct;
+                    batch.setQuantity(batchQty - remainingToDeduct);
+                    remainingToDeduct = 0;
+                } else {
+                    takeAmount = batchQty;
+                    batch.setQuantity(0);
+                    remainingToDeduct -= batchQty;
+                }
+
+                stockUpdates.add(batch);
+            }
+
+            Variant variant = variantRepository.findById(variantId)
+                    .orElseThrow(() -> new RuntimeException("Variant not found"));
+//
+//            Inventory inventory = inventoryRepository.findByVariant_VariantId(variantId)
+//                    .orElseThrow(() -> new RuntimeException("Inventory not found"));
+//
+//            // VALIDATE: Check Stock
+//            if (inventory.getAvailableQuantity() < item.getQuantity()) {
+//                throw new RuntimeException("Not enough stock for " + variant.getVariantName());
+//            }
+
+            Inventory inventory = inventoryRepository.findByVariant_VariantId(variantId)
+                    .orElseThrow(() -> new RuntimeException("Inventory summary not found"));
+
+            inventory.setAvailableQuantity(inventory.getAvailableQuantity() - item.getQuantity());
+            inventory.setQuantity(inventory.getQuantity() - item.getQuantity());
+            inventoriesToUpdate.add(inventory);
+
             item.setVariant(variant);
             item.setSalesInvoice(salesInvoice);
             double lineTotal = item.getQuantity() * item.getUnitPrice();
             item.setLineTotal(lineTotal);
             subtotal += lineTotal;
 
-            // UPDATE: Reduce quantity in memory
-            inventory.setAvailableQuantity(inventory.getAvailableQuantity() - item.getQuantity());
-
-            // COLLECT: Add to list for batch saving later
             inventoriesToUpdate.add(inventory);
-
-            User currentUser=userService.getAuthnicatedUser();
-
-//            stockMasterTransactionService.recordTransaction(0,
-//                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);
         }
 
-        // 3. Batch Save Inventory (Faster than saving inside the loop)
         inventoryRepository.saveAll(inventoriesToUpdate);
+        stockMasterRepository.saveAll(stockUpdates);
 
-        // 4. Final Totals
         salesInvoice.setTotalAmount(subtotal);
         double discount = (salesInvoice.getDiscountAmount() != null) ? salesInvoice.getDiscountAmount() : 0;
         salesInvoice.setGrandTotal(subtotal - discount);
 
-        // 5. Save the final Invoice
         return salesInvoiceRepository.save(salesInvoice);
     }
 
@@ -273,5 +300,10 @@ public class SalesInvoiceService {
 //        salesInvoice.setName(newName);
 //        return  salesInvoiceRepository.save(salesInvoice);
 //    }
+
+    //            User currentUser=userService.getAuthnicatedUser();
+
+//            stockMasterTransactionService.recordTransaction(0,
+//                    item.getQuantity(),TransactionType.SALE, "SALE-",salesInvoice.getInvoiceNumber(),currentUser,inventory);
 
 }
