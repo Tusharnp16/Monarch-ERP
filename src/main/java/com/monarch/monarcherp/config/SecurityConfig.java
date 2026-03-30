@@ -72,11 +72,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 ).securityContext((securityContext) -> securityContext
-                        .securityContextRepository(new DelegatingSecurityContextRepository(
-                                new RequestAttributeSecurityContextRepository(),
-                                new HttpSessionSecurityContextRepository()
-                        ))
-                ).
+                        .securityContextRepository(new RequestAttributeSecurityContextRepository())
+//                                new DelegatingSecurityContextRepository(
+//                                new RequestAttributeSecurityContextRepository(),
+//                                new HttpSessionSecurityContextRepository()
+//                        ))
+                        ).
                 exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String acceptHeader = request.getHeader("Accept");
