@@ -54,7 +54,10 @@ public class Product extends AbstractStoreEntity implements Serializable {
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
-        this.itemCode = generateItemCode();
+
+        if (this.itemCode == null || this.itemCode.isEmpty()) {
+            this.itemCode = generateItemCode();
+        }
     }
 
     @PreUpdate

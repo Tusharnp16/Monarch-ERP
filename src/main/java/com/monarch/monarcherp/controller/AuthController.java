@@ -144,8 +144,15 @@ public class AuthController {
 
         String refreshToken = body.get("refreshToken");
 
+//        RefreshToken tokenEntity = refreshRepo.findByToken(refreshToken)
+//                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
         RefreshToken tokenEntity = refreshRepo.findByToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+                .orElse(null);
+
+        if (tokenEntity == null || !jwtUtils.isValid(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Refresh Token");
+        }
 
         if (!jwtUtils.isValid(refreshToken)) {
             throw new RuntimeException("Expired refresh token");

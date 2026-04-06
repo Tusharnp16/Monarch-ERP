@@ -91,7 +91,6 @@ public class SecurityConfig {
                         })
                 );
 
-
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(rateLimiterFilter, JwtFilter.class);
         return http.build();

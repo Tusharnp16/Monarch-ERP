@@ -105,6 +105,7 @@ import com.monarch.monarcherp.service.CloudinaryService;
 import com.monarch.monarcherp.service.ProductImportService;
 import com.monarch.monarcherp.service.ProductService;
 import com.monarch.monarcherp.service.VariantService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -117,6 +118,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 @RestController
 @RequestMapping("/api/variants")
 public class VariantController {
